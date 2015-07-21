@@ -7,7 +7,6 @@ package zenixmc.command.commands.bending;
 
 import zenixmc.bending.AbilityManager;
 import zenixmc.command.commands.AbstractCommand;
-import zenixmc.utils.MessageManager;
 
 /**
  * For commands that need an abilityManager.
@@ -25,12 +24,8 @@ public abstract class AbstractAbilitiesCommand extends AbstractCommand {
      *
      * @param abilityManager
      *            The ability manager to use.
-     * @param messageManager
-     *            The message manager to use.
      */
-    public AbstractAbilitiesCommand(AbilityManager abilityManager,
-            MessageManager messageManager) {
-        super(messageManager);
+    public AbstractAbilitiesCommand(AbilityManager abilityManager) {
         this.abilityManager = abilityManager;
     }
 

@@ -5,7 +5,6 @@
  */
 package zenixmc.command.commands;
 
-import zenixmc.utils.MessageManager;
 
 
 
@@ -14,19 +13,16 @@ import zenixmc.utils.MessageManager;
  *
  */
 public abstract class AbstractCommand implements CommandInterface {
-    /**
-     * The messagemanager to get format messages.
-     */
-    protected MessageManager messageManager;
+    
+    //TODO: Add MessageManager
 
     /**
      * Instantiate from messagemanager.
      *
-     * @param messageManager
-     *            Messagemanager to use.
+     * 
      */
-    public AbstractCommand(MessageManager messageManager) {
-        this.messageManager = messageManager;
+    public AbstractCommand() {
+        
     }
 
 }
