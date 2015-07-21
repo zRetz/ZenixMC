@@ -5,8 +5,6 @@
  */
 package zenixmc;
 
-import java.util.UUID;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import zenixmc.user.ZenixUserInterface;
 
@@ -25,38 +23,6 @@ public interface ZenixMCInterface extends Plugin {
      * @return The plugins settings.
      */
     SettingsInterface getSettings();
-   
-    /**
-     * Returns a user specified by key.
-     * @param key
-     *      The key.
-     * @return The user.
-     */
-    ZenixUserInterface getZenixUser(Object key);
-    
-    /**
-     * Returns a user specified by name.
-     * @param name
-     *      The name of the user.
-     * @return The user.
-     */
-    ZenixUserInterface getZenixUser(String name);
-    
-    /**
-     * Returns a user specified by name.
-     * @param uuid
-     *      The unique identifier of the user.
-     * @return The user.
-     */
-    ZenixUserInterface getZenixUser(UUID uuid);
-    
-    /**
-     * Returns a user specified by player.
-     * @param player
-     *      The bukkit representation of the user.
-     * @return The user.
-     */
-    ZenixUserInterface getZenixUser(Player player);
     
     /**
      * Broadcasts a message to the entire server.
