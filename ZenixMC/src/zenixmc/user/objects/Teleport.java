@@ -13,5 +13,10 @@ import zenixmc.user.ZenixUserInterface;
  */
 public class Teleport {
     
+    /**
+     * The parent of the teleportation object.
+     */
     private ZenixUserInterface zui;
+    
+    
 }

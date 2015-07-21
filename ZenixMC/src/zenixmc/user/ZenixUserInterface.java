@@ -127,7 +127,7 @@ public interface ZenixUserInterface {
      * Returns a home specified by name.
      * @param name
      *      The name of the home.
-     * @return The home specified.
+     * @return The home.
      */
     Home getHome(String name);
     
@@ -135,7 +135,7 @@ public interface ZenixUserInterface {
      * Returns a home specified by location.
      * @param location
      *      The location of the home.
-     * @return The home specified.
+     * @return The home.
      */
     Home getHome(Location location);
     
@@ -164,6 +164,21 @@ public interface ZenixUserInterface {
      * @return The users teleportation object.
      */
     Teleport getTeleport();
+    
+    /**
+     * @return The amount of time the user spent online last session.
+     */
+    long getLastOnlineActivity();
+    
+    /**
+     * @return The time the user was last seen active. (Can be log-off time)
+     */
+    long getLastActivity();
+    
+    /**
+     * @return The time the user last did a throttled action.
+     */
+    long getLastThrottledAction();
     
     /**
      * Sends a message to the user.
