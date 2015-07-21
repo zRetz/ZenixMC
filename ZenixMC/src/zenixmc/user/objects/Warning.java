@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zenixmc.user;
+package zenixmc.user.objects;
 
 import java.util.TreeMap;
 
@@ -28,8 +28,10 @@ public class Warning {
     
     /**
      * Instantiates a warning with set values.
-     * @param amount The amount of warnings.
-     * @param timestamp The punishment stamp.
+     * @param amount
+     *      The amount of warnings.
+     * @param timestamp
+     *      The punishment stamp.
      */
     public Warning(int amount, long timestamp) {
         this.values = new TreeMap<>();
@@ -38,7 +40,8 @@ public class Warning {
     
     /**
      * Adds a warning and the punishment timestamp.
-     * @param timestamp The punishment timestamp.
+     * @param timestamp
+     *      The punishment timestamp.
      * @return If it successfully incremented.
      */
     public boolean increment(long timestamp) {
@@ -81,8 +84,10 @@ public class Warning {
     
     /**
      * Puts values into the values map.
-     * @param amount The amount of warnings (key).
-     * @param timestamp The punishment timestamp (value).
+     * @param amount
+     *      The amount of warnings (key).
+     * @param timestamp
+     *      The punishment timestamp (value).
      */
     private void put(int amount, long timestamp) {
         values.clear();
