@@ -7,10 +7,13 @@ import zenixmc.organization.Organization;
 public class Clan implements Organization {
 	public Player player;
 	public String name;
-	
+	public String[] desc;
+
 	public Clan(Player player, String name) {
 		this.player = player;
 		this.name = name;
+
+		Clans.add(this);
 	}
 
 	@Override
@@ -18,5 +21,9 @@ public class Clan implements Organization {
 		return name;
 	}
 
+	@Override
+	public String[] getDesc() {
+		return desc;
+	}
 
 }

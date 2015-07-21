@@ -13,5 +13,6 @@ import zenixmc.user.ZenixUserInterface;
  */
 public class Teleport {
     
-    private ZenixUserInterface zui;
+    @SuppressWarnings("unused")
+	private ZenixUserInterface zui;
 }
