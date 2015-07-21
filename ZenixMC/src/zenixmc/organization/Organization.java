@@ -10,5 +10,7 @@ package zenixmc.organization;
  * @author james
  */
 public interface Organization {
-    
+
+	public String getName();
+
 }
