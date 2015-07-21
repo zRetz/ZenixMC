@@ -8,11 +8,14 @@ package zenixmc.bending;
 import zenixmc.user.ZenixUserInterface;
 
 /**
- *
+ * A bendingPlayer internally used by this plugin.
  * @author james
  */
 public interface BendingPlayerInterface {
     
+    /**
+     * @return The user of the bendingPlayer.
+     */
     ZenixUserInterface getUser();
     
 }

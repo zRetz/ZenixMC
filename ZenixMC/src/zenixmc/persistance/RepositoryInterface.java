@@ -27,5 +27,5 @@ public interface RepositoryInterface {
      * @param object
      *      The object to save.
      */
-    void save(Object object);
+    void save(final Object object);
 }

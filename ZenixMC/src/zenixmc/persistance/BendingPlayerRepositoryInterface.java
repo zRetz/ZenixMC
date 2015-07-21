@@ -27,6 +27,6 @@ public interface BendingPlayerRepositoryInterface extends RepositoryInterface {
      * @param bendingPlayer
      *      The bendingPlayer to save.
      */
-    void save(BendingPlayerInterface bendingPlayer);
+    void save(final BendingPlayerInterface bendingPlayer);
     
 }
