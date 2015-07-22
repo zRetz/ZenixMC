@@ -85,6 +85,10 @@ public class Warning implements SerialisableObjectInterface {
         return values.firstKey() >= 3;
     }
     
+    public boolean isZero() {
+        return values.firstKey() == 0;
+    }
+    
     /**
      * Puts values into the values map.
      * @param amount

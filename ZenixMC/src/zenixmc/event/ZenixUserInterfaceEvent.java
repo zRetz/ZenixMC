@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zenixmc.user;
+package zenixmc.event;
 
 /**
- * Handles all user internal information.
+ *
  * @author james
  */
-public class ZenixUserData {
+public class ZenixUserInterfaceEvent {
     
 }

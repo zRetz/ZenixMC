@@ -9,9 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+import static org.bukkit.Bukkit.getPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import zenixmc.ZenixMC;
+import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.utils.ExceptionUtils;
 
@@ -150,6 +155,35 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
     @Override
     public void save(Object object) {
         parentRepository.save(object);
+    }
+    
+    /**
+     * Warms the cache when players join.
+     *
+     * @param e
+     *      The event
+     */
+    @EventHandler
+    public void onPlayerJoin(final PlayerJoinEvent e) {
+        getZenixUser(e.getPlayer());
+    }
+
+    /**
+     * Save the player and disable abilities when the player leaves.
+     *
+     * @param e
+     *      The event
+     */
+    @EventHandler
+    public void onPlayerQuit(final PlayerQuitEvent e) {
+        Player player = e.getPlayer();
+        UUID uuid = player.getUniqueId();
+        ZenixUserInterface zui = users.get(uuid);
+
+        if (zui != null) {
+            save(zui);
+            users.remove(uuid);
+        }
     }
     
     private void put(UUID uuid, ZenixUserInterface zui) {

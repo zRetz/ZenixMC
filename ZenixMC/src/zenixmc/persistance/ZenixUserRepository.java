@@ -74,7 +74,7 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
     
     @Override
     public ZenixUserInterface getZenixUser(Player player) {
-        
+        final File f = getZenixUserFile(player);
     }
 
     @Override

@@ -5,10 +5,23 @@
  */
 package zenixmc;
 
+import java.util.List;
+import org.bukkit.Color;
+import org.bukkit.Material;
+
 /**
  *
  * @author james
  */
 public interface SettingsInterface {
     
+    Color getNotificationColor();
+    
+    List<Material> getBlockBlackList();
+    
+    boolean allowSilentJoinQuit();
+    
+    String getJoinMessage();
+    
+    String getQuitMessage();
 }

@@ -22,6 +22,10 @@ public class ExceptionUtils {
         return new NullPointerException(msg);
     }
     
+    public static IndexOutOfBoundsException indexOutOfBoundsException(String msg) {
+        return new IndexOutOfBoundsException(msg);
+    }
+    
     public static NotEvenException notEvenException(String msg) {
         return new NotEvenException(msg);
     }

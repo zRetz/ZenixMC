@@ -72,4 +72,9 @@ public interface TextInterface {
      * @return The user who authored the text.
      */
     UUID getAuthor();
+    
+    /**
+     * @return <code>true</code> If the text is empty.
+     */
+    boolean isEmpty();
 }

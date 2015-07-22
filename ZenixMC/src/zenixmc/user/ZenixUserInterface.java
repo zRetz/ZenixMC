@@ -6,6 +6,7 @@
 package zenixmc.user;
 
 import java.util.List;
+import java.util.UUID;
 import org.bukkit.Location;
 import zenixmc.user.objects.Warning;
 import org.bukkit.entity.Player;
@@ -32,6 +33,21 @@ public interface ZenixUserInterface {
      * @return The bukkit representation of a player.
      */
     Player getPlayer();
+    
+    /**
+     * @return The name of the user.
+     */
+    String getName();
+    
+    /**
+     * @return The displayName of the user.
+     */
+    String getDisplayName();
+    
+    /**
+     * @return The player UUID.
+     */
+    UUID getUniqueId();
     
     /**
      * @return The bendingPlayer of the user.
@@ -90,6 +106,18 @@ public interface ZenixUserInterface {
      * @return <code>true</code> If the user is vanished.
      */
     boolean isVanished();
+    
+    /**
+     * Sets the users ability to socially spy.
+     * @param value
+     *      The value to set.
+     */
+    void setSocialSpy(boolean value);
+    
+    /**
+     * @return <code>true</code> If the user is socially spying.
+     */
+    boolean isSocialSpying();
     
     /**
      * Increments the warning value. Once the users warning value reaches 3,
@@ -179,6 +207,12 @@ public interface ZenixUserInterface {
     TextInterface popMail(int index);
     
     /**
+     * Returns the first entry of mail.
+     * @return The mail.
+     */
+    TextInterface getMail();
+    
+    /**
      * Returns mail specified by index.
      * @param index
      *      The position to take the mail from.
@@ -213,6 +247,13 @@ public interface ZenixUserInterface {
     Teleport getTeleport();
     
     /**
+     * Sets the users teleportRequester.
+     * @param teleportRequester
+     *      The teleportRequester to set to.
+     */
+    void setTeleportRequester(ZenixUserInterface teleportRequester);
+    
+    /**
      * @return The user requested to teleport.
      */
     ZenixUserInterface getTeleportRequester();
@@ -236,6 +277,79 @@ public interface ZenixUserInterface {
      * @return The time the user last did a throttled action.
      */
     long getLastThrottledAction();
+    
+    /**
+     * Sets the users ability to have freedom.
+     * @param jail
+     *      The jail to be sent to/from
+     */
+    void setJail(String jail);
+    
+    /**
+     * @return The jail the user is currently locked in.
+     */
+    String getJail();
+    
+    /**
+     * @return <code>true</code> If the user is in jail.
+     */
+    boolean isJailed();
+    
+    /**
+     * Ignores the specified user.
+     * @param uuid
+     *      The user to ignore.
+     */
+    void ignoreUser(UUID uuid);
+    
+    /**
+     * Ignores the specified user.
+     * @param zui
+     *      The user to ignore.
+     */
+    void ignoreUser(ZenixUserInterface zui);
+    
+    /**
+     * Un-Ignores the specified user.
+     * @param uuid
+     *      The user to un-ignore.
+     */
+    void unIgnoreUser(UUID uuid);
+    
+    /**
+     * Un-Ignores the specified user.
+     * @param zui
+     *      The user to un-ignore.
+     */
+    void unIgnoreUser(ZenixUserInterface zui);
+    
+    /**
+     * Sets the users ignored users to a new list of users.
+     * @param users
+     *      The list of users to be set.
+     */
+    void setIgnoredUsers(List<UUID> users);
+    
+    /**
+     * @return The users ignored users.
+     */
+    List<UUID> getIgnoredUsers();
+    
+    /**
+     * Checks if the given user is ignored by this user.
+     * @param uuid
+     *      The user to check.
+     * @return <code>true</code> If the user is ignored.
+     */
+    boolean isIgnoredUser(UUID uuid);
+    
+    /**
+     * Checks if the given user is ignored by this user.
+     * @param zui
+     *      The user to check.
+     * @return <code>true</code> If the user is ignored.
+     */
+    boolean isIgnoredUser(ZenixUserInterface zui);
     
     /**
      * Sends a message to the user.

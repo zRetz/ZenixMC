@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class EventDispatcher {
     /**
-     * The pluginmanager to register the listners to.
+     * The pluginmanager to register the listeners to.
      */
     private final PluginManager pluginManager;
 

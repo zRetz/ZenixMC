@@ -15,6 +15,7 @@
             <word>bukkit</word>
             <word>plugin</word>
             <word>plugins</word>
+            <word>teleport</word>
             <word>Teleportation</word>
         </spellchecker-wordlist>
     </configuration>

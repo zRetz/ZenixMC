@@ -14,10 +14,12 @@ import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
+import zenixmc.command.MainCommandExecuter;
+import zenixmc.event.EventDispatcher;
 import zenixmc.persistance.CachedZenixUserRepository;
 import zenixmc.persistance.ZenixUserRepository;
 import zenixmc.user.ZenixUserInterface;
@@ -29,14 +31,39 @@ import zenixmc.utils.ExceptionUtils;
  */
 public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     
+    SettingsInterface settings;
+    
+    /**
+     * The EventDispatcher.
+     */
+    EventDispatcher eventDispatcher = new EventDispatcher(this);
+    
+    /**
+     * Persistence of user data to disk.
+     */
     ZenixUserRepository zenixUserRepository = new ZenixUserRepository(this.getLogger(), new File(this.getDataFolder(), "users"), this);
     
+    /**
+     * Loading/Saving on Join/Leave.
+     */
     CachedZenixUserRepository repository = new CachedZenixUserRepository(zenixUserRepository, this, this.getLogger());
+    
+    /**
+     * Main command.
+     */
+    MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(repository);
     
     @Override
     public void onEnable() {
-        
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
+        
+        eventDispatcher.registerEventListener(repository);
+        
+        getCommand("z").setExecutor(mainCommandExecuter);
+        
+        for (final Player player : getServer().getOnlinePlayers()) {
+            repository.onPlayerJoin(new PlayerJoinEvent(player, null));
+        }
     }
 
     @Override
@@ -52,7 +79,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
 
     @Override
     public SettingsInterface getSettings() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return settings;
     }
     
     @Override

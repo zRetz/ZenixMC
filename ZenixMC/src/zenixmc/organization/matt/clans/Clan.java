@@ -3,18 +3,20 @@ package zenixmc.organization.matt.clans;
 import org.bukkit.entity.Player;
 
 import zenixmc.organization.Organization;
+import zenixmc.user.ZenixUserInterface;
 
 public class Clan implements Organization {
-	public Player player;
-	public String name;
-	public String[] desc;
+    
+	public ZenixUserInterface zui;
+	private String name;
+	private String[] desc;
 
-	public Clan(Player player, String name) {
-		this.player = player;
+	public Clan(ZenixUserInterface zui, String name) {
+		this.zui = zui;
 		this.name = name;
 		
 	Clans.add(this);
-	playerClan.put(player, this);
+	playerClan.put(zui, this);
 		
 	}
 
@@ -30,7 +32,7 @@ public class Clan implements Organization {
 
 	@Override
 	public Player[] getMembers() {
-		if (playerClan.containsKey(player) && playerClan.containsValue(this)) {
+		if (playerClan.containsKey(zui) && playerClan.containsValue(this)) {
 			return null; //Todo return with a list of the clans players
 		}
 		return null;

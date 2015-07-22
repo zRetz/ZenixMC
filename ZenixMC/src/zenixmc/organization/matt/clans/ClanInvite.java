@@ -1,20 +1,21 @@
 package zenixmc.organization.matt.clans;
 
-import org.bukkit.entity.Player;
 
 import zenixmc.organization.Organization;
+import zenixmc.user.ZenixUserInterface;
 
 public class ClanInvite {
+    
 	@SuppressWarnings("unused")
-	private Player player;
+	private ZenixUserInterface zui;
 	@SuppressWarnings("unused")
 	private Clan clan;
 	
-	public ClanInvite(Player player, Clan clan) {
-		this.player = player;
+	public ClanInvite(ZenixUserInterface zui, Clan clan) {
+		this.zui = zui;
 		this.clan = clan;
 		
-		Organization.clanInvites.put(player, clan);
+		Organization.clanInvites.put(zui, clan);
 	}
 
 }

@@ -6,8 +6,10 @@
 package zenixmc.user;
 
 import java.util.List;
+import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.text.TextInterface;
@@ -20,8 +22,141 @@ import zenixmc.user.objects.Warning;
  * @author james
  */
 public class ZenixUser implements ZenixUserInterface {
-
     
+    /**
+     * The users teleportation object.
+     */
+    private final Teleport teleport = new Teleport();
+    
+    /**
+     * The plugin.
+     */
+    private final ZenixMCInterface zenix;
+    
+    /**
+     * The bukkit representation of the user.
+     */
+    private final Player player;
+    
+    /**
+     * The users account name.
+     */
+    private final String username;
+    
+    /**
+     * The users name displayed when messaging;
+     */
+    private final String displayName;
+    
+    /**
+     * The users unique identifier.
+     */
+    private final UUID uuid;
+    
+    /**
+     * The users bendingPlayer data.
+     */
+    private BendingPlayerInterface bendingPlayer;
+    
+    /**
+     * The users ability to speak.
+     */
+    private boolean muted;
+    
+    /**
+     * The users ability to move.
+     */
+    private boolean frozen;
+    
+    /**
+     * The users ability to take damage.
+     */
+    private boolean godMode;
+    
+    /**
+     * The users ability to be seen.
+     */
+    private boolean vanished;
+    
+    /**
+     * The users ability to socially spy.
+     */
+    private boolean socialSpy;
+    
+    /**
+     * The users amount of warnings and sentence.
+     */
+    private Warning warning;
+    
+    /**
+     * The users collection of homes.
+     */
+    private List<Home> homes;
+    
+    /**
+     * The users collection of mail.
+     */
+    private List<TextInterface> mails;
+    
+    /**
+     * The users current jail. (Can be null)
+     */
+    private String jail;
+    
+    /**
+     * The users collection of ignoredUsers.
+     */
+    private List<UUID> ignoredUsers;
+    
+    /**
+     * The users away from keyboard value;
+     */
+    private boolean afk;
+    
+    /**
+     * The users last known location.
+     */
+    private Location lastLocation;
+    
+    /**
+     * The user requesting to teleport.
+     */
+    private ZenixUserInterface teleportRequester;
+    
+    /**
+     * The users teleportation request time.
+     */
+    private long teleportRequestTime;
+    
+    /**
+     * The duration of the users last session.
+     */
+    private long lastOnlineActivity;
+    
+    /**
+     * The time of the users last activity. (Can be log-off time.)
+     */
+    private long lastActivity;
+    
+    /**
+     * The time of the users last throttled action.
+     */
+    private long lastThrottledAction;
+    
+    /**
+     * Instantiate.
+     * @param player
+     *      The bukkit representation of user.
+     * @param zenix
+     *      The plugin.
+     */
+    public ZenixUser(Player player, ZenixMCInterface zenix) {
+        this.player = player;
+        this.zenix = zenix;
+        this.uuid = player.getUniqueId();
+        this.username = player.getName();
+        this.displayName = player.getDisplayName();
+    }
    
     @Override
     public boolean isAuthorised(String node) {
@@ -30,12 +165,27 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public Player getPlayer() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return player;
+    }
+    
+    @Override
+    public String getName() {
+        return username;
+    }
+    
+    @Override
+    public String getDisplayName() {
+        return displayName;
+    }
+    
+    @Override
+    public UUID getUniqueId() {
+        return uuid;
     }
 
     @Override
     public BendingPlayerInterface getBendingPlayer() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bendingPlayer;
     }
 
     @Override
@@ -45,57 +195,75 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public void setMuted(boolean value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.muted = value;
     }
 
     @Override
     public boolean isMuted() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return muted;
     }
 
     @Override
     public void setFrozen(boolean value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.frozen = value;
     }
 
     @Override
     public boolean isFrozen() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return frozen;
     }
 
     @Override
     public void setGodMode(boolean value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.godMode = value;
     }
 
     @Override
     public boolean isGodMode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return godMode;
     }
 
     @Override
     public void setVanished(boolean value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.vanished = value;
     }
 
     @Override
     public boolean isVanished() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return vanished;
+    }
+    
+    @Override
+    public void setSocialSpy(boolean value) {
+        this.socialSpy = value;
+    }
+
+    @Override
+    public boolean isSocialSpying() {
+        return socialSpy;
     }
 
     @Override
     public void incrementWarning(long time) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (time != 0) {
+            if (warning.isMaximum()) {
+                
+            }else {
+                warning.increment(time);
+            }
+        }
     }
 
     @Override
     public void decrementWarning() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (!(warning.isZero())) {
+            warning.decrement();
+        }
     }
 
     @Override
     public Warning getWarning() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return warning;
     }
 
     @Override
@@ -122,95 +290,193 @@ public class ZenixUser implements ZenixUserInterface {
     public List<Home> getHomes() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public void clearMail() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addMail(TextInterface mail) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public TextInterface popMail() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public TextInterface popMail(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public TextInterface getMail(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<TextInterface> getMails() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     @Override
     public boolean hasHome() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
+    public void clearMail() {
+        
+    }
+
+    @Override
+    public void addMail(TextInterface mail) {
+        
+        if (mail == null || mail.isEmpty()) {
+            return;
+        }
+        
+        mails.add(mail);
+    }
+
+    @Override
+    public TextInterface popMail() {
+        return popMail(0);
+    }
+
+    @Override
+    public TextInterface popMail(int index) {
+        
+        if (index > mails.size()) {
+            return popMail();
+        }
+        
+        TextInterface result = getMail(index);
+        mails.remove(result);
+        
+        return result;
+    }
+
+    @Override
+    public TextInterface getMail() {
+        return getMail(0);
+    }
+    
+    @Override
+    public TextInterface getMail(int index) {
+        
+        if (index > mails.size()) {
+            return getMail();
+        }
+        
+        return mails.get(index);
+    }
+
+    @Override
+    public List<TextInterface> getMails() {
+        return mails;
+    }
+
+    @Override
     public boolean isAFK() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return afk;
     }
 
     @Override
     public void setLastLocation(Location loc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.lastLocation = loc;
     }
 
     @Override
     public Location getLastLocation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lastLocation;
     }
 
     @Override
     public Teleport getTeleport() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teleport;
+    }
+    
+    @Override
+    public void setTeleportRequester(ZenixUserInterface teleportRequester) {
+        this.teleportRequester = teleportRequester;
     }
 
     @Override
     public ZenixUserInterface getTeleportRequester() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teleportRequester;
     }
 
     @Override
     public long getTeleportRequestTime() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return teleportRequestTime;
     }
 
     @Override
     public long getLastOnlineActivity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lastOnlineActivity;
     }
 
     @Override
     public long getLastActivity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lastActivity;
     }
 
     @Override
     public long getLastThrottledAction() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return lastThrottledAction;
+    }
+    
+    @Override
+    public void setJail(String jail) {
+        this.jail = jail;
+    }
+
+    @Override
+    public String getJail() {
+        return jail;
+    }
+
+    @Override
+    public boolean isJailed() {
+        return jail != null;
+    }
+    
+    @Override
+    public void ignoreUser(UUID uuid) {
+        if (uuid != null) {
+            this.ignoredUsers.add(uuid);
+            //change to offline player
+            sendMessage(zenix.getSettings().getNotificationColor() + "You've added " + uuid.toString() + " to your ignoredUsers.");
+        }
+    }
+
+    @Override
+    public void ignoreUser(ZenixUserInterface zui) {
+        ignoreUser(zui.getUniqueId());
+    }
+
+    @Override
+    public void unIgnoreUser(UUID uuid) {
+        if (uuid != null) {
+            this.ignoredUsers.remove(uuid);
+            //change to offline player
+            sendMessage(zenix.getSettings().getNotificationColor() + "You've removed " + uuid.toString() + " from your ignoredUsers.");
+        }
+    }
+
+    @Override
+    public void unIgnoreUser(ZenixUserInterface zui) {
+        unIgnoreUser(zui.getUniqueId());
+    }
+    
+    @Override
+    public void setIgnoredUsers(List<UUID> users) {
+        this.ignoredUsers = users;
+    }
+
+    @Override
+    public List<UUID> getIgnoredUsers() {
+        return ignoredUsers;
+    }
+
+    @Override
+    public boolean isIgnoredUser(UUID uuid) {
+        
+        for (UUID uu : ignoredUsers) {
+            if (uu.compareTo(uuid) == 0) {
+                return true;
+            } 
+        }
+        
+        return false;
+    }
+
+    @Override
+    public boolean isIgnoredUser(ZenixUserInterface zui) {
+        return isIgnoredUser(zui.getUniqueId());
     }
 
     @Override
     public void sendMessage(String message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.player.sendMessage(message);
     }
 
     @Override
     public ZenixCommandSender getCommandSender() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ZenixCommandSender(player, this);
     }
   
 }
