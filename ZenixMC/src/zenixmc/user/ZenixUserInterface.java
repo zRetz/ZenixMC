@@ -55,6 +55,23 @@ public interface ZenixUserInterface {
     Location getLocation();
     
     /**
+     * Sets the players amount of health.
+     * @param value
+     *      The value to set.
+     */
+    void setHealth(double value);
+    
+    /**
+     * @return The players amount of health.
+     */
+    double getHealth();
+    
+    /**
+     * @return <code>true</code> If the player is dead.
+     */
+    boolean isDead();
+    
+    /**
      * @return The bendingPlayer of the user.
      */
     BendingPlayerInterface getBendingPlayer();

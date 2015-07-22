@@ -5,10 +5,12 @@
  */
 package zenixmc.event;
 
+import org.bukkit.event.Event;
+
 /**
- *
+ * 
  * @author james
  */
-public class ZenixUserInterfaceEvent {
+public abstract class ZenixUserInterfaceEvent extends Event {
     
 }

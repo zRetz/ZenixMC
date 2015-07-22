@@ -5,10 +5,15 @@
  */
 package zenixmc.utils;
 
+import zenixmc.text.TextInterface;
+
 /**
- * Utilities class for handling Dates.
+ * Utilities class for ZenixMC objects.
  * @author james
  */
-public class DateUtils {
+public class ZenixMCUtils {
     
+    public static TextInterface instantiateText(String title, String[] line) {
+        
+    }
 }

@@ -5,6 +5,7 @@
  */
 package zenixmc.text;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -16,18 +17,38 @@ import java.util.UUID;
 public interface TextInterface {
     
     /**
+     * Adds a chapter and its line of text onto the last index of text.
+     * @param chapter
+     *      The chapter to add.
+     * @param line
+     *      The line assigned under the chapter to add.
+     */
+    void addLine(String chapter, String[][] line);
+    
+    /**
+     * Adds a chapter and its line of text onto the last index of text. This can overwrite the previous index of text.
+     * @param chapter
+     *      The chapter to add.
+     * @param line
+     *      The line assigned under the chapter to add.
+     * @param replace 
+     *      If it should replace previous index of text.
+     */
+    void addLine(String chapter, String[][] line, boolean replace);
+    
+    /**
      * Adds a chapter and its line of text.
      * @param chapter
-     *      The chapter being added.
+     *      The chapter to add.
      * @param line
-     *      The line assigned under the chapter being added.
+     *      The line assigned under the chapter to add.
      * @param index
      *      The index to insert the strings into.
      * @param replace
      *      If it should replace the string that is already at the index
      *      or to expand the text.
      */
-    void addLine(String chapter, String line[], int index, boolean replace);
+    void addLine(String chapter, String[][] line, int index, boolean replace);
     
     /**
      * Removes a chapter and its line of text specified by index.
@@ -46,7 +67,7 @@ public interface TextInterface {
     /**
      * @return The raw lines of text that are assigned under a chapter.
      */
-    List<String[]> getLines();
+    List<String[][]> getLines();
     
     /**
      * @return The names assigned to the lines of text.
@@ -56,12 +77,44 @@ public interface TextInterface {
     /**
      * @return Both the chapters and the raw lines of text assigned under the chapters.
      */
-    Map<String, String[]> getText();
+    LinkedHashMap<String, String[][]> getText();
+    
+    /**
+     * Sets bookmark at index in chapter.
+     * @param bookmarkName
+     *      The name of the bookmark.
+     * @param chapter
+     *      The chapter of text.
+     * @param index 
+     *      The index of line.
+     */
+    void setBookmark(String bookmarkName, String chapter, int index);
+    
+    /**
+     * Returns a bookmark.
+     * @param bookmarkName
+     *      The name of the bookmark.
+     * @return The chapter and its line.
+     */
+    Map<String, String[][]> getBookmark(String bookmarkName);
+    
+    /**
+     * @return All of the names of the bookmarks.
+     */
+    List<String> getBookmarkNames();
     
     /**
      * @return The chapters being bookmark and the index at which the mark is.
      */
-    Map<String, Integer> getBookmarks();
+    Map<String, Map<String, Integer>> getBookmarks();
+    
+    /**
+     * Checks if name is a bookmark name.
+     * @param name
+     *      The name to check.
+     * @return <code>true</code> If the name is a bookmark name.
+     */
+    boolean isBookmarkName(String name);
     
     /**
      * @return The time at which the text was authored.
@@ -77,4 +130,14 @@ public interface TextInterface {
      * @return <code>true</code> If the text is empty.
      */
     boolean isEmpty();
+    
+    /**
+     * @return <code>true</code> If the text has chapters.
+     */
+    boolean hasChapters();
+    
+    /**
+     * @return <code>true</code> If the text has lines.
+     */
+    boolean hasLines();
 }

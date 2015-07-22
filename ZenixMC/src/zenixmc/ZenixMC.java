@@ -110,8 +110,8 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     @Override
     public int broadcastMessage(ZenixUserInterface sender, String node, String message) {
         
-        if (sender != null) {
-            return 0;
+        if (sender == null) {
+            sender = (ZenixUserInterface) getServer().getConsoleSender();
         }
         
         Collection<Player> players = getOnlinePlayers();

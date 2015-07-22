@@ -190,6 +190,44 @@ public class ZenixUser implements ZenixUserInterface {
     public Location getLocation() {
         return player.getLocation();
     }
+    
+    @Override
+    public void setHealth(double value) {
+        
+        if (player == null) {
+            return;
+        }
+        
+        if (isDead()) {
+            return;
+        }
+                
+        this.player.setHealth(value);
+    }
+
+    @Override
+    public double getHealth() {
+        
+        if (player == null) {
+            return 0;
+        }
+        
+        if (isDead()) {
+            return 0;
+        }
+        
+        return player.getHealth();
+    }
+    
+    @Override
+    public boolean isDead() {
+        
+        if (player == null) {
+            return true;
+        }
+        
+        return player.isDead();
+    }
 
     @Override
     public BendingPlayerInterface getBendingPlayer() {
@@ -198,7 +236,7 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public boolean canBuild() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return !frozen;
     }
 
     @Override
@@ -258,6 +296,7 @@ public class ZenixUser implements ZenixUserInterface {
                 zenix.broadcastMessage(null, zenix.getSettings().getErrorColor() + username + " is being banned for reaching max warnings.");
             } else {
                 warning.increment(time);
+                sendMessage(zenix.getSettings().getErrorColor() + "You have recieved a warning. That's bad.");
             }
         }
     }
@@ -266,6 +305,7 @@ public class ZenixUser implements ZenixUserInterface {
     public void decrementWarning() {
         if (!(warning.isZero())) {
             warning.decrement();
+            sendMessage(zenix.getSettings().getSortedColor() + "You have lost a warning. That's good.");
         }else {
             sendMessage(zenix.getSettings().getNotificationColor() + "You have zero warnings. You've been a good human.");
         }

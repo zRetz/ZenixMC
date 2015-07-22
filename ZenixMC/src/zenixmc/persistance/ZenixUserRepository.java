@@ -16,7 +16,7 @@ import zenixmc.text.Text;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Warning;
-import zenixmc.utils.ConversionUtils;
+import zenixmc.utils.JavaUtils;
 import zenixmc.utils.exceptions.NotEvenException;
 import zenixmc.utils.io.SerialisableList;
 
@@ -34,16 +34,17 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
     private class DefaultConfiguration {
         
         private final String[] defKeys = {"name", "uuid", "muted", "frozen", "godmode", "vanished", "warnings", "homes", "mails", "lastOnlineActivity", "lastActivity"};
-        private final Object[] defValues = {"", "", false, false, false, false, new Warning().serialise(), new SerialisableList(Arrays.asList(new Home("spawn", zenix.getSpawnLocation(zenix.getWorld())))).serialise(), new SerialisableList(Arrays.asList(new Text("Welcome", "Zenix greets you!"))).serialise(), 0L, 0L};
+        private final Object[] defValues = {"", "", false, false, false, false, new Warning().serialise(), new SerialisableList(Arrays.asList(new Home("spawn", zenix.getSpawnLocation(zenix.getWorld())))).serialise(), new SerialisableList(Arrays.asList()).serialise(), 0L, 0L};
         
         DynamicDefaultConfiguration def;
         
         DefaultConfiguration() {
             try {
-                def = new DynamicDefaultConfiguration(ConversionUtils.arraysToTreeMap(defKeys, defValues));
-            }catch (final NotEvenException e) {
-                ZenixUserRepository.super.logger.log(Level.SEVERE, "Failed to instantiate DefaultConfiguration in ZenixUserRepository.");
+                def = new DynamicDefaultConfiguration(JavaUtils.arraysToTreeMap(defKeys, defValues));
+            } catch (NotEvenException ex) {
+                logger.log(Level.SEVERE, "Failed to instantiate DefaultConfiguration in ZenixUserRepository.");
             }
+            
         }
     }
     
