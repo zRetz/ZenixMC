@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
@@ -227,6 +228,49 @@ public class ZenixUser implements ZenixUserInterface {
         }
         
         return player.isDead();
+    }
+    
+    @Override
+    public PlayerInventory getInventory() {
+        return player.getInventory();
+    }
+
+    @Override
+    public void setLevel(int value) {
+        player.setLevel(value);
+    }
+
+    @Override
+    public int getLevel() {
+        
+        if (player == null) {
+            return 0;
+        }
+        
+        if (isDead()) {
+            return 0;
+        }
+        
+        return player.getLevel();
+    }
+
+    @Override
+    public void setExp(float value) {
+        player.setExp(value);
+    }
+
+    @Override
+    public float getExp() {
+        
+        if (player == null) {
+            return 0;
+        }
+        
+        if (isDead()) {
+            return 0;
+        }
+        
+        return player.getExp();
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import zenixmc.user.objects.Warning;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.text.TextInterface;
@@ -70,6 +71,35 @@ public interface ZenixUserInterface {
      * @return <code>true</code> If the player is dead.
      */
     boolean isDead();
+    
+    /**
+     * @return The players inventory.
+     */
+    PlayerInventory getInventory();
+    
+    /**
+     * Sets players experience level.
+     * @param value 
+     *      The value to set.
+     */
+    void setLevel(int value);
+    
+    /**
+     * @return The players experience level.
+     */
+    int getLevel();
+    
+    /**
+     * Sets players experience points needed for next level.
+     * @param value 
+     *      The value to set.
+     */
+    void setExp(float value);
+    
+    /**
+     * @return The players experience points needed for next level.
+     */
+    float getExp();
     
     /**
      * @return The bendingPlayer of the user.
