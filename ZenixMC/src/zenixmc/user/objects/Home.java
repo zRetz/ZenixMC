@@ -5,14 +5,17 @@
  */
 package zenixmc.user.objects;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.Location;
+import zenixmc.utils.io.SerialisableObjectInterface;
 import zenixmc.user.ZenixUserInterface;
 
 /**
  * Personal set location.
  * @author james
  */
-public class Home {
+public class Home implements SerialisableObjectInterface {
     
     /**
      * The owner of the home.
@@ -41,6 +44,9 @@ public class Home {
         this.location = location;
     }
     
+    /**
+     * Teleports the user to this home.
+     */
     public void goTo() {
         
     }
@@ -64,5 +70,19 @@ public class Home {
      */
     public Location getLocation() {
         return location;
+    }
+
+    @Override
+    public Map<String, Object> serialise() {
+        
+        HashMap<String, Object> result = new HashMap<>();
+        
+        result.put("owner-uuid", zui.getPlayer().getUniqueId().toString());
+        result.put("home-name", name);
+        result.put("loc-x", location.getX());
+        result.put("loc-y", location.getY());
+        result.put("loc-z", location.getZ());
+        
+        return result;
     }
 }

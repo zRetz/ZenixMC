@@ -13,6 +13,7 @@
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
             <word>bukkit</word>
+            <word>plugin</word>
             <word>plugins</word>
             <word>Teleportation</word>
         </spellchecker-wordlist>

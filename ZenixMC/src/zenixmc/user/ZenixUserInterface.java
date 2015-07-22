@@ -5,10 +5,13 @@
  */
 package zenixmc.user;
 
+import java.util.List;
 import org.bukkit.Location;
 import zenixmc.user.objects.Warning;
 import org.bukkit.entity.Player;
 import zenixmc.bending.BendingPlayerInterface;
+import zenixmc.command.ZenixCommandSender;
+import zenixmc.text.TextInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
 
@@ -140,9 +143,53 @@ public interface ZenixUserInterface {
     Home getHome(Location location);
     
     /**
+     * @return The homes owned by this user.
+     */
+    List<Home> getHomes();
+    
+    /**
      * @return <code>true</code> If the user has at least 1 home.
      */
     boolean hasHome();
+    
+    /**
+     * Clears all of the users mail.
+     */
+    void clearMail();
+    
+    /**
+     * Adds mail to the users collection of mail.
+     * @param mail
+     *      The mail to add.
+     */
+    void addMail(TextInterface mail);
+    
+    /**
+     * Returns and removes the first entry of mail.
+     * @return The first entry of mail.
+     */
+    TextInterface popMail();
+    
+    /**
+     * Returns and removes the entry of mail specified by index.
+     * @param index
+     *      The position to take the mail from.
+     * @return The mail.
+     */
+    TextInterface popMail(int index);
+    
+    /**
+     * Returns mail specified by index.
+     * @param index
+     *      The position to take the mail from.
+     * @return The mail. 
+     */
+    TextInterface getMail(int index);
+    
+    /**
+     * @return All of the mail the user owns.
+     */
+    List<TextInterface> getMails();
     
     /**
      * @return <code>true</code> If the user is away from keyboard.
@@ -166,6 +213,16 @@ public interface ZenixUserInterface {
     Teleport getTeleport();
     
     /**
+     * @return The user requested to teleport.
+     */
+    ZenixUserInterface getTeleportRequester();
+    
+    /**
+     * @return The time before teleportation.
+     */
+    long getTeleportRequestTime();
+    
+    /**
      * @return The amount of time the user spent online last session.
      */
     long getLastOnlineActivity();
@@ -186,4 +243,9 @@ public interface ZenixUserInterface {
      *      The message to be sent.
      */
     void sendMessage(String message);
+    
+    /**
+     * @return A command sender with this users information.
+     */
+    ZenixCommandSender getCommandSender();
 }

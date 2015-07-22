@@ -7,10 +7,10 @@ package zenixmc.text;
 
 import java.util.List;
 import java.util.Map;
-import zenixmc.user.ZenixUserInterface;
+import java.util.UUID;
 
 /**
- * The text 
+ * Strings with additional information.
  * @author james
  */
 public interface TextInterface {
@@ -27,7 +27,7 @@ public interface TextInterface {
      *      If it should replace the string that is already at the index
      *      or to expand the text.
      */
-    void addLine(String chapter, String line, int index, boolean replace);
+    void addLine(String chapter, String line[], int index, boolean replace);
     
     /**
      * Removes a chapter and its line of text specified by index.
@@ -46,7 +46,7 @@ public interface TextInterface {
     /**
      * @return The raw lines of text that are assigned under a chapter.
      */
-    List<String> getLines();
+    List<String[]> getLines();
     
     /**
      * @return The names assigned to the lines of text.
@@ -56,7 +56,7 @@ public interface TextInterface {
     /**
      * @return Both the chapters and the raw lines of text assigned under the chapters.
      */
-    Map<String, String> getText();
+    Map<String, String[]> getText();
     
     /**
      * @return The chapters being bookmark and the index at which the mark is.
@@ -71,5 +71,5 @@ public interface TextInterface {
     /**
      * @return The user who authored the text.
      */
-    ZenixUserInterface getAuthor();
+    UUID getAuthor();
 }

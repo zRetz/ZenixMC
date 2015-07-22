@@ -22,7 +22,7 @@ public interface RepositoryInterface {
     void close();
     
     /**
-     * Save a player.
+     * Save data.
      * 
      * @param object
      *      The object to save.

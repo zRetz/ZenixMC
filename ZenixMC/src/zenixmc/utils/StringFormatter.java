@@ -17,6 +17,7 @@ import java.util.Map.Entry;
  *
  */
 public class StringFormatter {
+    
     /**
      * @return A map to be used as the value set.
      */

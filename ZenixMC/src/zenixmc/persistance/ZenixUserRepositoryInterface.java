@@ -5,6 +5,7 @@
  */
 package zenixmc.persistance;
 
+import java.util.UUID;
 import org.bukkit.entity.Player;
 import zenixmc.user.ZenixUserInterface;
 
@@ -21,6 +22,30 @@ public interface ZenixUserRepositoryInterface extends RepositoryInterface {
      * @return The user that was loaded.
      */
     ZenixUserInterface getZenixUser(Player player); 
+    
+    /**
+     * Returns a user specified by key.
+     * @param key
+     *      The key.
+     * @return The user.
+     */
+    ZenixUserInterface getZenixUser(Object key);
+    
+    /**
+     * Returns a user specified by name.
+     * @param name
+     *      The name of the user.
+     * @return The user.
+     */
+    ZenixUserInterface getZenixUser(String name);
+    
+    /**
+     * Returns a user specified by name.
+     * @param uuid
+     *      The unique identifier of the user.
+     * @return The user.
+     */
+    ZenixUserInterface getZenixUser(UUID uuid);
     
     /**
      * Save a user.

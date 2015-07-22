@@ -5,13 +5,16 @@
  */
 package zenixmc.user.objects;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
+import zenixmc.utils.io.SerialisableObjectInterface;
 
 /**
  * Map of amount of warnings and punishment.
  * @author james
  */
-public class Warning {
+public class Warning implements SerialisableObjectInterface {
     
     /**
      * The map of amount of warnings and punishment timestamp.
@@ -92,5 +95,19 @@ public class Warning {
     private void put(int amount, long timestamp) {
         values.clear();
         values.put(amount, timestamp);
+    }
+
+    @Override
+    public Map<String, Object> serialise() {
+        
+        Map<String, Object> result = new HashMap<>();
+        
+        int amount = values.firstKey();
+        long sentence = values.get(amount);
+        
+        result.put("amount", amount);
+        result.put("sentence", sentence);
+        
+        return result;
     }
 }
