@@ -12,8 +12,10 @@ public class Clan implements Organization {
 	public Clan(Player player, String name) {
 		this.player = player;
 		this.name = name;
-
-		Clans.add(this);
+		
+	Clans.add(this);
+	playerClan.put(player, this);
+		
 	}
 
 	@Override
@@ -22,8 +24,15 @@ public class Clan implements Organization {
 	}
 
 	@Override
-	public String[] getDesc() {
+	public String[] getDescription() {
 		return desc;
 	}
 
+	@Override
+	public Player[] getMembers() {
+		if (playerClan.containsKey(player) && playerClan.containsValue(this)) {
+			return null; //Todo return with a list of the clans players
+		}
+		return null;
+	}
 }

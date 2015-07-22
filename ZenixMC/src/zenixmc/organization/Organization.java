@@ -13,15 +13,21 @@ import org.bukkit.entity.Player;
 
 import zenixmc.organization.matt.clans.Clan;
 
+
 /**
  *
  * @author james
  */
 public interface Organization {
-	public List<Clan> Clans = new ArrayList<>();
-	public HashMap<Player, Clan> pClan = new HashMap<>();
-
+	public static List<Clan> Clans = new ArrayList<>();
+	
+	public static HashMap<Player, Clan> playerClan = new HashMap<>();
+	public static HashMap<Player, Clan> clanInvites = new HashMap<>();
+	
 	public String getName();
-	public String[] getDesc();
+	
+	public String[] getDescription();
+	
+	public Player[] getMembers();
 
 }
