@@ -185,6 +185,11 @@ public class ZenixUser implements ZenixUserInterface {
     public UUID getUniqueId() {
         return uuid;
     }
+    
+    @Override
+    public Location getLocation() {
+        return player.getLocation();
+    }
 
     @Override
     public BendingPlayerInterface getBendingPlayer() {

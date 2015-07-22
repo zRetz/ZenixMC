@@ -50,6 +50,11 @@ public interface ZenixUserInterface {
     UUID getUniqueId();
     
     /**
+     * @return The players location.
+     */
+    Location getLocation();
+    
+    /**
      * @return The bendingPlayer of the user.
      */
     BendingPlayerInterface getBendingPlayer();
