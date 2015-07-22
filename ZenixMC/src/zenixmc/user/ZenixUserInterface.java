@@ -181,6 +181,22 @@ public interface ZenixUserInterface {
     boolean hasHome();
     
     /**
+     * Checks if a home specified by name exists.
+     * @param name
+     *      The name of the home.
+     * @return <code>true</code> If the home exists.
+     */
+    boolean homeExists(String name);
+    
+    /**
+     * Checks if a home specified by location exists.
+     * @param location
+     *      The location of the home.
+     * @return <code>true</code> If the home exists.
+     */
+    boolean homeExists(Location location);
+    
+    /**
      * Clears all of the users mail.
      */
     void clearMail();

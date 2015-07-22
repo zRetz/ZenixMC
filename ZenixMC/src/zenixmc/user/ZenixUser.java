@@ -16,139 +16,142 @@ import zenixmc.text.TextInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
 import zenixmc.user.objects.Warning;
+import zenixmc.utils.StringFormatter;
 
 /**
  * A user internally used by this plugin.
+ * 
+ * TODO: INCORPORATE MessageManager
+ * 
  * @author james
  */
 public class ZenixUser implements ZenixUserInterface {
-    
+
     /**
      * The users teleportation object.
      */
     private final Teleport teleport = new Teleport();
-    
+
     /**
      * The plugin.
      */
     private final ZenixMCInterface zenix;
-    
+
     /**
      * The bukkit representation of the user.
      */
     private final Player player;
-    
+
     /**
      * The users account name.
      */
     private final String username;
-    
+
     /**
      * The users name displayed when messaging;
      */
     private final String displayName;
-    
+
     /**
      * The users unique identifier.
      */
     private final UUID uuid;
-    
+
     /**
      * The users bendingPlayer data.
      */
     private BendingPlayerInterface bendingPlayer;
-    
+
     /**
      * The users ability to speak.
      */
     private boolean muted;
-    
+
     /**
      * The users ability to move.
      */
     private boolean frozen;
-    
+
     /**
      * The users ability to take damage.
      */
     private boolean godMode;
-    
+
     /**
      * The users ability to be seen.
      */
     private boolean vanished;
-    
+
     /**
      * The users ability to socially spy.
      */
     private boolean socialSpy;
-    
+
     /**
      * The users amount of warnings and sentence.
      */
     private Warning warning;
-    
+
     /**
      * The users collection of homes.
      */
     private List<Home> homes;
-    
+
     /**
      * The users collection of mail.
      */
     private List<TextInterface> mails;
-    
+
     /**
      * The users current jail. (Can be null)
      */
     private String jail;
-    
+
     /**
      * The users collection of ignoredUsers.
      */
     private List<UUID> ignoredUsers;
-    
+
     /**
      * The users away from keyboard value;
      */
     private boolean afk;
-    
+
     /**
      * The users last known location.
      */
     private Location lastLocation;
-    
+
     /**
      * The user requesting to teleport.
      */
     private ZenixUserInterface teleportRequester;
-    
+
     /**
      * The users teleportation request time.
      */
     private long teleportRequestTime;
-    
+
     /**
      * The duration of the users last session.
      */
     private long lastOnlineActivity;
-    
+
     /**
      * The time of the users last activity. (Can be log-off time.)
      */
     private long lastActivity;
-    
+
     /**
      * The time of the users last throttled action.
      */
     private long lastThrottledAction;
-    
+
     /**
      * Instantiate.
-     * @param player
-     *      The bukkit representation of user.
-     * @param zenix
-     *      The plugin.
+     *
+     * @param player The bukkit representation of user.
+     * @param zenix The plugin.
      */
     public ZenixUser(Player player, ZenixMCInterface zenix) {
         this.player = player;
@@ -157,7 +160,7 @@ public class ZenixUser implements ZenixUserInterface {
         this.username = player.getName();
         this.displayName = player.getDisplayName();
     }
-   
+
     @Override
     public boolean isAuthorised(String node) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -167,17 +170,17 @@ public class ZenixUser implements ZenixUserInterface {
     public Player getPlayer() {
         return player;
     }
-    
+
     @Override
     public String getName() {
         return username;
     }
-    
+
     @Override
     public String getDisplayName() {
         return displayName;
     }
-    
+
     @Override
     public UUID getUniqueId() {
         return uuid;
@@ -232,7 +235,7 @@ public class ZenixUser implements ZenixUserInterface {
     public boolean isVanished() {
         return vanished;
     }
-    
+
     @Override
     public void setSocialSpy(boolean value) {
         this.socialSpy = value;
@@ -247,8 +250,8 @@ public class ZenixUser implements ZenixUserInterface {
     public void incrementWarning(long time) {
         if (time != 0) {
             if (warning.isMaximum()) {
-                
-            }else {
+                zenix.broadcastMessage(null, zenix.getSettings().getErrorColor() + username + " is being banned for reaching max warnings.");
+            } else {
                 warning.increment(time);
             }
         }
@@ -258,6 +261,8 @@ public class ZenixUser implements ZenixUserInterface {
     public void decrementWarning() {
         if (!(warning.isZero())) {
             warning.decrement();
+        }else {
+            sendMessage(zenix.getSettings().getNotificationColor() + "You have zero warnings. You've been a good human.");
         }
     }
 
@@ -268,46 +273,133 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public void setHome(String name, Location loc) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        if (homes == null) {
+            return;
+        }
+        
+        if (homeExists(name)) {
+            sendMessage(zenix.getSettings().getErrorColor() + name + " is already a home.");
+            return;
+        }
+        
+        if (homeExists(loc)) {
+            sendMessage(zenix.getSettings().getErrorColor() + StringFormatter.format(loc) + " is already a home.");
+            return;
+        }
+        
+        Home h = new Home(name, loc);
+        homes.add(h);
     }
 
     @Override
     public void deleteHome(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        if (homes == null) {
+            return;
+        }
+        
+        if (!(homeExists(name))) {
+            sendMessage(zenix.getSettings().getErrorColor() + "Home: " + name + " does not exist.");
+            return;
+        }
+        
+        Home h = getHome(name);
+        homes.remove(h);
     }
 
     @Override
     public Home getHome(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        if (homes == null) {
+            return null;
+        }
+        
+        Home result = null;
+        
+        for (Home h : homes) {
+            if (h.getName().equals(name)) {
+                result = h;
+            }
+        }
+        
+        return result;
     }
 
     @Override
     public Home getHome(Location location) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        if (homes == null) {
+            return null;
+        }
+        
+        Home result = null;
+        
+        for (Home h : homes) {
+            if (h.getLocation().equals(location)) {
+                result = h;
+            }
+        }
+        
+        return result;
     }
-    
+
     @Override
     public List<Home> getHomes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return homes;
+    }
+
+    @Override
+    public boolean hasHome() {
+        
+        if (homes == null) {
+            return false;
+        }
+        
+        return homes.size() > 0;
     }
     
     @Override
-    public boolean hasHome() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean homeExists(String name) {
+        
+        if (homes == null) {
+            return false;
+        }
+        
+        return getHome(name) != null;
+    }
+
+    @Override
+    public boolean homeExists(Location location) {
+        
+        if (homes == null) {
+            return false;
+        }
+        
+        return getHome(location) != null;
     }
 
     @Override
     public void clearMail() {
         
+        if (mails == null) {
+            return;
+        }
+        
+        mails.clear();
     }
 
     @Override
     public void addMail(TextInterface mail) {
         
-        if (mail == null || mail.isEmpty()) {
+        if (mails == null) {
             return;
         }
         
+        if (mail.isEmpty()) {
+            return;
+        }
+
         mails.add(mail);
     }
 
@@ -318,14 +410,24 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public TextInterface popMail(int index) {
+
+        if (mails == null) {
+            return null;
+        }
         
-        if (index > mails.size()) {
+        if (index > mails.size() && mails.size() > 0) {
+            sendMessage(zenix.getSettings().getSortedColor() + "Index out of bounds. Retrieving first entry.");
             return popMail();
         }
         
+        if (index > mails.size()) {
+            sendMessage(zenix.getSettings().getErrorColor() + "Index out of bounds.");
+            return null;
+        }
+
         TextInterface result = getMail(index);
         mails.remove(result);
-        
+
         return result;
     }
 
@@ -333,14 +435,24 @@ public class ZenixUser implements ZenixUserInterface {
     public TextInterface getMail() {
         return getMail(0);
     }
-    
+
     @Override
     public TextInterface getMail(int index) {
+
+        if (mails == null) {
+            return null;
+        }
         
-        if (index > mails.size()) {
+        if (index > mails.size() && mails.size() > 0) {
+            sendMessage(zenix.getSettings().getSortedColor() + "Index out of bounds. Returning first entry.");
             return getMail();
         }
         
+        if (index > mails.size()) {
+            sendMessage(zenix.getSettings().getErrorColor() + "Index out of bounds.");
+            return null;
+        }
+
         return mails.get(index);
     }
 
@@ -368,7 +480,7 @@ public class ZenixUser implements ZenixUserInterface {
     public Teleport getTeleport() {
         return teleport;
     }
-    
+
     @Override
     public void setTeleportRequester(ZenixUserInterface teleportRequester) {
         this.teleportRequester = teleportRequester;
@@ -398,7 +510,7 @@ public class ZenixUser implements ZenixUserInterface {
     public long getLastThrottledAction() {
         return lastThrottledAction;
     }
-    
+
     @Override
     public void setJail(String jail) {
         this.jail = jail;
@@ -413,7 +525,7 @@ public class ZenixUser implements ZenixUserInterface {
     public boolean isJailed() {
         return jail != null;
     }
-    
+
     @Override
     public void ignoreUser(UUID uuid) {
         if (uuid != null) {
@@ -441,7 +553,7 @@ public class ZenixUser implements ZenixUserInterface {
     public void unIgnoreUser(ZenixUserInterface zui) {
         unIgnoreUser(zui.getUniqueId());
     }
-    
+
     @Override
     public void setIgnoredUsers(List<UUID> users) {
         this.ignoredUsers = users;
@@ -454,13 +566,13 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public boolean isIgnoredUser(UUID uuid) {
-        
+
         for (UUID uu : ignoredUsers) {
             if (uu.compareTo(uuid) == 0) {
                 return true;
-            } 
+            }
         }
-        
+
         return false;
     }
 
@@ -478,5 +590,5 @@ public class ZenixUser implements ZenixUserInterface {
     public ZenixCommandSender getCommandSender() {
         return new ZenixCommandSender(player, this);
     }
-  
+
 }

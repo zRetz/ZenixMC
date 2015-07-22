@@ -11,12 +11,17 @@ import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.bukkit.Location;
 
 /**
  * String formatting utility.
  *
  */
 public class StringFormatter {
+    
+    public static String format(Location loc) {
+        return "Location: " + "X - " + loc.getX() + "; Y - " + loc.getY() + "; Z - " + loc.getZ() + ";";
+    }
     
     /**
      * @return A map to be used as the value set.
