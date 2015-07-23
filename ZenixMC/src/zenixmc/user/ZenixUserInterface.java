@@ -31,8 +31,10 @@ public interface ZenixUserInterface {
     boolean isAuthorised(String node);
     
     /**
+     * May soon be gone.
      * @return The bukkit representation of a player.
      */
+    @Deprecated
     Player getPlayer();
     
     /**
@@ -73,9 +75,21 @@ public interface ZenixUserInterface {
     boolean isDead();
     
     /**
+     * @return <code>true</code> If the player is online.
+     */
+    boolean isOnline();
+    
+    /**
      * @return The players inventory.
      */
     PlayerInventory getInventory();
+    
+    /**
+     * Kicks the player from the server.
+     * @param reason
+     *      The reason for the kick.
+     */
+    void kickPlayer(String reason);
     
     /**
      * Sets players experience level.

@@ -5,6 +5,11 @@
  */
 package zenixmc;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import org.bukkit.BanList;
+import org.bukkit.Server;
 import zenixmc.persistance.CachedZenixUserRepository;
 import zenixmc.user.ZenixUserInterface;
 
@@ -43,7 +48,7 @@ public class PunishmentHandler {
      *      The reason for the ban.
      */
     public void permBan(ZenixUserInterface admin, ZenixUserInterface banned, String reason) {
-        
+        tempBan(admin, banned, reason, 0);
     }
     
     /**
@@ -58,5 +63,61 @@ public class PunishmentHandler {
      */
     public void tempBan(ZenixUserInterface admin, ZenixUserInterface banned, String reason, long duration) {
         
+        if (banned == null) {
+            return;
+        }
+        
+        Server server = zenix.getServer();
+        BanList banlist = server.getBanList(BanList.Type.NAME);
+        
+        if (banlist.isBanned(banned.getName())) {
+            admin.sendMessage(zenix.getSettings().getSortedColor() + "This user is already banned.");
+            return;
+        }
+        
+        Calendar expire = null;
+        
+        if (duration > 0 ) {
+            expire = new GregorianCalendar();
+            expire.setTimeInMillis(expire.getTimeInMillis() + duration);
+        }
+        
+        Date expDate = null;
+        
+        if (expire != null) {
+            expDate = expire.getTime();        
+        }
+        
+        banlist.addBan(banned.getName(), reason, expDate, admin.getName());
+        
+        if (banned.isOnline()) {
+            kickUser(admin, banned, reason);
+        }    
+                
+        zenix.broadcastMessage(admin, zenix.getSettings().getErrorColor() + banned.getName() + " is being banned for REASON: " + reason + ".");
+    }
+    
+    /**
+     * Kicks specified user from the server.
+     * @param admin
+     *      The user requesting the kick.
+     * @param kicked
+     *      The victim of the kick.
+     * @param reason 
+     *      The reason for the kick.
+     */
+    public void kickUser(ZenixUserInterface admin, ZenixUserInterface kicked, String reason) {
+        
+        if (kicked == null) {
+            return;
+        }
+        
+        if (!(kicked.isOnline())) {
+            admin.sendMessage(zenix.getSettings().getErrorColor() + kicked.getName() + "is not online.");
+            return;
+        }
+        
+        kicked.kickPlayer(reason);
+        zenix.broadcastMessage(admin, zenix.getSettings().getErrorColor() + kicked.getName() + " is being kicked for REASON: " + reason + ".");
     }
 }

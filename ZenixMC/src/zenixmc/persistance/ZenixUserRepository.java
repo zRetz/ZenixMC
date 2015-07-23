@@ -6,17 +6,18 @@
 package zenixmc.persistance;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.entity.Player;
 import zenixmc.ZenixMC;
-import zenixmc.text.Text;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Warning;
 import zenixmc.utils.JavaUtils;
+import zenixmc.utils.ZenixMCUtils;
 import zenixmc.utils.exceptions.NotEvenException;
 import zenixmc.utils.io.SerialisableList;
 
@@ -33,8 +34,34 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
     
     private class DefaultConfiguration {
         
-        private final String[] defKeys = {"name", "uuid", "muted", "frozen", "godmode", "vanished", "warnings", "homes", "mails", "lastOnlineActivity", "lastActivity"};
-        private final Object[] defValues = {"", "", false, false, false, false, new Warning().serialise(), new SerialisableList(Arrays.asList(new Home("spawn", zenix.getSpawnLocation(zenix.getWorld())))).serialise(), new SerialisableList(Arrays.asList()).serialise(), 0L, 0L};
+        private final String[] defKeys = {"name", 
+            "uuid", 
+            "muted", 
+            "frozen", 
+            "godmode", 
+            "vanished",
+            "socialspy",
+            "warnings", 
+            "homes", 
+            "mails", 
+            "lastOnlineActivity", 
+            "lastActivity", 
+            "jails", 
+            "ignoredUsers"};
+        private final Object[] defValues = {"",
+            "",
+            false, 
+            false, 
+            false, 
+            false,
+            false,
+            new Warning().serialise(), 
+            new SerialisableList(Arrays.asList(new Home("spawn", zenix.getSpawnLocation(zenix.getWorld())))).serialise(), 
+            new SerialisableList(Arrays.asList(ZenixMCUtils.instantiateText("Welcome.", new String[]{"Zenix greets you!"}))).serialise(), 
+            0L, 
+            0L,
+            new ArrayList<>(),
+            new ArrayList<>()};
         
         DynamicDefaultConfiguration def;
         

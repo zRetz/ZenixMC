@@ -5,6 +5,8 @@
  */
 package zenixmc.utils;
 
+import java.util.logging.Logger;
+import zenixmc.text.Text;
 import zenixmc.text.TextInterface;
 
 /**
@@ -13,7 +15,13 @@ import zenixmc.text.TextInterface;
  */
 public class ZenixMCUtils {
     
-    public static TextInterface instantiateText(String title, String[] line) {
+    private static final Logger log = Logger.getLogger("ZenixMC");
+    
+    public static Text instantiateText(String title, String[] line) {
         
+        Text result = new Text(System.currentTimeMillis(), log);
+        result.addLine(title, new String[][]{line});
+        
+        return result;
     }
 }

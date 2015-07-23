@@ -8,6 +8,7 @@ package zenixmc;
 import java.util.List;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import zenixmc.text.Text;
 
 /**
  *
@@ -49,4 +50,14 @@ public interface SettingsInterface {
      * @return The message displayed when leaving.
      */
     String getQuitMessage();
+    
+    /**
+     * @return The default ban message.
+     */
+    String getBanMessage();
+    
+    /**
+     * @return The default kick message.
+     */
+    String getKickMessage();
 }

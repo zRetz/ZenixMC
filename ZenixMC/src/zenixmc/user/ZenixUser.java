@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+import zenixmc.PunishmentHandler;
 import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
@@ -20,19 +21,19 @@ import zenixmc.user.objects.Warning;
 import zenixmc.utils.StringFormatter;
 
 /**
- * A user internally used by this plugin.
+ * A user internally used by this plugin also acts as wrapper for bukkit representation of user.
  * 
  * TODO: INCORPORATE MessageManager
  * 
  * @author james
  */
 public class ZenixUser implements ZenixUserInterface {
-
+    
     /**
-     * The users teleportation object.
+     * Handler for punishments.
      */
-    private final Teleport teleport = new Teleport();
-
+    private final PunishmentHandler punishmentHandler;
+    
     /**
      * The plugin.
      */
@@ -57,6 +58,11 @@ public class ZenixUser implements ZenixUserInterface {
      * The users unique identifier.
      */
     private final UUID uuid;
+    
+    /**
+     * The users teleportation object.
+     */
+    private final Teleport teleport = new Teleport();
 
     /**
      * The users bendingPlayer data.
@@ -151,12 +157,17 @@ public class ZenixUser implements ZenixUserInterface {
     /**
      * Instantiate.
      *
-     * @param player The bukkit representation of user.
-     * @param zenix The plugin.
+     * @param player
+     *      The bukkit representation of user.
+     * @param zenix
+     *      The plugin.
+     * @param punishmentHandler
+     *      Handler for punishments.
      */
-    public ZenixUser(Player player, ZenixMCInterface zenix) {
+    public ZenixUser(Player player, ZenixMCInterface zenix, PunishmentHandler punishmentHandler) {
         this.player = player;
         this.zenix = zenix;
+        this.punishmentHandler = punishmentHandler;
         this.uuid = player.getUniqueId();
         this.username = player.getName();
         this.displayName = player.getDisplayName();
@@ -203,7 +214,7 @@ public class ZenixUser implements ZenixUserInterface {
             return;
         }
                 
-        this.player.setHealth(value);
+        player.setHealth(value);
     }
 
     @Override
@@ -231,8 +242,34 @@ public class ZenixUser implements ZenixUserInterface {
     }
     
     @Override
+    public boolean isOnline() {
+        
+        if (player == null) {
+            return true;
+        }
+        
+        return player.isOnline();
+    }
+    
+    @Override
     public PlayerInventory getInventory() {
         return player.getInventory();
+    }
+    
+    @Override
+    public void kickPlayer(String reason) {
+        
+        if (player == null || !(player.isOnline())) {
+            return;
+        }
+        
+        String msg = reason;
+        
+        if (msg == null || msg.isEmpty()) {
+            msg = zenix.getSettings().getKickMessage();
+        }
+        
+        player.kickPlayer(msg);
     }
 
     @Override

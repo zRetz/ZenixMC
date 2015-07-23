@@ -96,12 +96,22 @@ public interface TextInterface {
      *      The name of the bookmark.
      * @return The chapter and its line.
      */
-    Map<String, String[][]> getBookmark(String bookmarkName);
+    Map<Map<String, String[][]>, Integer> getBookmark(String bookmarkName);
     
     /**
      * @return All of the names of the bookmarks.
      */
     List<String> getBookmarkNames();
+    
+    /**
+     * @return All of the bookmark chapters.
+     */
+    List<String> getBookmarkedChapters();
+    
+    /**
+     * @return All of the bookmark indices.
+     */
+    List<Integer> getBookmarkedIndices();
     
     /**
      * @return The chapters being bookmark and the index at which the mark is.

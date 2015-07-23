@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import zenixmc.utils.JavaUtils;
 import zenixmc.utils.io.SerialisableObjectInterface;
 
@@ -20,6 +22,11 @@ import zenixmc.utils.io.SerialisableObjectInterface;
  * @author james
  */
 public class Text implements TextInterface, SerialisableObjectInterface {
+    
+    /**
+     * Logger to debug/log.
+     */
+    private final Logger log;
     
     /**
      * Author of text.
@@ -45,9 +52,11 @@ public class Text implements TextInterface, SerialisableObjectInterface {
      * Instantiate.
      * @param timeOfAuthor
      *      The time of author.
+     * @param log
+     *      The logger to debug/log.
      */
-    public Text(long timeOfAuthor) {
-        this(null, timeOfAuthor);
+    public Text(long timeOfAuthor, Logger log) {
+        this(null, timeOfAuthor, log);
     }
     
     /**
@@ -56,10 +65,13 @@ public class Text implements TextInterface, SerialisableObjectInterface {
      *      The author.
      * @param timeOfAuthor
      *      The time of author.
+     * @param log
+     *      The logger to debug/log.
      */
-    public Text(UUID author, long timeOfAuthor) {
+    public Text(UUID author, long timeOfAuthor, Logger log) {
         this.author = author;
         this.timeOfAuthor = timeOfAuthor;
+        this.log = log;
     }
     
     @Override
@@ -121,13 +133,7 @@ public class Text implements TextInterface, SerialisableObjectInterface {
             return new ArrayList<>();
         }
         
-        List<String[][]> result = new ArrayList<>();
-        
-        for (String[][] ch : text.values()) {
-            result.add(ch);
-        }
-        
-        return result;
+        return new ArrayList<>(text.values());
     }
 
     @Override
@@ -137,13 +143,7 @@ public class Text implements TextInterface, SerialisableObjectInterface {
             return new ArrayList<>();
         }
         
-        List<String> result = new ArrayList<>();
-        
-        for (String ch : text.keySet()) {
-            result.add(ch);
-        }
-        
-        return result;
+        return new ArrayList<>(text.keySet());
     }
 
     @Override
@@ -162,7 +162,7 @@ public class Text implements TextInterface, SerialisableObjectInterface {
     }
     
     @Override
-    public Map<String, String[][]> getBookmark(String bookmarkName) {
+    public Map<Map<String, String[][]>, Integer> getBookmark(String bookmarkName) {
         
         if (bookmarks == null || text == null || text.isEmpty()) {
             return new HashMap<>();
@@ -174,7 +174,69 @@ public class Text implements TextInterface, SerialisableObjectInterface {
         
         Map<String, Integer> bookmark = bookmarks.get(bookmarkName);
         
+        if (bookmark.size() > 1) {
+            log.log(Level.WARNING, "bookmark map bigger than 1");
+            return new HashMap<>();
+        }
         
+        Map<Map<String, String[][]>, Integer> result = new HashMap<>();
+        
+        String key = new ArrayList<>(bookmark.keySet()).get(0);
+        
+        Map<String, String[][]> t = new HashMap<>();
+        t.put(key, text.get(key));
+        
+        result.put(t, bookmark.get(key));
+        
+        return result;
+    }
+    
+    @Override
+    public List<String> getBookmarkedChapters() {
+        
+        if (bookmarks == null || bookmarks.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        List<Map<String, Integer>> temp = new ArrayList<>();
+        
+        for (Map.Entry<String, Map<String, Integer>> e : bookmarks.entrySet()) {
+            temp.add(e.getValue());
+        }
+        
+        List<String> result = new ArrayList<>();
+        
+        for (Map<String, Integer> m : temp) {
+            for (String s : m.keySet()) {
+                result.add(s);
+            }
+        }
+        
+        return result;
+    }
+
+    @Override
+    public List<Integer> getBookmarkedIndices() {
+        
+        if (bookmarks == null || bookmarks.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        List<Map<String, Integer>> temp = new ArrayList<>();
+        
+        for (Map.Entry<String, Map<String, Integer>> e : bookmarks.entrySet()) {
+            temp.add(e.getValue());
+        }
+        
+        List<Integer> result = new ArrayList<>();
+        
+        for (Map<String, Integer> m : temp) {
+            for (Integer i : m.values()) {
+                result.add(i);
+            }
+        }
+            
+        return result;
     }
 
     @Override
@@ -226,7 +288,7 @@ public class Text implements TextInterface, SerialisableObjectInterface {
             return false;
         }
         
-        return text.keySet().size() > 0;
+        return getChapters().size() > 0;
     }
 
     @Override
@@ -236,7 +298,7 @@ public class Text implements TextInterface, SerialisableObjectInterface {
             return false;
         }
         
-        return text.values().size() > 0;
+        return getLines().size() > 0;
     }
     
     @Override
@@ -248,6 +310,9 @@ public class Text implements TextInterface, SerialisableObjectInterface {
         result.put("time-of-author", timeOfAuthor);
         result.put("chapters", getChapters());
         result.put("lines", getLines());
+        result.put("bookmark-names", getBookmarkNames());
+        result.put("bookmarked-chapters", getBookmarkedChapters());
+        result.put("bookmarked-pointers", getBookmarkedIndices());
         
         return result;
     }
