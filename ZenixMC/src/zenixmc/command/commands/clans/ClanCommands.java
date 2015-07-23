@@ -2,21 +2,21 @@ package zenixmc.command.commands.clans;
 
 import java.util.List;
 
+import org.bukkit.ChatColor;
 
-import zenixmc.bending.AbilityManager;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.organization.matt.clans.Clan;
 
-public class createClan extends AbstractClanCommand {
+public class ClanCommands extends AbstractClanCommand {
 	public String name;
 
-	public createClan() {
+	public ClanCommands() {
 		super();
 	}
 
 	@Override
 	public String getName() {
-		return "create";
+		return "clan";
 	}
 
 	@Override
@@ -42,18 +42,21 @@ public class createClan extends AbstractClanCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label,
 			String[] args) {
-
-		if (!(sender.zui.isAuthorised("clans.create"))) {
-			return false;
-		} else if (args.length == 0) {
-			return false;
-		} else if (args.length > 1) {
+		if (args[0].equalsIgnoreCase("create")) {
+			if (!sender.zui.isAuthorised("clans.create")) {
+				sender.zui.sendMessage(ChatColor.RED + "You do not have the correct clearence to create a Clan!");
+				return false;
+			} else if (args.length == 0) {
+				sender.zui.sendMessage(ChatColor.RED + "You must specify more arguments!");
+				return false;
+			} else if (args.length > 1) {
+				sender.zui.sendMessage(ChatColor.RED + "You must specify less arguments!");
+				return false;
+			}
+			new Clan(sender.zui, args[0]);
 			return true;
 		}
-		String name = args[0];
-		new Clan(sender.zui, name);
-		this.name = name;
-		return true;
+		return false;
 	}
 
 	@Override
