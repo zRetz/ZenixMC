@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="ZenixMC/src"/>
@@ -5,3 +6,12 @@
 	<classpathentry kind="lib" path="C:/Users/james.CEX-PC/Desktop/ZenixMC Server/minecraft_server.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="ZenixMC/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/מסמכים/Desktop/Decompiler Plugins/spigotZenixMC.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
+>>>>>>> branch 'master' of https://github.com/jaymsDooku/ZenixMC.git
