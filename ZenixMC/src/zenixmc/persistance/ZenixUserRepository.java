@@ -5,21 +5,25 @@
  */
 package zenixmc.persistance;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.bukkit.entity.Player;
-import zenixmc.ZenixMC;
+
+import com.google.gson.Gson;
+
+import zenixmc.ZenixMCInterface;
+import zenixmc.event.EventDispatcher;
+import zenixmc.user.DefaultUserData;
+import zenixmc.user.ZenixUser;
+import zenixmc.user.ZenixUserData;
 import zenixmc.user.ZenixUserInterface;
-import zenixmc.user.objects.Home;
-import zenixmc.user.objects.Warning;
-import zenixmc.utils.JavaUtils;
-import zenixmc.utils.ZenixMCUtils;
-import zenixmc.utils.exceptions.NotEvenException;
-import zenixmc.utils.io.SerialisableList;
 
 /**
  * Persistence of users on disk.
@@ -30,50 +34,22 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
     /**
      * The plugin.
      */
-    private final ZenixMC zenix;
+    private final ZenixMCInterface zenix;
     
-    private class DefaultConfiguration {
-        
-        private final String[] defKeys = {"name", 
-            "uuid", 
-            "muted", 
-            "frozen", 
-            "godmode", 
-            "vanished",
-            "socialspy",
-            "warnings", 
-            "homes", 
-            "mails", 
-            "lastOnlineActivity", 
-            "lastActivity", 
-            "jails", 
-            "ignoredUsers"};
-        private final Object[] defValues = {"",
-            "",
-            false, 
-            false, 
-            false, 
-            false,
-            false,
-            new Warning().serialise(), 
-            new SerialisableList(Arrays.asList(new Home("spawn", zenix.getSpawnLocation(zenix.getWorld())))).serialise(), 
-            new SerialisableList(Arrays.asList(ZenixMCUtils.instantiateText("Welcome.", new String[]{"Zenix greets you!"}))).serialise(), 
-            0L, 
-            0L,
-            new ArrayList<>(),
-            new ArrayList<>()};
-        
-        DynamicDefaultConfiguration def;
-        
-        DefaultConfiguration() {
-            try {
-                def = new DynamicDefaultConfiguration(JavaUtils.arraysToTreeMap(defKeys, defValues));
-            } catch (NotEvenException ex) {
-                logger.log(Level.SEVERE, "Failed to instantiate DefaultConfiguration in ZenixUserRepository.");
-            }
-            
-        }
-    }
+    /**
+     * The event dispatcher to fire events.
+     */
+    private final EventDispatcher eventDispatcher;
+    
+    /**
+     * Repository to push/fetch bendingPlayer data.
+     */
+    private BendingPlayerRepositoryInterface bendingRepository;
+    
+    /**
+     * Repository to push/fetch text data.
+     */
+    private TextRepositoryInterface textRepository;
     
     /**
      * Instantiate.
@@ -84,9 +60,10 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
      * @param zenix
      *      The plugin.
      */
-    public ZenixUserRepository(Logger logger, File directory, ZenixMC zenix) {
+    public ZenixUserRepository(Logger logger, File directory, ZenixMCInterface zenix, EventDispatcher eventDispatcher) {
         super(logger, directory);
         this.zenix = zenix;
+        this.eventDispatcher = eventDispatcher;
     }
     
     /**
@@ -97,12 +74,43 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
      * @return The file of the specified player.
      */
     protected File getZenixUserFile(Player player) {
-        return new File(this.directory, player.getUniqueId() + ".yml");
+        return new File(this.directory, player.getUniqueId() + ".json");
     }
     
     @Override
     public ZenixUserInterface getZenixUser(Player player) {
+    	final Gson g = new Gson();	
         final File f = getZenixUserFile(player);
+        
+        final ZenixUserInterface zui = new ZenixUser(player, zenix);
+        
+        if (!(f.exists())) {
+        	zui.fromUserData(new DefaultUserData(zui, eventDispatcher));
+        	save(zui);
+        	return zui;
+        }
+        
+        ZenixUserData zuiData = null; 
+        
+        try{
+	        BufferedReader reader = new BufferedReader(new FileReader(f.getAbsoluteFile()));
+	        
+	        zuiData = g.fromJson(reader, ZenixUserData.class);
+	        reader.close();
+        }catch (IOException e) {
+        	logger.log(Level.WARNING, "Zenix User Data is failing to load.");
+        }
+        
+        if (zuiData == null) {
+        	zuiData = new DefaultUserData(zui, eventDispatcher);
+        	logger.log(Level.WARNING, "Zenix User Data failed to load.");
+        }
+        
+        zui.fromUserData(zuiData);
+        
+        logger.log(Level.INFO, "Zenix User Data has been loaded.");
+        
+        return zui;
     }
 
     @Override
@@ -122,17 +130,32 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 
     @Override
     public void save(ZenixUserInterface zenixUser) {
+        final Player player = zenixUser.getPlayer();
         
+        final File f = getZenixUserFile(player);
+        final Gson g = new Gson();
+        
+        try {
+			FileWriter writer = new FileWriter(f.getAbsoluteFile());
+			writer.write(g.toJson(zenixUser.toUserData()));
+			writer.close();
+		} catch (IOException e) {
+			logger.log(Level.WARNING, "Zenix User Data is failing to save.");
+		}
+        
+        logger.log(Level.INFO, zenixUser.getName() + " has been saved.");
     }
 
     @Override
     public void open() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	if (!(this.directory.exists())) {
+    		this.directory.mkdir();
+    	}
     }
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("This is a local repository."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -140,6 +163,14 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
         if (object instanceof ZenixUserInterface) {
             save((ZenixUserInterface) object);
         }
+    }
+    
+    public void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository) {
+    	this.bendingRepository = bendingRepository;
+    }
+    
+    public void setTextRepository(TextRepositoryInterface textRepository) {
+    	this.textRepository = textRepository;
     }
     
 }

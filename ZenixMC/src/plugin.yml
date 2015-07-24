@@ -1,0 +1,9 @@
+name: ZenixMC
+version: 1.0.1
+description: Zenix For Minecraft
+authors: [james, grasshopperMatt, Ron]
+main: zenixmc.ZenixMC
+commands:
+  z:
+    aliases: [zenixmc, zenix]
+    description: Command Zenix.

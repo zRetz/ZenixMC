@@ -7,19 +7,29 @@ package zenixmc;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
+
 import zenixmc.command.MainCommandExecuter;
+import zenixmc.command.commands.clans.ClanCommands;
+import zenixmc.command.commands.essentials.Hello;
 import zenixmc.event.EventDispatcher;
+import zenixmc.persistance.BendingPlayerRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
 import zenixmc.persistance.ZenixUserRepository;
 import zenixmc.user.ZenixUserInterface;
@@ -31,6 +41,10 @@ import zenixmc.utils.ExceptionUtils;
  */
 public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     
+	
+	/**
+	 * Plugin Settings.
+	 */
     SettingsInterface settings;
     
     /**
@@ -39,9 +53,19 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     EventDispatcher eventDispatcher = new EventDispatcher(this);
     
     /**
+     * Persistence of bending data to disk.
+     */
+    BendingPlayerRepository bendingPlayerRepository = new BendingPlayerRepository(this.getLogger(), new File(this.getDataFolder(), "bending"));
+    
+    /**
      * Persistence of user data to disk.
      */
-    ZenixUserRepository zenixUserRepository = new ZenixUserRepository(this.getLogger(), new File(this.getDataFolder(), "users"), this);
+    ZenixUserRepository zenixUserRepository = new ZenixUserRepository(this.getLogger(), new File(this.getDataFolder(), "users"), this, eventDispatcher);
+   
+    /**
+     * Manager of integer identifiers.
+     */
+    IDManager idManager = new IDManager(this.getLogger(), new File(this.getDataFolder(), "id"));
     
     /**
      * Loading/Saving on Join/Leave.
@@ -55,21 +79,33 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     
     @Override
     public void onEnable() {
+    	
+    	handleConfig();
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
+        
+        settings = new Settings(this.getConfig());
+        
+        zenixUserRepository.open();
         
         eventDispatcher.registerEventListener(repository);
         
         getCommand("z").setExecutor(mainCommandExecuter);
+        mainCommandExecuter.addSubCommand(new Hello(this));
+        mainCommandExecuter.addSubCommand(new ClanCommands(this));
         
         for (final Player player : getServer().getOnlinePlayers()) {
             repository.onPlayerJoin(new PlayerJoinEvent(player, null));
         }
+        
     }
 
     @Override
     public void onDisable() {
         
         getLogger().log(Level.INFO, "Disabling Zenix. Powered by Zenix.");
+        for (final Player player : getServer().getOnlinePlayers()) {
+            repository.onPlayerQuit(new PlayerQuitEvent(player, null));
+        }
     }
 
     @Override
@@ -197,6 +233,26 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         }else {
             return result;
         }
+    }
+    
+    private void handleConfig() {
+    	
+    	FileConfiguration config = this.getConfig();
+    	
+    	config.addDefault("errorColor", "RED");
+    	config.addDefault("notificationColor", "GREEN");
+    	config.addDefault("sortedColor", "GOLD");
+    	config.addDefault("materialBlackList", Arrays.asList("TNT"));
+    	config.addDefault("allowSilentJoinQuit", true);
+    	config.addDefault("quitMessage", "Zenix wishes you farewell, ");
+    	config.addDefault("joinMessage", "Zenix greets you, ");
+    	config.addDefault("kickMessage", "Zenix kicked you.");
+    	config.addDefault("banMessage", "Zenix banned you.");
+    	
+    	config.options().copyDefaults(true);
+    	
+    	this.saveConfig();
+    
     }
     
 }

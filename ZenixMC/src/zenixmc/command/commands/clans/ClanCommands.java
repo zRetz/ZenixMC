@@ -4,14 +4,15 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 
+import zenixmc.ZenixMCInterface;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.organization.matt.clans.Clan;
 
 public class ClanCommands extends AbstractClanCommand {
 	public String name;
 
-	public ClanCommands() {
-		super();
+	public ClanCommands(ZenixMCInterface zenix) {
+		super(zenix);
 	}
 
 	@Override

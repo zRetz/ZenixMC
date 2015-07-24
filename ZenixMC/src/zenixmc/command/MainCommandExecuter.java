@@ -6,6 +6,7 @@
 package zenixmc.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -89,7 +90,7 @@ public class MainCommandExecuter implements CommandExecutor, TabCompleter {
             } else if (i >= 0 && i < (command == null ? commands.size() : 1)) {
                 final CommandInterface subCommand = command == null ? commands
                         .get(i) : command;
-                sender.sendMessage("-- /pk " + subCommand.getName() + " "
+                sender.sendMessage("-- /z " + subCommand.getName() + " "
                         + subCommand.getFormat() + " -- "
                         + subCommand.getDescription());
             }
@@ -130,9 +131,12 @@ public class MainCommandExecuter implements CommandExecutor, TabCompleter {
         if (args.length > 0) {
             final CommandInterface subCommand = findCommandByAlias(args[0]);
 
+            ArrayList<String> argsl = new ArrayList<>(Arrays.asList(args));
+            argsl.remove(0);
+            
             if (subCommand != null) {
                 if (!subCommand.onCommand(getZenixCommandSender(sender),
-                        label, args)) {
+                        label, argsl.toArray(new String[argsl.size()]))) {
                     showHelp(sender, 0, subCommand);
                 }
                 return true;

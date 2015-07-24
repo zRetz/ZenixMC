@@ -29,40 +29,6 @@ public abstract class Repository implements RepositoryInterface {
      * Directory to store in.
      */
     protected File directory;
-    
-    /**
-     * Default configuration of data.
-     */
-    protected class DynamicDefaultConfiguration extends MemoryConfiguration {
-        
-        /**
-         * Create a default configuration.
-         * @param keys
-         *      Keys to locate data.
-         * @param values
-         *      Data values to store.
-         * @throws NotEvenException 
-         */
-        DynamicDefaultConfiguration(TreeSet<String> keys, TreeSet<Object> values) throws NotEvenException {
-            if (keys.size() != keys.size()) {
-                throw ExceptionUtils.notEvenException("keys and values need to be even");
-            }
-            for (String s : keys) {
-                for (Object o : values) {
-                    this.addDefault(s, o);
-                }
-            }
-        }
-        
-        /**
-         * Create a default configuration.
-         * @param defaults
-         *      The map of data to store.
-         */
-        DynamicDefaultConfiguration(Map<String, Object> defaults) {
-            this.addDefaults(defaults);
-        }
-    }
 
     /**
      * Instantiate the repository.

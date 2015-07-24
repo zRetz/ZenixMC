@@ -5,76 +5,93 @@
  */
 package zenixmc.user.objects;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-import zenixmc.utils.io.SerialisableObjectInterface;
+import zenixmc.event.EventDispatcher;
+import zenixmc.event.ReachedMaxWarningEvent;
+import zenixmc.event.ReachedZeroWarningEvent;
+import zenixmc.user.ZenixUserInterface;
 
 /**
  * Map of amount of warnings and punishment.
  * @author james
  */
-public class Warning implements SerialisableObjectInterface {
+public class Warning {
+	
+	/**
+	 * The event dispatcher to fire events.
+	 */
+	private transient final EventDispatcher eventDispatcher;
+	
+	/**
+	 * The parent of the warning object.
+	 */
+	private transient final ZenixUserInterface parent;
+	
+    /**
+     * The amount of warnings.
+     */
+    private int amount;
     
     /**
-     * The map of amount of warnings and punishment timestamp.
+     * The duration of the sentence.
      */
-    private final TreeMap<Integer, Long> values;
+    private long sentence;
     
     /**
      * Instantiates a brand new warning.
+     * @param parent
+     * 		The parent of warning object.
      */
-    public Warning() {
-        this.values = new TreeMap<>();
-        put(0, 0L);
+    public Warning(ZenixUserInterface parent, EventDispatcher eventDispatcher) {
+    	this.eventDispatcher = eventDispatcher;
+    	this.parent = parent;
+        this.amount = 0;
+        this.sentence = 0;
     }
     
     /**
      * Instantiates a warning with set values.
+     * @param
+     * 		The parent of warning object.
      * @param amount
      *      The amount of warnings.
      * @param timestamp
      *      The punishment stamp.
      */
-    public Warning(int amount, long timestamp) {
-        this.values = new TreeMap<>();
-        put(amount, timestamp);
+    public Warning(ZenixUserInterface parent, EventDispatcher eventDispatcher, int amount, long timestamp) {
+    	this.eventDispatcher = eventDispatcher;
+    	this.parent = parent;
+        this.amount = amount;
+        this.sentence = timestamp;
     }
     
     /**
      * Adds a warning and the punishment timestamp.
      * @param timestamp
      *      The punishment timestamp.
-     * @return If it successfully incremented.
      */
-    public boolean increment(long timestamp) {
-        
-        int amount = values.firstKey();
+    public void increment(long timestamp) {
         
         //temp const
         if (amount >= 3) {
-            return false;
+        	eventDispatcher.callEvent(new ReachedMaxWarningEvent(parent));
+            return;
         }
         
-        put(amount + 1, values.get(amount) + timestamp);
-        return true;
+        amount = amount + 1;
+        sentence = sentence + timestamp;
     }
     
     /**
      * Subtracts a warning but keeps the punishment timestamp as it is.
-     * @return If it successfully decremented.
      */
-    public boolean decrement() {
+    public void decrement() {
         
-        int amount = values.firstKey();
-        int nAmount = amount - 1;
+    	if (isZero()) {
+    		eventDispatcher.callEvent(new ReachedZeroWarningEvent(parent));
+            return;
+    	}
         
-        if (nAmount < 0) {
-            return false;
-        }
-        
-        put(nAmount, values.get(amount));
-        return true;
+        amount = amount - 1;
     }
     
     /**
@@ -82,36 +99,19 @@ public class Warning implements SerialisableObjectInterface {
      */
     public boolean isMaximum() {
         //temp const
-        return values.firstKey() >= 3;
-    }
-    
-    public boolean isZero() {
-        return values.firstKey() == 0;
+        return amount >= 3;
     }
     
     /**
-     * Puts values into the values map.
-     * @param amount
-     *      The amount of warnings (key).
-     * @param timestamp
-     *      The punishment timestamp (value).
+     * @return If amount is at zero.
      */
-    private void put(int amount, long timestamp) {
-        values.clear();
-        values.put(amount, timestamp);
+    public boolean isZero() {
+    	
+    	if (amount < 0) {
+    		amount = 0;
+    	}
+    	
+        return amount == 0;
     }
 
-    @Override
-    public Map<String, Object> serialise() {
-        
-        Map<String, Object> result = new HashMap<>();
-        
-        int amount = values.firstKey();
-        long sentence = values.get(amount);
-        
-        result.put("amount", amount);
-        result.put("sentence", sentence);
-        
-        return result;
-    }
 }

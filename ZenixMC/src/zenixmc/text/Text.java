@@ -14,14 +14,14 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import zenixmc.utils.JavaUtils;
-import zenixmc.utils.io.SerialisableObjectInterface;
 
 /**
  * Strings with additional information.
  * @author james
  */
-public class Text implements TextInterface, SerialisableObjectInterface {
+public class Text implements TextInterface {
     
     /**
      * Logger to debug/log.
@@ -299,22 +299,6 @@ public class Text implements TextInterface, SerialisableObjectInterface {
         }
         
         return getLines().size() > 0;
-    }
-    
-    @Override
-    public Map<String, Object> serialise() {
-        
-        Map<String, Object> result = new HashMap<>();
-        
-        result.put("author-uuid", author.toString());
-        result.put("time-of-author", timeOfAuthor);
-        result.put("chapters", getChapters());
-        result.put("lines", getLines());
-        result.put("bookmark-names", getBookmarkNames());
-        result.put("bookmarked-chapters", getBookmarkedChapters());
-        result.put("bookmarked-pointers", getBookmarkedIndices());
-        
-        return result;
     }
 
 }

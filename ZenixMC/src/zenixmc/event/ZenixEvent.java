@@ -11,6 +11,6 @@ import org.bukkit.event.Event;
  * 
  * @author james
  */
-public abstract class ZenixUserInterfaceEvent extends Event {
+public abstract class ZenixEvent extends Event {
     
 }

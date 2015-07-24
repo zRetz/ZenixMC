@@ -6,9 +6,10 @@
 package zenixmc;
 
 import java.util.List;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
-import zenixmc.text.Text;
 
 /**
  *
@@ -19,17 +20,17 @@ public interface SettingsInterface {
     /**
      * @return The colour for errors. (default: red)
      */
-    Color getErrorColor();
+    ChatColor getErrorColor();
     
     /**
      * @return The colour for notifications. (default: green)
      */
-    Color getNotificationColor();
+    ChatColor getNotificationColor();
     
     /**
      * @return The color for sorted situations. (default: gold)
      */
-    Color getSortedColor();
+    ChatColor getSortedColor();
     
     /**
      * @return A list of banned blocks.

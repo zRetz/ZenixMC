@@ -7,15 +7,18 @@ package zenixmc.user;
 
 import java.util.List;
 import java.util.UUID;
+
 import org.bukkit.Location;
-import zenixmc.user.objects.Warning;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.text.TextInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
+import zenixmc.user.objects.Warning;
 
 /**
  * A user internally used by this plugin.
@@ -56,6 +59,11 @@ public interface ZenixUserInterface {
      * @return The players location.
      */
     Location getLocation();
+    
+    /**
+     * @return The players world.
+     */
+    World getWorld();
     
     /**
      * Sets the players amount of health.
@@ -114,6 +122,13 @@ public interface ZenixUserInterface {
      * @return The players experience points needed for next level.
      */
     float getExp();
+    
+    /**
+     * Sets the users bendingPlayer data.
+     * @param value
+     * 		The value to set.
+     */
+    void setBendingPlayer(BendingPlayerInterface value);
     
     /**
      * @return The bendingPlayer of the user.
@@ -200,6 +215,13 @@ public interface ZenixUserInterface {
     void decrementWarning();
     
     /**
+     * Sets the users warnings.
+     * @param value
+     * 		The value to set.
+     */
+    void setWarning(Warning value);
+    
+    /**
      * @return The users warning value.
      */
     Warning getWarning();
@@ -237,6 +259,13 @@ public interface ZenixUserInterface {
     Home getHome(Location location);
     
     /**
+     * Sets the users homes.
+     * @param homes
+     * 		The homes to set.
+     */
+    void setHomes(List<Home> homes);
+    
+    /**
      * @return The homes owned by this user.
      */
     List<Home> getHomes();
@@ -272,13 +301,13 @@ public interface ZenixUserInterface {
      * @param mail
      *      The mail to add.
      */
-    void addMail(TextInterface mail);
+    void addMail(String mail);
     
     /**
      * Returns and removes the first entry of mail.
      * @return The first entry of mail.
      */
-    TextInterface popMail();
+    String popMail();
     
     /**
      * Returns and removes the entry of mail specified by index.
@@ -286,13 +315,13 @@ public interface ZenixUserInterface {
      *      The position to take the mail from.
      * @return The mail.
      */
-    TextInterface popMail(int index);
+    String popMail(int index);
     
     /**
      * Returns the first entry of mail.
      * @return The mail.
      */
-    TextInterface getMail();
+    String getMail();
     
     /**
      * Returns mail specified by index.
@@ -300,12 +329,19 @@ public interface ZenixUserInterface {
      *      The position to take the mail from.
      * @return The mail. 
      */
-    TextInterface getMail(int index);
+    String getMail(int index);
+    
+    /**
+     * Sets the users mails.
+     * @param mails
+     * 		The mails to set.
+     */
+    void setMails(List<String> mails);
     
     /**
      * @return All of the mail the user owns.
      */
-    List<TextInterface> getMails();
+    List<String> getMails();
     
     /**
      * @return <code>true</code> If the user is away from keyboard.
@@ -346,9 +382,23 @@ public interface ZenixUserInterface {
     long getTeleportRequestTime();
     
     /**
+     * Sets the duration of the users last online activity.
+     * @param lastOnlineActivity
+     * 		The duration of the users last online activity.
+     */
+    void setLastOnlineActivity(long lastOnlineActivity);
+    
+    /**
      * @return The amount of time the user spent online last session.
      */
     long getLastOnlineActivity();
+    
+    /**
+     * Sets the time the user was last seen active.
+     * @param lastActivity
+     * 		The time of the user was last seen active.
+     */
+    void setLastActivity(long lastActivity);
     
     /**
      * @return The time the user was last seen active. (Can be log-off time)
@@ -444,4 +494,17 @@ public interface ZenixUserInterface {
      * @return A command sender with this users information.
      */
     ZenixCommandSender getCommandSender();
+    
+    /**
+     * Fetches the users variables from stored data.
+     * @param userData
+     * 		The data to fetch from.
+     */
+    void fromUserData(ZenixUserData userData);
+    
+    /**
+     * @return All data that should be serialised.
+     */
+    ZenixUserData toUserData();
+  
 }

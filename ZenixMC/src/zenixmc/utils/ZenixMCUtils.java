@@ -5,13 +5,20 @@
  */
 package zenixmc.utils;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
+
+import org.bukkit.configuration.ConfigurationSection;
+
 import zenixmc.text.Text;
-import zenixmc.text.TextInterface;
 
 /**
  * Utilities class for ZenixMC objects.
  * @author james
+ * @author Some Guy On Bukkit Forums
  */
 public class ZenixMCUtils {
     
