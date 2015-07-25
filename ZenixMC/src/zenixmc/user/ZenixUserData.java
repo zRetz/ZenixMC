@@ -31,6 +31,8 @@ public class ZenixUserData {
 	
 	private List<String> ignoredUsers;
 	
+	private long startActivity;
+	
 	private long lastOnlineActivity;
 	
 	private long lastActivity;
@@ -118,6 +120,14 @@ public class ZenixUserData {
 		this.ignoredUsers = ignoredUsers;
 	}
 
+	public long getStartActivity() {
+		return startActivity;
+	}
+
+	public void setLastActivity(long startActivity) {
+		this.startActivity = startActivity;
+	}
+	
 	public long getLastOnlineActivity() {
 		return lastOnlineActivity;
 	}

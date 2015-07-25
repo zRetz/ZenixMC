@@ -382,6 +382,17 @@ public interface ZenixUserInterface {
     long getTeleportRequestTime();
     
     /**
+     * Sets the start time of the users.
+     * @param startActivity
+     */
+    void setStartActivity(long startActivity);
+    
+    /**
+     * @return The start time of the users last activity. (Log-in time.)
+     */
+    long getStartActivity();
+    
+    /**
      * Sets the duration of the users last online activity.
      * @param lastOnlineActivity
      * 		The duration of the users last online activity.
@@ -394,14 +405,14 @@ public interface ZenixUserInterface {
     long getLastOnlineActivity();
     
     /**
-     * Sets the time the user was last seen active.
+     * Sets the end time of the users last activity.
      * @param lastActivity
-     * 		The time of the user was last seen active.
+     * 		The end time of the users last activity.
      */
     void setLastActivity(long lastActivity);
     
     /**
-     * @return The time the user was last seen active. (Can be log-off time)
+     * @return The end time of the users last activity. (Can be log-off time.)
      */
     long getLastActivity();
     

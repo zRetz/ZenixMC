@@ -138,12 +138,17 @@ public class ZenixUser implements ZenixUserInterface {
     private long teleportRequestTime;
 
     /**
+     * The start time of the users last activity. (Log-in time.) 
+     */
+    private long startActivity;
+    
+    /**
      * The duration of the users last session.
      */
     private long lastOnlineActivity;
 
     /**
-     * The time of the users last activity. (Can be log-off time.)
+     * The end time of the users last activity. (Can be log-off time.)
      */
     private long lastActivity;
 
@@ -660,6 +665,21 @@ public class ZenixUser implements ZenixUserInterface {
     }
 
     @Override
+    public void setStartActivity(long startActivity) {
+    	
+    	if (this.startActivity > startActivity) {
+    		return;
+    	}
+    	
+    	this.startActivity = startActivity;
+    }
+    
+    @Override
+    public long getStartActivity() {
+    	return this.startActivity;
+    }
+    
+    @Override
 	public void setLastOnlineActivity(long lastOnlineActivity) {
     	this.lastOnlineActivity = lastOnlineActivity;
 	}
@@ -790,13 +810,14 @@ public class ZenixUser implements ZenixUserInterface {
     	}
     	
     	setIgnoredUsers(ius);
+    	setStartActivity(userData.getStartActivity());
     	setLastOnlineActivity(userData.getLastOnlineActivity());
     	setLastActivity(userData.getLastActivity());
 	}
     
 	@Override
 	public ZenixUserData toUserData() {
-		
+			
 		ZenixUserData result = new ZenixUserData();
 		
 		result.setMuted(muted);
@@ -815,6 +836,7 @@ public class ZenixUser implements ZenixUserInterface {
 		}
 		
 		result.setIgnoredUsers(ius);
+		result.setStartActivity(startActivity);
 		result.setLastOnlineActivity(lastOnlineActivity);
 		result.setLastActivity(lastActivity);
 		

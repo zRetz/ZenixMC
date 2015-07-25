@@ -18,4 +18,5 @@ public interface BendingPlayerInterface {
      */
     ZenixUserInterface getUser();
     
+    
 }

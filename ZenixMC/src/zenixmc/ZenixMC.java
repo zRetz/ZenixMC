@@ -38,6 +38,7 @@ import zenixmc.utils.ExceptionUtils;
 /**
  *
  * @author james
+ * Copyright 2015, James Leaver, All rights reserved.
  */
 public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     

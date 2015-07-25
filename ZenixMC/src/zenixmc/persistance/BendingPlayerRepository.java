@@ -9,6 +9,8 @@ import zenixmc.bending.BendingPlayerInterface;
 
 public class BendingPlayerRepository extends Repository implements BendingPlayerRepositoryInterface {
 
+	private ZenixUserRepository zenixUserRepository
+	
 	public BendingPlayerRepository(Logger logger, File directory) {
 		super(logger, directory);
 		

@@ -166,7 +166,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent e) {
         getZenixUser(e.getPlayer());
-        e.setJoinMessage(zenix.getSettings().getNotificationColor() + zenix.getSettings().getJoinMessage() + e.getPlayer().getName());
+        e.setJoinMessage(zenix.getSettings().getNotificationColor() + zenix.getSettings().getJoinMessage() + e.getPlayer().getName() + ".");
     }
 
     /**
@@ -186,7 +186,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
             users.remove(uuid);
         }
         
-        e.setQuitMessage(zenix.getSettings().getNotificationColor() + zenix.getSettings().getQuitMessage() + e.getPlayer().getName());
+        e.setQuitMessage(zenix.getSettings().getNotificationColor() + zenix.getSettings().getQuitMessage() + e.getPlayer().getName() + ".");
     }
     
     private void put(UUID uuid, ZenixUserInterface zui) {

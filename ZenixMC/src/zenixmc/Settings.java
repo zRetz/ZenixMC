@@ -8,6 +8,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import zenixmc.utils.MinecraftUtils;
 
+/**
+ * Wrapper around configuration file to fetch settings.
+ * @author james
+ */
 public class Settings implements SettingsInterface {
 	
 	/**
