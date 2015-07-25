@@ -1,5 +1,8 @@
 package zenixmc.bending;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Elements in the avatar universe.
  */

@@ -110,20 +110,19 @@ public class CombatLogManager {
 	}
 	
 	public void tagTimer(){
-		zmi.scheduleSyncRepeatingTask(zm, new Runnable() {
-			
+		zmi.scheduleSyncRepeatingTask(new Runnable() {
 			@Override
 			public void run() {
 				Iterator<Map.Entry<String, Long>> iterator = tagged.entrySet().iterator();
 				while(iterator.hasNext()){
 					Map.Entry<String, Long> iterator2 = (Map.Entry)iterator.next();
 					if(System.currentTimeMillis() / 1000L - ((Long)iterator2.getValue()).longValue() >= playerTagTime){
-			iterator.remove();
-			//TODO send removed tag msg...
-			//Other listeners and more...
-		}
+						iterator.remove();
+					}
 				}
 			}
+			//TODO send removed tag msg...
+			//Other listeners and more..., delay, period)
 		}, 0L, 20L);
 	}
 }

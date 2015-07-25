@@ -124,7 +124,7 @@ public class ZenixUserData {
 		return startActivity;
 	}
 
-	public void setLastActivity(long startActivity) {
+	public void setStartActivity(long startActivity) {
 		this.startActivity = startActivity;
 	}
 	

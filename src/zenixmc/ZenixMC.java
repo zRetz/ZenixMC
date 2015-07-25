@@ -62,11 +62,6 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
      * Persistence of user data to disk.
      */
     ZenixUserRepository zenixUserRepository = new ZenixUserRepository(this.getLogger(), new File(this.getDataFolder(), "users"), this, eventDispatcher);
-   
-    /**
-     * Manager of integer identifiers.
-     */
-    IDManager idManager = new IDManager(this.getLogger(), new File(this.getDataFolder(), "id"));
     
     /**
      * Loading/Saving on Join/Leave.
