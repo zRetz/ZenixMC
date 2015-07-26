@@ -15,7 +15,6 @@ import org.bukkit.inventory.PlayerInventory;
 
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
-import zenixmc.text.TextInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
 import zenixmc.user.objects.Warning;
@@ -63,6 +62,8 @@ public interface ZenixUserInterface {
     /**
      * @return The players world.
      */
+    
+    
     World getWorld();
     
     /**
