@@ -85,7 +85,7 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
         final ZenixUserInterface zui = new ZenixUser(player, zenix);
         
         if (!(f.exists())) {
-        	zui.fromUserData(new DefaultUserData(zui, eventDispatcher));
+        	zui.setData(new DefaultUserData(zui, eventDispatcher));
         	save(zui);
         	return zui;
         }
@@ -103,10 +103,11 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
         
         if (zuiData == null) {
         	zuiData = new DefaultUserData(zui, eventDispatcher);
-        	logger.log(Level.WARNING, "Zenix User Data failed to load.");
+        	logger.log(Level.WARNING, "Zenix User Data failed to load, loading default data.");
         }
         
-        zui.fromUserData(zuiData);
+        zui.setData(zuiData);
+        zui.setBendingPlayer(bendingRepository.getBendingPlayer(zui));
         
         logger.log(Level.INFO, "Zenix User Data has been loaded.");
         
@@ -127,6 +128,15 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
     public ZenixUserInterface getZenixUser(UUID uuid) {
         throw new UnsupportedOperationException("This is not a cache class.");
     }
+    
+    @Override
+    public void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository) {
+    	this.bendingRepository = bendingRepository;
+    }
+    
+    public void setTextRepository(TextRepositoryInterface textRepository) {
+    	this.textRepository = textRepository;
+    }
 
     @Override
     public void save(ZenixUserInterface zenixUser) {
@@ -137,7 +147,7 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
         
         try {
 			FileWriter writer = new FileWriter(f.getAbsoluteFile());
-			writer.write(g.toJson(zenixUser.toUserData()));
+			writer.write(g.toJson(zenixUser.getData()));
 			writer.close();
 		} catch (IOException e) {
 			logger.log(Level.WARNING, "Zenix User Data is failing to save.");
@@ -148,6 +158,7 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 
     @Override
     public void open() {
+    	logger.log(Level.INFO, "Opening repository.");
     	if (!(this.directory.exists())) {
     		this.directory.mkdir();
     	}
@@ -155,7 +166,15 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("This is a local repository."); //To change body of generated methods, choose Tools | Templates.
+    	logger.log(Level.INFO, "Closing repository.");
+        if (this.directory.exists()) {
+        	for (File f : this.directory.listFiles()) {
+        		if (f.exists()) {
+        			f.delete();
+        		}
+        		this.directory.delete();
+        	}
+        }
     }
 
     @Override
@@ -165,12 +184,5 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
         }
     }
     
-    public void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository) {
-    	this.bendingRepository = bendingRepository;
-    }
-    
-    public void setTextRepository(TextRepositoryInterface textRepository) {
-    	this.textRepository = textRepository;
-    }
     
 }

@@ -1,7 +1,9 @@
 package zenixmc.user;
 
 import java.util.List;
+import java.util.UUID;
 
+import zenixmc.ZenixMCInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Warning;
 
@@ -11,137 +13,72 @@ import zenixmc.user.objects.Warning;
  */
 public class ZenixUserData {
 	
-	private boolean muted;
+	/**
+     * The users ability to speak.
+     */
+	public boolean muted;
 	
-	private boolean frozen;
+	/**
+     * The users ability to move.
+     */
+	public boolean frozen;
 	
-	private boolean godMode;
+	/**
+     * The users ability to take damage.
+     */
+	public boolean godMode;
 	
-	private boolean vanished;
+	/**
+     * The users ability to be seen.
+     */
+	public boolean vanished;
 	
-	private boolean socialSpy;
+	/**
+     * The users ability to socially spy.
+     */
+	public boolean socialSpy;
 	
-	private Warning warning;
+	/**
+     * The users amount of warnings and sentence.
+     */
+	public Warning warning;
 	
-	private List<Home> homes;
+	/**
+     * The users collection of homes.
+     */
+	public List<Home> homes;
 	
-	private List<String> mails;
+	/**
+     * The users collection of mail.
+     */
+	public List<String> mails;
 	
-	private String jail;
+	/**
+     * The users current jail. (Can be null)
+     */
+	public String jail;
 	
-	private List<String> ignoredUsers;
+	/**
+     * The users collection of ignoredUsers.
+     */
+	public List<UUID> ignoredUsers;
 	
-	private long startActivity;
+	/**
+     * The start time of the users last activity. (Log-in time.) 
+     */
+	public long startActivity;
 	
-	private long lastOnlineActivity;
+	/**
+     * The duration of the users last session.
+     */
+	public long lastOnlineActivity;
 	
-	private long lastActivity;
+	/**
+     * The end time of the users last activity. (Can be log-off time.)
+     */
+	public long lastActivity;
 	
 	public ZenixUserData() {
-	}
-
-	public boolean isMuted() {
-		return muted;
-	}
-
-	public void setMuted(boolean muted) {
-		this.muted = muted;
-	}
-
-	public boolean isFrozen() {
-		return frozen;
-	}
-
-	public void setFrozen(boolean frozen) {
-		this.frozen = frozen;
-	}
-
-	public boolean isGodMode() {
-		return godMode;
-	}
-
-	public void setGodMode(boolean godMode) {
-		this.godMode = godMode;
-	}
-
-	public boolean isVanished() {
-		return vanished;
-	}
-
-	public void setVanished(boolean vanished) {
-		this.vanished = vanished;
-	}
-
-	public boolean isSocialSpy() {
-		return socialSpy;
-	}
-
-	public void setSocialSpy(boolean socialSpy) {
-		this.socialSpy = socialSpy;
-	}
-
-	public Warning getWarning() {
-		return warning;
-	}
-
-	public void setWarning(Warning warning) {
-		this.warning = warning;
-	}
-
-	public List<Home> getHomes() {
-		return homes;
-	}
-
-	public void setHomes(List<Home> homes) {
-		this.homes = homes;
-	}
-
-	public List<String> getMails() {
-		return mails;
-	}
-
-	public void setMails(List<String> mails) {
-		this.mails = mails;
-	}
-
-	public String getJail() {
-		return jail;
-	}
-
-	public void setJail(String jail) {
-		this.jail = jail;
-	}
-
-	public List<String> getIgnoredUsers() {
-		return ignoredUsers;
-	}
-
-	public void setIgnoredUsers(List<String> ignoredUsers) {
-		this.ignoredUsers = ignoredUsers;
-	}
-
-	public long getStartActivity() {
-		return startActivity;
-	}
-
-	public void setStartActivity(long startActivity) {
-		this.startActivity = startActivity;
-	}
-	
-	public long getLastOnlineActivity() {
-		return lastOnlineActivity;
-	}
-
-	public void setLastOnlineActivity(long lastOnlineActivity) {
-		this.lastOnlineActivity = lastOnlineActivity;
-	}
-
-	public long getLastActivity() {
-		return lastActivity;
-	}
-
-	public void setLastActivity(long lastActivity) {
-		this.lastActivity = lastActivity;
 	}
 	
 }

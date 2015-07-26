@@ -5,13 +5,7 @@
  */
 package zenixmc.utils;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
-
-import org.bukkit.configuration.ConfigurationSection;
 
 import zenixmc.text.Text;
 
@@ -26,7 +20,7 @@ public class ZenixMCUtils {
     
     public static Text instantiateText(String title, String[] line) {
         
-        Text result = new Text(System.currentTimeMillis(), log);
+        Text result = new Text(System.currentTimeMillis(), title, log);
         result.addLine(title, new String[][]{line});
         
         return result;

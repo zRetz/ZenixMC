@@ -5,8 +5,8 @@
  */
 package zenixmc.persistance;
 
-import org.bukkit.entity.Player;
 import zenixmc.bending.BendingPlayerInterface;
+import zenixmc.user.ZenixUserInterface;
 
 /**
  * Repository to persist bendingPlayers information when they go offline.
@@ -20,7 +20,14 @@ public interface BendingPlayerRepositoryInterface extends RepositoryInterface {
      *      The bukkit representation to load.
      * @return The bendingPlayer that was loaded.
      */
-    BendingPlayerInterface getBendingPlayer(Player player);
+    BendingPlayerInterface getBendingPlayer(ZenixUserInterface player);
+    
+    /**
+     * Sets the repository's user repository.
+     * @param zenixUserRepository
+     * 		The repository to set.
+     */
+    void setZenixUserRepository(ZenixUserRepositoryInterface zenixUserRepository);
     
     /**
      * Saves a bendingPlayer.

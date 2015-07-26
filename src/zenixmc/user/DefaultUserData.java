@@ -1,7 +1,7 @@
 package zenixmc.user;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 import zenixmc.event.EventDispatcher;
 import zenixmc.user.objects.Home;
@@ -10,18 +10,18 @@ import zenixmc.user.objects.Warning;
 public class DefaultUserData extends ZenixUserData {
 
 	public DefaultUserData(ZenixUserInterface zenix, EventDispatcher eventDispatcher) {
-		setMuted(false);
-    	setFrozen(false);
-    	setGodMode(false);
-    	setVanished(false);
-    	setSocialSpy(false);
-    	setWarning(new Warning(zenix, eventDispatcher));
-    	setHomes(new ArrayList<Home>());
-    	setJail(null);
-    	List<String> ius = new ArrayList<String>();
-    	ius.add("");
-    	setIgnoredUsers(ius);
-    	setLastOnlineActivity(0);
-    	setLastActivity(0);
+		super();
+		this.muted = false;
+		this.frozen = false;
+		this.godMode = false;
+		this.vanished = false;
+		this.socialSpy = false;
+    	this.warning = new Warning(zenix, eventDispatcher);
+    	this.homes = new ArrayList<Home>();
+    	this.jail = null;
+    	this.ignoredUsers = new ArrayList<UUID>();
+    	this.startActivity = 0;
+    	this.lastOnlineActivity = 0;
+    	this.lastActivity = 0;
 	}
 }

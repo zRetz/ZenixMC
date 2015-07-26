@@ -78,6 +78,11 @@ public interface ZenixUserInterface {
     double getHealth();
     
     /**
+     * @return The players maximum amount of health.
+     */
+    double getMaxHealth();
+    
+    /**
      * @return <code>true</code> If the player is dead.
      */
     boolean isDead();
@@ -507,15 +512,16 @@ public interface ZenixUserInterface {
     ZenixCommandSender getCommandSender();
     
     /**
-     * Fetches the users variables from stored data.
-     * @param userData
-     * 		The data to fetch from.
+     * Sets the users data object.
+     * @param data
+     * 		The data to set to.
      */
-    void fromUserData(ZenixUserData userData);
-    
-    /**
-     * @return All data that should be serialised.
-     */
-    ZenixUserData toUserData();
+    void setData(ZenixUserData data);
   
+    /**
+     * @return The users data object.
+     * 
+     * <b>NOTE:</b> Don't use this method. It's only for saving to repository.
+     */
+    ZenixUserData getData();
 }

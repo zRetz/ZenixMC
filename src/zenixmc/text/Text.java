@@ -39,6 +39,11 @@ public class Text implements TextInterface {
     private final long timeOfAuthor;
     
     /**
+     * The title of text.
+     */
+    private final String title;
+    
+    /**
      * The map that holds the text.
      */
     private final LinkedHashMap<String, String[][]> text = new LinkedHashMap<>();
@@ -55,8 +60,8 @@ public class Text implements TextInterface {
      * @param log
      *      The logger to debug/log.
      */
-    public Text(long timeOfAuthor, Logger log) {
-        this(null, timeOfAuthor, log);
+    public Text(long timeOfAuthor, String title, Logger log) {
+        this(null, timeOfAuthor, title, log);
     }
     
     /**
@@ -68,11 +73,17 @@ public class Text implements TextInterface {
      * @param log
      *      The logger to debug/log.
      */
-    public Text(UUID author, long timeOfAuthor, Logger log) {
+    public Text(UUID author, long timeOfAuthor, String title, Logger log) {
         this.author = author;
         this.timeOfAuthor = timeOfAuthor;
+        this.title = title;
         this.log = log;
     }
+    
+    @Override
+	public String getTitle() {
+		return title;
+	}
     
     @Override
     public void addLine(String chapter, String[][] line) {

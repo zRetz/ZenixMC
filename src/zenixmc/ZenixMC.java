@@ -13,11 +13,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -27,12 +25,14 @@ import org.bukkit.scheduler.BukkitTask;
 
 import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.commands.clans.ClanCommands;
+import zenixmc.command.commands.essentials.Heal;
 import zenixmc.command.commands.essentials.Hello;
 import zenixmc.event.EventDispatcher;
 import zenixmc.persistance.BendingPlayerRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
 import zenixmc.persistance.ZenixUserRepository;
 import zenixmc.user.ZenixUserInterface;
+import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.ExceptionUtils;
 
 /**
@@ -73,6 +73,11 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
      */
     MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(repository);
     
+    /**
+     * Zenix User Manager.
+     */
+    ZenixUserManager zenixUserManager = new ZenixUserManager(repository, eventDispatcher);
+    
     @Override
     public void onEnable() {
     	
@@ -81,12 +86,16 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         
         settings = new Settings(this.getConfig());
         
+        bendingPlayerRepository.setZenixUserRepository(zenixUserRepository);
+        bendingPlayerRepository.open();
+        zenixUserRepository.setBendingRepository(bendingPlayerRepository);
         zenixUserRepository.open();
         
         eventDispatcher.registerEventListener(repository);
         
         getCommand("z").setExecutor(mainCommandExecuter);
-        mainCommandExecuter.addSubCommand(new Hello(this));
+        mainCommandExecuter.addSubCommand(new Hello(this, zenixUserManager));
+        mainCommandExecuter.addSubCommand(new Heal(this, zenixUserManager));
         mainCommandExecuter.addSubCommand(new ClanCommands(this));
         
         for (final Player player : getServer().getOnlinePlayers()) {
@@ -129,7 +138,8 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         return this.getServer().getPlayer(uuid);
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public Collection<Player> getOnlinePlayers() {
         return (Collection<Player>) this.getServer().getOnlinePlayers();
     }
@@ -151,7 +161,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         
         for (Player player : players) {
             
-            final ZenixUserInterface user  = repository.getZenixUser(player);
+            final ZenixUserInterface user  = zenixUserManager.getZenixUser(player);
             if (node != null) {
                 if (!(user.isAuthorised(node))) {
                     continue;

@@ -16,6 +16,11 @@ import java.util.UUID;
  */
 public interface TextInterface {
     
+	/**
+	 * @return The title of text.
+	 */
+	String getTitle();
+	
     /**
      * Adds a chapter and its line of text onto the last index of text.
      * @param chapter

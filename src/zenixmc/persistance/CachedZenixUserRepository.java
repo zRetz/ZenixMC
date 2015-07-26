@@ -9,14 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-import static org.bukkit.Bukkit.getPlayer;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import zenixmc.ZenixMC;
-import zenixmc.bending.BendingPlayerInterface;
+
+import zenixmc.ZenixMCInterface;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.utils.ExceptionUtils;
 
@@ -45,7 +45,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
     /**
      * The plugin.
      */
-    private final ZenixMC zenix;
+    private final ZenixMCInterface zenix;
     
     /**
      * Instantiate.
@@ -56,7 +56,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
      * @param log
      *      The logger.
      */
-    public CachedZenixUserRepository(ZenixUserRepositoryInterface parentRepository, ZenixMC zenix, Logger log) {
+    public CachedZenixUserRepository(ZenixUserRepositoryInterface parentRepository, ZenixMCInterface zenix, Logger log) {
         this.parentRepository = parentRepository;
         this.zenix = zenix;
         this.log = log;
@@ -98,17 +98,16 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
     public ZenixUserInterface getZenixUser(String name) {
         
         if (name == null || name.isEmpty()) {
-            throw ExceptionUtils.nullPointerException("name cannot be null");
+            return null;
         }
         
         Player player = zenix.getPlayer(name);
         ZenixUserInterface zui = null;
         
         if (player != null) {
-            zui = parentRepository.getZenixUser(player);
-            put(player.getUniqueId(), zui);
+            zui = this.getZenixUser(player);
         }else {
-            throw ExceptionUtils.nullPointerException("player cannot be null");
+            return null;
         }
         
         return zui;
@@ -118,7 +117,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
     public ZenixUserInterface getZenixUser(UUID uuid) {
         
         if (uuid == null) {
-            throw ExceptionUtils.nullPointerException("uuid cannot be null");
+            return null;
         }
         
         ZenixUserInterface zui = users.get(uuid);
@@ -126,15 +125,19 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
         if (zui == null) {
             Player player = zenix.getPlayer(uuid);
             if (player != null) {
-                zui = parentRepository.getZenixUser(player);
-                put(uuid, zui);
+                zui = this.getZenixUser(player);
             }else {
-                throw ExceptionUtils.nullPointerException("player cannot be null");
+                return null;
             }
         }
         
         return zui;
     }
+    
+    @Override
+	public void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository) {
+		parentRepository.setBendingRepository(bendingRepository);
+	}
 
     @Override
     public void save(ZenixUserInterface zenixUser) {
@@ -187,6 +190,14 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
         }
         
         e.setQuitMessage(zenix.getSettings().getNotificationColor() + zenix.getSettings().getQuitMessage() + e.getPlayer().getName() + ".");
+    }
+    
+    public boolean isZenixUser(String name) {
+    	return getZenixUser(name) != null;
+    }
+    
+    public boolean isZenixUser(UUID uuid) {
+    	return getZenixUser(uuid) != null;
     }
     
     private void put(UUID uuid, ZenixUserInterface zui) {

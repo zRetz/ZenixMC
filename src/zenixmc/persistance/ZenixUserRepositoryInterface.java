@@ -48,6 +48,13 @@ public interface ZenixUserRepositoryInterface extends RepositoryInterface {
     ZenixUserInterface getZenixUser(UUID uuid);
     
     /**
+     * Sets the repository's bendingPlayer repository.
+     * @param bendingRepository
+     * 		The repository to set.
+     */
+    void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository);
+    
+    /**
      * Save a user.
      * @param zenixUser
      *      The user to save.

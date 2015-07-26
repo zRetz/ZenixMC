@@ -4,11 +4,16 @@ import java.util.List;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.command.ZenixCommandSender;
+import zenixmc.user.ZenixUserManager;
 
+/**
+ * Test Command which returns 'Hello'.
+ * @author james
+ */
 public class Hello extends AbstractEssentialsCommand {
 
-	public Hello(ZenixMCInterface zenix) {
-		super(zenix);
+	public Hello(ZenixMCInterface zenix, ZenixUserManager manager) {
+		super(zenix, manager);
 	}
 	
 	@Override
@@ -28,7 +33,7 @@ public class Hello extends AbstractEssentialsCommand {
 
 	@Override
 	public String getFormat() {
-		return "<no args>";
+		return "[no args]";
 	}
 
 	@Override
