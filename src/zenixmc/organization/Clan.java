@@ -43,14 +43,13 @@ public class Clan implements Organization {
 	}
 
 	@Override
-	public void getMembers(String name) {
+	public ZenixUserInterface[] getMembers(String name) {
 		if (!Clans.contains(name)) {
-			return;
+			return null;
 		} else if (name == null) {
-			return;
+			return null;
 		}
-		members(name);
-		return;
+		return members(name);
 	}
 
 	public void create(ZenixUserInterface player, String name) {
@@ -174,12 +173,10 @@ public class Clan implements Organization {
 		}
 	}
 
-	public static List<ZenixUserInterface> members(String name) {
-		List<ZenixUserInterface> l = new ArrayList<>();
+	public static ZenixUserInterface[] members(String name) {
 		for (ZenixUserInterface z : playerClan.keySet()) {
 			if (playerClan.get(z) == name) {
-				l.add(z);
-				return l;
+				return new ZenixUserInterface[] { z };
 			}
 		}
 		return null;
