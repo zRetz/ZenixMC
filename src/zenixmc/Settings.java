@@ -1,5 +1,6 @@
 package zenixmc;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -15,12 +16,45 @@ import zenixmc.utils.MinecraftUtils;
 public class Settings implements SettingsInterface {
 	
 	/**
+	 * The plugin.
+	 */
+	private ZenixMCInterface zenix;
+	
+	/**
 	 * Plugins Configuration file to fetch settings from.
 	 */
 	private FileConfiguration config;
 	
-	public Settings(FileConfiguration config) {
+	public Settings(ZenixMCInterface zenix, FileConfiguration config) {
+		
+		config.addDefault("teleportTime", 5000);
+    	config.addDefault("canMoveBeforeTeleport", false);
+    	config.addDefault("errorColor", "RED");
+    	config.addDefault("notificationColor", "GREEN");
+    	config.addDefault("sortedColor", "GOLD");
+    	config.addDefault("materialBlackList", Arrays.asList("TNT"));
+    	config.addDefault("allowSilentJoinQuit", true);
+    	config.addDefault("quitMessage", "Zenix wishes you farewell, ");
+    	config.addDefault("joinMessage", "Zenix greets you, ");
+    	config.addDefault("kickMessage", "Zenix kicked you.");
+    	config.addDefault("banMessage", "Zenix banned you.");
+    	
+    	config.options().copyDefaults(true);
+		
+    	zenix.saveConfig();
+    	
 		this.config = config;
+		this.zenix = zenix;
+	}
+	
+	@Override
+	public long getTeleportTime() {
+		return config.getLong("teleportTime");
+	}
+	
+	@Override
+	public boolean canMoveBeforeTeleport() {
+		return config.getBoolean("canMoveBeforeTeleport");
 	}
 	
 	@Override

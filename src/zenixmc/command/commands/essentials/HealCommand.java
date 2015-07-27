@@ -11,9 +11,9 @@ import zenixmc.user.ZenixUserManager;
  * Commad which heals users.
  * @author james
  */
-public class Heal extends AbstractEssentialsCommand {
+public class HealCommand extends AbstractEssentialsCommand {
 
-	public Heal(ZenixMCInterface zenix, ZenixUserManager manager) {
+	public HealCommand(ZenixMCInterface zenix, ZenixUserManager manager) {
 		super(zenix, manager);
 	}
 	

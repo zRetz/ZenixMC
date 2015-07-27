@@ -10,9 +10,9 @@ import zenixmc.user.ZenixUserManager;
  * Test Command which returns 'Hello'.
  * @author james
  */
-public class Hello extends AbstractEssentialsCommand {
+public class HelloCommand extends AbstractEssentialsCommand {
 
-	public Hello(ZenixMCInterface zenix, ZenixUserManager manager) {
+	public HelloCommand(ZenixMCInterface zenix, ZenixUserManager manager) {
 		super(zenix, manager);
 	}
 	
@@ -44,11 +44,12 @@ public class Hello extends AbstractEssentialsCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
-		if (args.length == 0) {
+		switch (args.length) {
+		case 0:
 			sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "Zenix greets you!");
 			return true;
-		}else {
-			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Not enough arguments.");
+		default:
+			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Too many arguments.");
 			return true;
 		}
 	}

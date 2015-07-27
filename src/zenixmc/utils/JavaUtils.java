@@ -135,6 +135,16 @@ public class JavaUtils {
         return output;
     }
     
+    /**
+     * Puts two single elements into a map.
+     * @param key
+     * 		The key of the map.
+     * @param value
+     * 		The value of the map.
+     * @param map
+     * 		The instance of the map.
+     * @return The filled map.
+     */
     public static <S, T> Map<S, T> singleElementsToMap(S key, T value, Map<S, T> map) {
         
         if (map == null) {
@@ -144,5 +154,25 @@ public class JavaUtils {
         
         map.put(key, value);
         return map;
+    }
+    
+    public static boolean canBeInteger(String integer) {
+    	for (int i = 0; i < integer.length(); i++) {
+    		char c = integer.charAt(i);
+    		if (!(Character.isDigit(c))) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    public static boolean canBeIntegers(String... integers) {
+    	
+    	for (String s : integers) {
+    		if (!(canBeInteger(s))) {
+    			return false;
+    		}
+    	}
+    	return true;
     }
 }

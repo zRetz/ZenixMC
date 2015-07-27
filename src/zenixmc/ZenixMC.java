@@ -25,8 +25,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.commands.clans.ClanCommands;
-import zenixmc.command.commands.essentials.Heal;
-import zenixmc.command.commands.essentials.Hello;
+import zenixmc.command.commands.essentials.HealCommand;
+import zenixmc.command.commands.essentials.HelloCommand;
+import zenixmc.command.commands.essentials.TeleportCommand;
 import zenixmc.event.EventDispatcher;
 import zenixmc.persistance.BendingPlayerRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
@@ -42,11 +43,10 @@ import zenixmc.utils.ExceptionUtils;
  */
 public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     
-	
 	/**
 	 * Plugin Settings.
 	 */
-    SettingsInterface settings;
+    SettingsInterface settings = new Settings(this ,this.getConfig());
     
     /**
      * The EventDispatcher.
@@ -80,11 +80,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     
     @Override
     public void onEnable() {
-    	
-    	handleConfig();
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
-        
-        settings = new Settings(this.getConfig());
         
         bendingPlayerRepository.setZenixUserRepository(zenixUserRepository);
         bendingPlayerRepository.open();
@@ -94,8 +90,9 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         eventDispatcher.registerEventListener(repository);
         
         getCommand("z").setExecutor(mainCommandExecuter);
-        mainCommandExecuter.addSubCommand(new Hello(this, zenixUserManager));
-        mainCommandExecuter.addSubCommand(new Heal(this, zenixUserManager));
+        mainCommandExecuter.addSubCommand(new HelloCommand(this, zenixUserManager));
+        mainCommandExecuter.addSubCommand(new HealCommand(this, zenixUserManager));
+        mainCommandExecuter.addSubCommand(new TeleportCommand(this, zenixUserManager));
         mainCommandExecuter.addSubCommand(new ClanCommands(this));
         
         for (final Player player : getServer().getOnlinePlayers()) {
@@ -239,26 +236,6 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         }else {
             return result;
         }
-    }
-    
-    private void handleConfig() {
-    	
-    	FileConfiguration config = this.getConfig();
-    	
-    	config.addDefault("errorColor", "RED");
-    	config.addDefault("notificationColor", "GREEN");
-    	config.addDefault("sortedColor", "GOLD");
-    	config.addDefault("materialBlackList", Arrays.asList("TNT"));
-    	config.addDefault("allowSilentJoinQuit", true);
-    	config.addDefault("quitMessage", "Zenix wishes you farewell, ");
-    	config.addDefault("joinMessage", "Zenix greets you, ");
-    	config.addDefault("kickMessage", "Zenix kicked you.");
-    	config.addDefault("banMessage", "Zenix banned you.");
-    	
-    	config.options().copyDefaults(true);
-    	
-    	this.saveConfig();
-    
     }
     
 }

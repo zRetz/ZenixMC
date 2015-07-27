@@ -130,6 +130,15 @@ public interface ZenixUserInterface {
     float getExp();
     
     /**
+     * Teleports player to location. <b>NOTE:</b>Don't use this method.
+     * @see Teleport
+     * @param loc
+     * 		The location to teleport to.
+     * @return <code>true</code> If the player is teleported successfully.
+     */
+    boolean teleport(Location loc);
+    
+    /**
      * Sets the users bendingPlayer data.
      * @param value
      * 		The value to set.

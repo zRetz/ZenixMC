@@ -17,6 +17,16 @@ import org.bukkit.Material;
  */
 public interface SettingsInterface {
     
+	/**
+	 * @return The time to countdown before teleportation.
+	 */
+	long getTeleportTime();
+	
+	/**
+	 * @return <code>true</code> If users can move before teleporting.
+	 */
+	boolean canMoveBeforeTeleport();
+	
     /**
      * @return The colour for errors. (default: red)
      */

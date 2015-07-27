@@ -11,6 +11,7 @@ import zenixmc.organization.matt.clans.Message.Type;
 import zenixmc.user.ZenixUserInterface;
 
 public class Clan implements Organization {
+	
 	public static List<String> Clans = new ArrayList<>();
 	public static HashMap<ZenixUserInterface, String> playerClan = new HashMap<>();
 	public static HashMap<ZenixUserInterface, String> clanInvites;

@@ -58,7 +58,7 @@ public class ZenixUser implements ZenixUserInterface {
     /**
      * The users teleportation object.
      */
-    private final Teleport teleport = new Teleport();
+    private final Teleport teleport;
     
     /**
 	 * User data.
@@ -106,6 +106,7 @@ public class ZenixUser implements ZenixUserInterface {
      *      Handler for punishments.
      */
     public ZenixUser(Player player, ZenixMCInterface zenix) {
+    	this.teleport = new Teleport(this, zenix);
     	this.zenix = zenix;
         this.player = player;
         this.uuid = player.getUniqueId();
@@ -233,6 +234,14 @@ public class ZenixUser implements ZenixUserInterface {
         
         return player.getExp();
     }
+    
+    @Override
+	public boolean teleport(Location loc) {
+    	
+    	this.setLastLocation(loc);
+    	
+		return player.teleport(loc);
+	}
 
     @Override
 	public void setBendingPlayer(BendingPlayerInterface value) {
