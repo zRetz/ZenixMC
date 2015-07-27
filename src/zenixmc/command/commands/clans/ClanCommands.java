@@ -112,7 +112,7 @@ public class ClanCommands extends AbstractClanCommand {
 				new Message(sender.zui, "/clan kick (name)!", Type.USAGE);
 				return false;
 			} else {
-				Clan.kick(sender.zui, args[1]);
+				Clan.kick(sender.zui);
 			}
 		} else if (args[0].equalsIgnoreCase("invites")) {
 			if (!sender.zui.isAuthorised("clans.invites")) {
