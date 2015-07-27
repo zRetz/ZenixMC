@@ -34,7 +34,6 @@ public class BendingPlayerRepository extends Repository implements BendingPlayer
 	 */
 	public BendingPlayerRepository(Logger logger, File directory) {
 		super(logger, directory);
-		
 	}
 	
 	/**

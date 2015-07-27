@@ -1,4 +1,4 @@
-package zenixmc.organization.matt.clans;
+package zenixmc.organization.clans;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.List;
 import org.bukkit.Location;
 
 import zenixmc.organization.Organization;
-import zenixmc.organization.matt.clans.Message.Type;
+import zenixmc.organization.clans.Message.Type;
 import zenixmc.user.ZenixUserInterface;
 
 public class Clan implements Organization {

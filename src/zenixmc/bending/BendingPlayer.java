@@ -43,10 +43,7 @@ public class BendingPlayer implements BendingPlayerInterface {
     private PresetInterface currentPreset = null;
 
     /**
-     * Creates a player from the bukkit representation.
-     *
-     * @param player
-     *            The bukkit representation of the player.
+     * Instantiate.
      */
     public BendingPlayer() {
     }

@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.command.ZenixCommandSender;
-import zenixmc.organization.matt.clans.Clan;
+import zenixmc.organization.clans.Clan;
 
 public class ClanCommands extends AbstractClanCommand {
 	public String name;

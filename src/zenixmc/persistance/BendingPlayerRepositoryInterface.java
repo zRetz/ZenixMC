@@ -17,7 +17,7 @@ public interface BendingPlayerRepositoryInterface extends RepositoryInterface {
     /**
      * Loads a bendingPlayer into memory.
      * @param player
-     *      The bukkit representation to load.
+     *      The user to indicate which bendingPlayer.
      * @return The bendingPlayer that was loaded.
      */
     BendingPlayerInterface getBendingPlayer(ZenixUserInterface player);

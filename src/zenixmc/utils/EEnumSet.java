@@ -10,9 +10,10 @@ import java.util.Set;
  * Extendable enum set.
  *
  * @param <E>
- *            The enum to make a set of.
+ *     	The enum to make a set of.
  */
 public class EEnumSet<E extends Enum<E>> implements Set<E> {
+	
     /**
      * Actual set that contains the values.
      */
