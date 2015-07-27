@@ -4,6 +4,10 @@
  * and open the template in the editor.
  */
 package zenixmc.organization;
+
+import zenixmc.user.ZenixUserInterface;
+
+
 /**
  *
  * @author james
@@ -14,5 +18,5 @@ public interface Organization {
 	
 	public String[] getDescription();
 	
-	public void getMembers(String name);
+	public ZenixUserInterface[] getMembers(String name);
 }
