@@ -13,5 +13,6 @@ public interface Organization {
 	public String getName();
 	
 	public String[] getDescription();
-
+	
+	public void getMembers(String name);
 }
