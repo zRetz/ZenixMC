@@ -4,9 +4,9 @@ import java.util.List;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.command.ZenixCommandSender;
-import zenixmc.organization.clans.Message.Type;
-import zenixmc.organization.clans.Message;
 import zenixmc.organization.Clan;
+import zenixmc.organization.Message;
+import zenixmc.organization.Message.Type;
 
 public class ClanCommands extends AbstractClanCommand {
 	
