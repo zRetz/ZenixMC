@@ -13,11 +13,11 @@ public class TextRepository extends Repository implements TextRepositoryInterfac
 	}
 
 	@Override
-	public void open() {
+	public void open(String openMessage) {
 	}
 
 	@Override
-	public void close() {
+	public void close(String closeMessage) {
 	}
 
 	@Override

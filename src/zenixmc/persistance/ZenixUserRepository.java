@@ -47,6 +47,11 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
     private BendingPlayerRepositoryInterface bendingRepository;
     
     /**
+     * Repository to push/fetch organizationPlayer data.
+     */
+    private OrganizationPlayerRepositoryInterface organizationRepository;
+    
+    /**
      * Repository to push/fetch text data.
      */
     private TextRepositoryInterface textRepository;
@@ -84,6 +89,9 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
         
         final ZenixUserInterface zui = new ZenixUser(player, zenix);
         
+        zui.setBendingPlayer(bendingRepository.getBendingPlayer(zui));
+        zui.setOrganizationPlayer(organizationRepository.getOrganizationPlayer(zui));
+        
         if (!(f.exists())) {
         	zui.setData(new DefaultUserData(zui, eventDispatcher));
         	save(zui);
@@ -107,7 +115,6 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
         }
         
         zui.setData(zuiData);
-        zui.setBendingPlayer(bendingRepository.getBendingPlayer(zui));
         
         logger.log(Level.INFO, "Zenix User Data has been loaded.");
         
@@ -134,12 +141,21 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
     	this.bendingRepository = bendingRepository;
     }
     
+    @Override
+	public void setOrganizationPlayerRepository(OrganizationPlayerRepositoryInterface organizationRepository) {
+		this.organizationRepository = organizationRepository;
+	}
+    
     public void setTextRepository(TextRepositoryInterface textRepository) {
     	this.textRepository = textRepository;
     }
 
     @Override
     public void save(ZenixUserInterface zenixUser) {
+    	
+    	bendingRepository.save(zenixUser.getBendingPlayer());
+        organizationRepository.save(zenixUser.getOrganizationPlayer());
+    	
         final Player player = zenixUser.getPlayer();
         
         final File f = getZenixUserFile(player);
@@ -153,28 +169,17 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 			logger.log(Level.WARNING, "Zenix User Data is failing to save.");
 		}
         
-        logger.log(Level.INFO, zenixUser.getName() + " has been saved.");
+        logger.log(Level.INFO, zenixUser.getName() + "'s Zenix User Data has been saved.");
     }
 
     @Override
-    public void open() {
-    	logger.log(Level.INFO, "Opening repository.");
-    	if (!(this.directory.exists())) {
-    		this.directory.mkdir();
-    	}
+    public void open(String openMessage) {
+    	super.open(openMessage);
     }
 
     @Override
-    public void close() {
-    	logger.log(Level.INFO, "Closing repository.");
-        if (this.directory.exists()) {
-        	for (File f : this.directory.listFiles()) {
-        		if (f.exists()) {
-        			f.delete();
-        		}
-        		this.directory.delete();
-        	}
-        }
+    public void close(String closeMessage) {
+    	super.close(closeMessage);
     }
 
     @Override
@@ -183,6 +188,5 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
             save((ZenixUserInterface) object);
         }
     }
-    
     
 }

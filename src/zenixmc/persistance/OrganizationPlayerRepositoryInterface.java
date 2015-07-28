@@ -26,6 +26,13 @@ public interface OrganizationPlayerRepositoryInterface extends RepositoryInterfa
 	void setZenixUserRepository(ZenixUserRepositoryInterface zenixUserRepository);
 	
 	/**
+	 * Sets the repository's organization repository.
+	 * @param organizationRepository
+	 * 		The organization repository.
+	 */
+	void setOrganizationRepository(OrganizationRepositoryInterface organizationRepository);
+	
+	/**
      * Saves a organizationPlayer.
      * @param organizationPlayer
      *      The organizationPlayer to save.

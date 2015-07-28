@@ -2,15 +2,15 @@ package zenixmc.command.commands.clans;
 
 import java.util.List;
 
-import org.bukkit.ChatColor;
-
 import zenixmc.ZenixMCInterface;
 import zenixmc.command.ZenixCommandSender;
-import zenixmc.organization.clans.Clan;
+import zenixmc.organization.clans.Message.Type;
+import zenixmc.organization.clans.Message;
 
 public class ClanCommands extends AbstractClanCommand {
+	
 	public String name;
-
+	
 	public ClanCommands(ZenixMCInterface zenix) {
 		super(zenix);
 	}
@@ -43,19 +43,23 @@ public class ClanCommands extends AbstractClanCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label,
 			String[] args) {
-		if (args[0].equalsIgnoreCase("create")) {
-			if (!sender.zui.isAuthorised("clans.create")) {
-				sender.zui.sendMessage(ChatColor.RED + "You do not have the correct clearence to create a Clan!");
+		if (args.length == 0) {
+			
+		}
+		if (args[0].equalsIgnoreCase("invite")) {
+			if (!sender.zui.isAuthorised("clans.invite")) {
+				new Message(sender.zui, "No Permissions!", Type.ERROR);
 				return false;
-			} else if (args.length == 0) {
-				sender.zui.sendMessage(ChatColor.RED + "You must specify more arguments!");
+			} else if (args.length == 1) {
+				new Message(sender.zui, "Not enough Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan invite (player)!", Type.USAGE);
 				return false;
-			} else if (args.length > 1) {
-				sender.zui.sendMessage(ChatColor.RED + "You must specify less arguments!");
+			} else if (args.length > 2) {
+				new Message(sender.zui, "Too many Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan invite (player)!", Type.USAGE);
 				return false;
+			} else {
 			}
-			new Clan(sender.zui, args[0]);
-			return true;
 		}
 		return false;
 	}

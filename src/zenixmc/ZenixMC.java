@@ -7,7 +7,6 @@ package zenixmc;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +14,6 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -30,7 +28,10 @@ import zenixmc.command.commands.essentials.HelloCommand;
 import zenixmc.command.commands.essentials.TeleportCommand;
 import zenixmc.event.EventDispatcher;
 import zenixmc.persistance.BendingPlayerRepository;
+import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
+import zenixmc.persistance.OrganizationPlayerRepository;
+import zenixmc.persistance.OrganizationRepository;
 import zenixmc.persistance.ZenixUserRepository;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
@@ -54,9 +55,24 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     EventDispatcher eventDispatcher = new EventDispatcher(this);
     
     /**
+     * Persistence of organization data to disk.
+     */
+    OrganizationRepository organizationRepository = new OrganizationRepository(this.getLogger(), new File(this.getDataFolder(), "organization"));
+    
+    /**
+     * Loading/Saving on Enable/Disable.
+     */
+    CachedOrganizationRepository cachedOrganizationRepository = new CachedOrganizationRepository(organizationRepository, this.getLogger());
+    
+    /**
      * Persistence of bending data to disk.
      */
     BendingPlayerRepository bendingPlayerRepository = new BendingPlayerRepository(this.getLogger(), new File(this.getDataFolder(), "bending"));
+    
+    /**
+     * Persistence of organization data to disk.
+     */
+    OrganizationPlayerRepository organizationPlayerRepository = new OrganizationPlayerRepository(this.getLogger(), new File(this.getDataFolder(), "organization"));
     
     /**
      * Persistence of user data to disk.
@@ -66,28 +82,33 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     /**
      * Loading/Saving on Join/Leave.
      */
-    CachedZenixUserRepository repository = new CachedZenixUserRepository(zenixUserRepository, this, this.getLogger());
+    CachedZenixUserRepository cachedZenixUserRepository = new CachedZenixUserRepository(zenixUserRepository, this, this.getLogger());
     
     /**
      * Main command.
      */
-    MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(repository);
+    MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(cachedZenixUserRepository);
     
     /**
      * Zenix User Manager.
      */
-    ZenixUserManager zenixUserManager = new ZenixUserManager(repository, eventDispatcher);
+    ZenixUserManager zenixUserManager = new ZenixUserManager(cachedZenixUserRepository, eventDispatcher);
     
     @Override
     public void onEnable() {
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
         
-        bendingPlayerRepository.setZenixUserRepository(zenixUserRepository);
-        bendingPlayerRepository.open();
-        zenixUserRepository.setBendingRepository(bendingPlayerRepository);
-        zenixUserRepository.open();
+        cachedOrganizationRepository.open("Organization Repository has opened.");
+        bendingPlayerRepository.setZenixUserRepository(cachedZenixUserRepository);
+        bendingPlayerRepository.open("Bending Player Repository has opened.");
+        organizationPlayerRepository.setZenixUserRepository(cachedZenixUserRepository);
+        organizationPlayerRepository.setOrganizationRepository(cachedOrganizationRepository);
+        organizationPlayerRepository.open("Organization Player Repository has opened.");
+        cachedZenixUserRepository.setBendingRepository(bendingPlayerRepository);
+        cachedZenixUserRepository.setOrganizationPlayerRepository(organizationPlayerRepository);
+        cachedZenixUserRepository.open("Zenix User Repository has opened.");
         
-        eventDispatcher.registerEventListener(repository);
+        eventDispatcher.registerEventListener(cachedZenixUserRepository);
         
         getCommand("z").setExecutor(mainCommandExecuter);
         mainCommandExecuter.addSubCommand(new HelloCommand(this, zenixUserManager));
@@ -96,7 +117,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         mainCommandExecuter.addSubCommand(new ClanCommands(this));
         
         for (final Player player : getServer().getOnlinePlayers()) {
-            repository.onPlayerJoin(new PlayerJoinEvent(player, null));
+        	cachedZenixUserRepository.onPlayerJoin(new PlayerJoinEvent(player, null));
         }
         
     }
@@ -106,13 +127,13 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         
         getLogger().log(Level.INFO, "Disabling Zenix. Powered by Zenix.");
         for (final Player player : getServer().getOnlinePlayers()) {
-            repository.onPlayerQuit(new PlayerQuitEvent(player, null));
+        	cachedZenixUserRepository.onPlayerQuit(new PlayerQuitEvent(player, null));
         }
     }
 
     @Override
     public void reload() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	this.reloadConfig();
     }
 
     @Override

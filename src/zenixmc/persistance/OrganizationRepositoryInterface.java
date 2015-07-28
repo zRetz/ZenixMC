@@ -1,29 +1,48 @@
 package zenixmc.persistance;
 
-import zenixmc.organization.OrganizationPlayerInterface;
-import zenixmc.user.ZenixUserInterface;
+import java.util.Map;
 
-public interface OrganizationRepositoryInterface {
+import zenixmc.organization.Organization;
+import zenixmc.organization.OrganizationSet;
+import zenixmc.organization.clans.Clan;
 
+public interface OrganizationRepositoryInterface extends RepositoryInterface {
+
+	/**
+	 * Loads a set of organizations into memory.
+	 * @param types
+	 * 		The information needed to find the organizations requested.
+	 * @return The set of organizations.
+	 */
+	OrganizationSet getOrganizations(Map<String, Class<?>> types);
+	
 	/**
 	 * Loads a organization into memory.
 	 * @param name
 	 * 		The name of the organization to load.
 	 * @return The organization.
 	 */
-	OrganizationPlayerInterface getOrganizationPlayer(String name);
+	Organization getOrganization(String name, Class<?> type);
 	
 	/**
-	 * Sets the repository's user repository.
-	 * @param zenixUserRepository
-	 * 		The user repository to set.
+	 * Loads a clan into memory.
+	 * @param name
+	 * 		The name of the clan to load.
+	 * @return The clan.
 	 */
-	void setZenixUserRepository(ZenixUserRepositoryInterface zenixUserRepository);
+	Clan getClan(String name);
 	
 	/**
-     * Saves a organizationPlayer.
-     * @param organizationPlayer
-     *      The organizationPlayer to save.
+     * Saves a organization.
+     * @param organization
+     *      The organization to save.
      */
-    void save(final OrganizationPlayerInterface organizationPlayer);
+    void save(final Organization organization, Class<?> type);
+    
+    /**
+     * Saves a clan.
+     * @param clan
+     * 		The clan to save.
+     */
+    void save(Clan clan);
 }

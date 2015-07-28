@@ -1,6 +1,6 @@
 package zenixmc.organization;
 
-import java.util.Set;
+import java.util.Map;
 
 import zenixmc.organization.clans.Clan;
 import zenixmc.user.ZenixUserInterface;
@@ -22,6 +22,35 @@ public interface OrganizationPlayerInterface {
 	 * @return The user of this organizationPlayer.
 	 */
 	ZenixUserInterface getZenixUser();
+	
+	/**
+	 * Set the organizationPlayers influence.
+	 * @param value
+	 * 		The value to set.
+	 */
+	void setInfluence(int value);
+	
+	/**
+	 * @return The organizationPlayers influence.
+	 */
+	int getInfluence();
+	
+	/**
+	 * Set the organizationPlayers maximum influence.
+	 * @param value
+	 * 		The value to set.
+	 */
+	void setMaxInfluence(int value);
+	
+	/**
+	 * @return The organizationPlayers maximum influence.
+	 */
+	int getMaxInfluence();
+	
+	/**
+	 * @return The organizationPlayers' organizations in a map form.
+	 */
+	Map<String, Class<?>> getMappedOrganizations();
 	
 	/**
 	 * Sets the organizationPlayers organizations.
@@ -47,4 +76,15 @@ public interface OrganizationPlayerInterface {
 	 */
 	Clan getClan();
 	
+	/**
+	 * Sets the organizationPlayers data.
+	 * @param data
+	 * 		The data to set.
+	 */
+	void setData(OrganizationPlayerData data);
+	
+	/**
+	 * @return The organizationPlayers data.
+	 */
+	OrganizationPlayerData getData();
 }

@@ -8,6 +8,7 @@ package zenixmc.persistance;
 import java.io.File;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.configuration.MemoryConfiguration;
 import zenixmc.utils.ExceptionUtils;
@@ -42,4 +43,23 @@ public abstract class Repository implements RepositoryInterface {
         this.directory = directory;
     }
     
+    @Override
+    public void open(String openMessage) {
+    	if (!(this.directory.exists())) {
+    		this.directory.mkdirs();
+    	}
+    }
+    
+    @Override
+    public void close(String closeMessage) {
+    	logger.log(Level.INFO, closeMessage);
+        if (this.directory.exists()) {
+        	for (File f : this.directory.listFiles()) {
+        		if (f.exists()) {
+        			f.delete();
+        		}
+        		this.directory.delete();
+        	}
+        }
+    }
 }

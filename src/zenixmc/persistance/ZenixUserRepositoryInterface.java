@@ -55,6 +55,13 @@ public interface ZenixUserRepositoryInterface extends RepositoryInterface {
     void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository);
     
     /**
+     * Sets the repository's organizationPlayer repository.
+     * @param organizationRepository
+     * 		The repository to set.
+     */
+    void setOrganizationPlayerRepository(OrganizationPlayerRepositoryInterface organizationRepository);
+    
+    /**
      * Save a user.
      * @param zenixUser
      *      The user to save.

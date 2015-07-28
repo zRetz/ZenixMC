@@ -13,13 +13,17 @@ public interface RepositoryInterface {
     
     /**
      * Open the repository.
+     * @param openMessage
+     * 		The message to log when opening.
      */
-    void open();
+    void open(String openMessage);
     
     /**
      * Close the repository.
+     * @param closeMessage
+     * 		The message to log when closing.
      */
-    void close();
+    void close(String closeMessage);
     
     /**
      * Save data.

@@ -16,6 +16,7 @@ import org.bukkit.inventory.PlayerInventory;
 import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
+import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
 import zenixmc.user.objects.Warning;
@@ -69,6 +70,11 @@ public class ZenixUser implements ZenixUserInterface {
      * The users bendingPlayer data.
      */
     private BendingPlayerInterface bendingPlayer;
+    
+    /**
+     * The users organizationPlayer data.
+     */
+    private OrganizationPlayerInterface organizationPlayer;
 
     /**
      * The users away from keyboard value;
@@ -252,6 +258,16 @@ public class ZenixUser implements ZenixUserInterface {
     public BendingPlayerInterface getBendingPlayer() {
         return bendingPlayer;
     }
+    
+    @Override
+	public void setOrganizationPlayer(OrganizationPlayerInterface value) {
+		this.organizationPlayer = value;
+	}
+
+	@Override
+	public OrganizationPlayerInterface getOrganizationPlayer() {
+		return organizationPlayer;
+	}
 
     @Override
     public boolean canBuild() {

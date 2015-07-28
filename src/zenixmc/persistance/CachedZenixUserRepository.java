@@ -138,6 +138,11 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
 	public void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository) {
 		parentRepository.setBendingRepository(bendingRepository);
 	}
+    
+    @Override
+	public void setOrganizationPlayerRepository(OrganizationPlayerRepositoryInterface organizationRepository) {
+		parentRepository.setOrganizationPlayerRepository(organizationRepository);
+	}
 
     @Override
     public void save(ZenixUserInterface zenixUser) {
@@ -145,14 +150,14 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
     }
 
     @Override
-    public void open() {
-        parentRepository.open();
+    public void open(String openMessage) {
+        parentRepository.open(openMessage);
     }
 
     @Override
-    public void close() {
+    public void close(String closeMessage) {
         users.clear();
-        parentRepository.close();
+        parentRepository.close(closeMessage);
     }
 
     @Override
@@ -168,7 +173,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
      */
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent e) {
-        getZenixUser(e.getPlayer());
+    	getZenixUser(e.getPlayer());
         e.setJoinMessage(zenix.getSettings().getNotificationColor() + zenix.getSettings().getJoinMessage() + e.getPlayer().getName() + ".");
     }
 

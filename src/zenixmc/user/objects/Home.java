@@ -5,9 +5,6 @@
  */
 package zenixmc.user.objects;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.bukkit.Location;
 
 import zenixmc.user.ZenixUserInterface;

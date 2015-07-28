@@ -5,18 +5,12 @@
  */
 package zenixmc.organization;
 
-import java.util.List;
-
 import zenixmc.user.ZenixUserInterface;
 
 /**
  *
  * @author james
  */
-public interface Organization {
+public class Clanwtf {
     
-	public String getName();
-	
-	public String[] getDescription();
-	
 }

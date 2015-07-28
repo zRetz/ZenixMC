@@ -37,35 +37,25 @@ public class BendingPlayerRepository extends Repository implements BendingPlayer
 	}
 	
 	/**
-     * Returns the path to the file to store the specified user in.
+     * Returns the path to the file to store the specified bendingPlayer in.
      *
-     * @param player
-     *            The player to find the file for.
-     * @return The file of the specified player.
+     * @param zui
+     *            The user to find the file for.
+     * @return The file of the bendingPlayer.
      */
     protected File getBendingPlayerFile(ZenixUserInterface zui) {
+    	System.out.println(zui.getName());
         return new File(this.directory, zui.getUniqueId() + ".json");
     }
 
 	@Override
-	public void open() {
-		logger.log(Level.INFO, "Opening repository.");
-    	if (!(this.directory.exists())) {
-    		this.directory.mkdir();
-    	}
+	public void open(String openMessage) {
+		super.open(openMessage);
 	}
 
 	@Override
-	public void close() {
-		logger.log(Level.INFO, "Closing repository.");
-        if (this.directory.exists()) {
-        	for (File f : this.directory.listFiles()) {
-        		if (f.exists()) {
-        			f.delete();
-        		}
-        		this.directory.delete();
-        	}
-        }
+	public void close(String closeMessage) {
+		super.close(closeMessage);
 	}
 
 	@Override
@@ -82,8 +72,9 @@ public class BendingPlayerRepository extends Repository implements BendingPlayer
         
         BendingPlayerInterface bendingPlayer = new BendingPlayer();
         
+        bendingPlayer.setZenixUser(zui);
+        
         if (!(f.exists())) {
-        	bendingPlayer.setZenixUser(zui);
         	save(bendingPlayer);
         	return bendingPlayer;
         }
@@ -122,7 +113,7 @@ public class BendingPlayerRepository extends Repository implements BendingPlayer
 			logger.log(Level.WARNING, "Bending Player Data is failing to save.");
 		}
         
-        logger.log(Level.INFO, zui.getName() + " has been saved.");
+        logger.log(Level.INFO, zui.getName() + "'s Bending Player Data has been saved.");
 	}
 
 }

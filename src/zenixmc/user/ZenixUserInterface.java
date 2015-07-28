@@ -15,6 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
+import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
 import zenixmc.user.objects.Warning;
@@ -149,6 +150,18 @@ public interface ZenixUserInterface {
      * @return The bendingPlayer of the user.
      */
     BendingPlayerInterface getBendingPlayer();
+    
+    /**
+     * Sets the users organizationPlayer data.
+     * @param value
+     * 		The value to set.
+     */
+    void setOrganizationPlayer(OrganizationPlayerInterface value);
+    
+    /**
+     * @return The organizationPlayer of the user.
+     */
+    OrganizationPlayerInterface getOrganizationPlayer();
     
     /**
      * @return <code>true</code> If the user can build.
