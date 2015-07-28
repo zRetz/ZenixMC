@@ -1,4 +1,4 @@
-package zenixmc.organization.clans;
+package zenixmc.organization;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,8 +6,7 @@ import java.util.List;
 
 import org.bukkit.Location;
 
-import zenixmc.organization.Organization;
-import zenixmc.organization.clans.Message.Type;
+import zenixmc.organization.Message.Type;
 import zenixmc.user.ZenixUserInterface;
 
 public class Clan implements Organization {
@@ -16,7 +15,7 @@ public class Clan implements Organization {
 	public static HashMap<ZenixUserInterface, String> playerClan = new HashMap<>();
 	public static HashMap<ZenixUserInterface, String> clanInvites;
 	public static HashMap<Location, String> clanHomes;
-	
+
 	public ZenixUserInterface zui;
 	private String name;
 	private String[] desc;
@@ -24,11 +23,11 @@ public class Clan implements Organization {
 	public Clan(ZenixUserInterface zui, String name) {
 		this.zui = zui;
 		this.name = name;
-		
+
 		if (used(name)) {
 			return;
 		}
-		
+
 		create(zui, name);
 	}
 
@@ -43,48 +42,61 @@ public class Clan implements Organization {
 	public String[] getDescription() {
 		return desc;
 	}
-	
+
+	@Override
+	public ZenixUserInterface[] getMembers(String name) {
+		if (!Clans.contains(name)) {
+			return null;
+		} else if (name == null) {
+			return null;
+		}
+		return getmembers(name);
+	}
+
 	public void create(ZenixUserInterface player, String name) {
 		Clans.add(name);
 		playerClan.put(player, name);
 	}
-	
-	public void disband(ZenixUserInterface player) {
+
+	public static void disband(ZenixUserInterface player) {
 		String name = getClan(player);
-		for (ZenixUserInterface z : getMembers(name)) {
+		for (ZenixUserInterface z : members(name)) {
 			playerClan.remove(z);
 		}
 		Clans.remove(name);
-		new Message(player, "You have disbanded the Clan: " + name + "!", Type.CLAN);
+		new Message(player, "You have disbanded the Clan: " + name + "!",
+				Type.CLAN);
 	}
 
 	// Methods
 
-	public static void invite(ZenixUserInterface player,
-			ZenixUserInterface target) {
-		String name = getClan(player);
+	public static void invite(ZenixUserInterface target, String name) {
 		if (target != null) {
 			if (clanInvites.get(target).contains(name)) {
-				for (ZenixUserInterface z : getMembers(name)) {
-					new Message(z, "The invite of " + target.getName() + " has been revoked!", Type.CLAN);
+				for (ZenixUserInterface z : members(name)) {
+					new Message(z, "The invite of " + target
+							+ " has been revoked!", Type.CLAN);
 					clanInvites.remove(target);
 					return;
 				}
 			} else if (playerClan.get(target) == name) {
-				new Message(player, target.getName() + " is already apart of the Clan!",  Type.CLAN);
-				return;
+				for (ZenixUserInterface z : members(name)) {
+					new Message(z, target + " is already apart of the Clan!",
+							Type.CLAN);
+					return;
+				}
 			} else {
 				clanInvites.put(target, name);
-				for (ZenixUserInterface z : getMembers(name)) {
-					new Message(z, target.getName() + " has been invited to the Clan!", Type.CLAN);
+				for (ZenixUserInterface z : members(name)) {
+					new Message(z, target + " has been invited to the Clan!",
+							Type.CLAN);
 					return;
 				}
 			}
 		}
 	}
-	
-	public static void join(ZenixUserInterface player) {
-		String name = getClan(player);
+
+	public static void join(ZenixUserInterface player, String name) {
 		if (playerClan.containsKey(player)) {
 			new Message(player, "You are already in a Clan!", Type.CLAN);
 			return;
@@ -94,52 +106,59 @@ public class Clan implements Organization {
 			return;
 		}
 	}
-	
+
 	public static void leave(ZenixUserInterface player) {
 		String name = getClan(player);
 		if (playerClan.get(player) == null) {
 			new Message(player, "You are not in a Clan!", Type.CLAN);
 			return;
 		} else {
-			for (ZenixUserInterface z : getMembers(name)) {
-				new Message(z, player.getName() + " has left the Clan!", Type.CLAN);
+			for (ZenixUserInterface z : members(name)) {
+				new Message(z, player.getName() + " has left the Clan!",
+						Type.CLAN);
 			}
 			new Message(player, "You have left " + name, Type.CLAN);
 			playerClan.remove(player);
 			return;
 		}
 	}
-	
-	public static void kick(ZenixUserInterface player, ZenixUserInterface target) {
+
+	public static void kick(ZenixUserInterface target) {
 		String name = getClan(target);
 		if (!playerClan.containsKey(target) || playerClan.get(target) != name) {
-			new Message(player, target.getName() + " is not apart of your Clan!", Type.CLAN);
-			return;
+			for (ZenixUserInterface z : members(name)) {
+				new Message(z,
+						target.getName() + " is not apart of your Clan!",
+						Type.CLAN);
+				return;
+			}
 		} else {
 			playerClan.remove(target);
-			for (ZenixUserInterface z : getMembers(name)) {
-				new Message(z, target.getName() + " has been kicked by " + player.getName() + "!", Type.CLAN);
+			for (ZenixUserInterface z : members(name)) {
+				new Message(z, target.getName()
+						+ " has been kicked from the Clan!", Type.CLAN);
 				return;
 			}
 		}
 	}
-	
+
 	public static void sethome(ZenixUserInterface player) {
 		String name = getClan(player);
 		clanHomes.put(player.getLocation(), name);
-		for (ZenixUserInterface z : getMembers(name)) {
-			new Message(z, player.getName() + " has set a new home for your Clan!", Type.CLAN);
+		for (ZenixUserInterface z : members(name)) {
+			new Message(z, player.getName()
+					+ " has set a new home for your Clan!", Type.CLAN);
 		}
-		
+
 	}
-	
+
 	public static void gohome(ZenixUserInterface player) {
-		//TODO: Teleport player to home
-		
+		// TODO: Teleport player to home
+
 	}
-	
-	//Getting methods
-	
+
+	// Getting methods
+
 	public static void invites(ZenixUserInterface player) {
 		List<String> temp = new ArrayList<>();
 		for (ZenixUserInterface z : clanInvites.keySet()) {
@@ -157,17 +176,24 @@ public class Clan implements Organization {
 		}
 	}
 
-	public static List<ZenixUserInterface> getMembers(String name) {
-		List<ZenixUserInterface> l = new ArrayList<>();
+	public static ZenixUserInterface[] members(String name) {
 		for (ZenixUserInterface z : playerClan.keySet()) {
 			if (playerClan.get(z) == name) {
-				l.add(z);
-				return l;
+				return new ZenixUserInterface[] { z };
 			}
 		}
 		return null;
 	}
-	
+
+	public ZenixUserInterface[] getmembers(String name) {
+		for (ZenixUserInterface z : playerClan.keySet()) {
+			if (playerClan.get(z) == name) {
+				return new ZenixUserInterface[] { z };
+			}
+		}
+		return null;
+	}
+
 	public static boolean used(String name) {
 		if (Clans.contains(name)) {
 			return true;

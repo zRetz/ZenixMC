@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import zenixmc.organization.clans.Clan;
 import zenixmc.user.ZenixUserInterface;
 
 public class OrganizationPlayer implements OrganizationPlayerInterface {

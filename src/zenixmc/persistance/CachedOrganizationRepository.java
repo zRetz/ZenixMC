@@ -2,14 +2,11 @@ package zenixmc.persistance;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
-import zenixmc.ZenixMCInterface;
+import zenixmc.organization.Clan;
 import zenixmc.organization.Organization;
 import zenixmc.organization.OrganizationSet;
-import zenixmc.organization.clans.Clan;
-import zenixmc.user.ZenixUserInterface;
 
 public class CachedOrganizationRepository implements OrganizationRepositoryInterface {
 

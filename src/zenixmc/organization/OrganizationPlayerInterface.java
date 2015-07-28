@@ -2,7 +2,6 @@ package zenixmc.organization;
 
 import java.util.Map;
 
-import zenixmc.organization.clans.Clan;
 import zenixmc.user.ZenixUserInterface;
 
 /**

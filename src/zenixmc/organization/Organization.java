@@ -5,8 +5,6 @@
  */
 package zenixmc.organization;
 
-import java.util.List;
-
 import zenixmc.user.ZenixUserInterface;
 
 /**
@@ -19,4 +17,5 @@ public interface Organization {
 	
 	public String[] getDescription();
 	
+	public ZenixUserInterface[] getMembers(String name);
 }

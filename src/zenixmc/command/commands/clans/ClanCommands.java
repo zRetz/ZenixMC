@@ -6,6 +6,7 @@ import zenixmc.ZenixMCInterface;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.organization.clans.Message.Type;
 import zenixmc.organization.clans.Message;
+import zenixmc.organization.Clan;
 
 public class ClanCommands extends AbstractClanCommand {
 	
@@ -44,21 +45,85 @@ public class ClanCommands extends AbstractClanCommand {
 	public boolean onCommand(ZenixCommandSender sender, String label,
 			String[] args) {
 		if (args.length == 0) {
-			
+
 		}
-		if (args[0].equalsIgnoreCase("invite")) {
-			if (!sender.zui.isAuthorised("clans.invite")) {
+		if (args[0].equalsIgnoreCase("create")) {
+			if (!sender.zui.isAuthorised("clans.create")) {
 				new Message(sender.zui, "No Permissions!", Type.ERROR);
 				return false;
 			} else if (args.length == 1) {
 				new Message(sender.zui, "Not enough Arguments!", Type.ERROR);
-				new Message(sender.zui, "/clan invite (player)!", Type.USAGE);
+				new Message(sender.zui, "/clan create (name)!", Type.USAGE);
 				return false;
 			} else if (args.length > 2) {
 				new Message(sender.zui, "Too many Arguments!", Type.ERROR);
-				new Message(sender.zui, "/clan invite (player)!", Type.USAGE);
+				new Message(sender.zui, "/clan create (name)!", Type.USAGE);
 				return false;
 			} else {
+				new Clan(sender.zui, args[1]);
+			}
+		} else if (args[0].equalsIgnoreCase("join")) {
+			if (!sender.zui.isAuthorised("clans.join")) {
+				new Message(sender.zui, "No Permissions!", Type.ERROR);
+				return false;
+			} else if (args.length == 1) {
+				new Message(sender.zui, "Not enough Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan join (name)!", Type.USAGE);
+				return false;
+			} else if (args.length > 2) {
+				new Message(sender.zui, "Too many Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan join (name)!", Type.USAGE);
+				return false;
+			} else {
+				Clan.join(sender.zui, Clan.getClan(sender.zui));
+			}
+		} else if (args[0].equalsIgnoreCase("leave")) {
+			if (!sender.zui.isAuthorised("clans.leave")) {
+				new Message(sender.zui, "No Permissions!", Type.ERROR);
+				return false;
+			} else if (args.length > 1) {
+				new Message(sender.zui, "Too many Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan leave!", Type.USAGE);
+				return false;
+			} else {
+				Clan.leave(sender.zui);
+			}
+		} else if (args[0].equalsIgnoreCase("disband")) {
+			if (!sender.zui.isAuthorised("clans.disband")) {
+				new Message(sender.zui, "No Permissions!", Type.ERROR);
+				return false;
+			} else if (args.length > 1) {
+				new Message(sender.zui, "Too many Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan disband!", Type.USAGE);
+				return false;
+			} else {
+				Clan.disband(sender.zui);
+			}
+		} else if (args[0].equalsIgnoreCase("kick")) {
+			if (!sender.zui.isAuthorised("clans.kick")) {
+				new Message(sender.zui, "No Permissions!", Type.ERROR);
+				return false;
+			} else if (args.length == 1) {
+				new Message(sender.zui, "Not enough Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan kick (name)!", Type.USAGE);
+				return false;
+			} else if (args.length > 2) {
+				new Message(sender.zui, "Too many Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan kick (name)!", Type.USAGE);
+				return false;
+			} else {
+				Clan.kick(sender.zui);
+			}
+		} else if (args[0].equalsIgnoreCase("invites")) {
+			if (!sender.zui.isAuthorised("clans.invites")) {
+				new Message(sender.zui, "No Permissions!", Type.ERROR);
+				return false;
+			} else if (args.length > 1) {
+				new Message(sender.zui, "Too many Arguments!", Type.ERROR);
+				new Message(sender.zui, "/clan invites!", Type.USAGE);
+				return false;
+			} else {
+				Clan.invites(sender.zui);
 			}
 		}
 		return false;

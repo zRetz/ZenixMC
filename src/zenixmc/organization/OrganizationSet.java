@@ -1,6 +1,5 @@
 package zenixmc.organization;
 
-import zenixmc.organization.clans.Clan;
 import zenixmc.utils.InterfaceSet;
 
 /**

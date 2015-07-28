@@ -2,9 +2,9 @@ package zenixmc.persistance;
 
 import java.util.Map;
 
+import zenixmc.organization.Clan;
 import zenixmc.organization.Organization;
 import zenixmc.organization.OrganizationSet;
-import zenixmc.organization.clans.Clan;
 
 public interface OrganizationRepositoryInterface extends RepositoryInterface {
 

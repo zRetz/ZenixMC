@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import zenixmc.organization.Clan;
 import zenixmc.organization.Organization;
 import zenixmc.organization.OrganizationSet;
-import zenixmc.organization.clans.Clan;
 
 /**
  * Persistence of organizations on disk.
