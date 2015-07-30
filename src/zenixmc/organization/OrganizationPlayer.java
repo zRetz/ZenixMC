@@ -108,6 +108,7 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	public void setClan(Clan clan) {
 		d.organizations.remove(organizations.getClan());
 		d.organizations.put(clan.getName(), Clan.class.getName());
+		Organization.o.put(this, clan);
 		organizations.setClan(clan);
 	}
 

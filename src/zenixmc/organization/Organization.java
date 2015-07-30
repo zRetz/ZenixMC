@@ -5,17 +5,23 @@
  */
 package zenixmc.organization;
 
-import zenixmc.user.ZenixUserInterface;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author james
  */
 public interface Organization {
+	public Map<OrganizationPlayerInterface, Organization> o = new HashMap<>();
     
 	public String getName();
 	
 	public String[] getDescription();
 	
-	public ZenixUserInterface[] getMembers(String name);
+	public OrganizationPlayerInterface getLeader();
+	
+	public List<OrganizationPlayerInterface> getPlayers();
+	
 }
