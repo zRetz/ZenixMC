@@ -15,7 +15,7 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import zenixmc.utils.JavaUtils;
+import zenixmc.utils.JavaUtil;
 
 /**
  * Strings with additional information.
@@ -106,7 +106,7 @@ public class Text implements TextInterface {
             return;
         }
         
-        JavaUtils.orderedPut(text, index, chapter, line, replace);
+        JavaUtil.orderedPut(text, index, chapter, line, replace);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class Text implements TextInterface {
             return;
         }
         
-        bookmarks.put(bookmarkName, JavaUtils.singleElementsToMap(chapter, index, new WeakHashMap<String, Integer>()));
+        bookmarks.put(bookmarkName, JavaUtil.singleElementsToMap(chapter, index, new WeakHashMap<String, Integer>()));
     }
     
     @Override

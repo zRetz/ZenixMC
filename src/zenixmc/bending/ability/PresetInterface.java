@@ -1,12 +1,13 @@
 package zenixmc.bending.ability;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
  * A preset is the named set of bindings and enabled passive abilities.
  *
  */
-public interface PresetInterface {
+public interface PresetInterface extends Serializable {
     /**
      * @return The name of this preset, {@code "default"} if it is the default
      *         preset.

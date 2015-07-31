@@ -11,7 +11,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.configuration.MemoryConfiguration;
-import zenixmc.utils.ExceptionUtils;
+import zenixmc.utils.ExceptionUtil;
 import zenixmc.utils.exceptions.NotEvenException;
 
 

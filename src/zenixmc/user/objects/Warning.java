@@ -5,6 +5,11 @@
  */
 package zenixmc.user.objects;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import zenixjava.collections.Triplet;
+import zenixmc.ZenixMCInterface;
 import zenixmc.event.EventDispatcher;
 import zenixmc.event.ReachedMaxWarningEvent;
 import zenixmc.event.ReachedZeroWarningEvent;
@@ -14,54 +19,54 @@ import zenixmc.user.ZenixUserInterface;
  * Map of amount of warnings and punishment.
  * @author james
  */
-public class Warning {
+public class Warning implements Serializable {
 	
+	/**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = 784783646180386720L;
+
 	/**
 	 * The event dispatcher to fire events.
 	 */
-	private transient final EventDispatcher eventDispatcher;
+	private transient EventDispatcher eventDispatcher;
 	
 	/**
 	 * The parent of the warning object.
 	 */
-	private transient final ZenixUserInterface parent;
+	private transient ZenixUserInterface parent;
 	
-    /**
-     * The amount of warnings.
-     */
-    private int amount;
-    
-    /**
-     * The duration of the sentence.
-     */
-    private long sentence;
+	/**
+	 * The values.
+	 */
+    private final Triplet<Integer, Long, ArrayList<String>> values;
     
     /**
      * Instantiates a brand new warning.
      * @param parent
      * 		The parent of warning object.
+     * @param eventDispatcher
+     * 		The eventDispatcher to fire events.
      */
     public Warning(ZenixUserInterface parent, EventDispatcher eventDispatcher) {
     	this.eventDispatcher = eventDispatcher;
     	this.parent = parent;
-        this.amount = 0;
-        this.sentence = 0;
+        this.values = new Triplet<>(new Integer(0), 0L, new ArrayList<String>(3));
     }
     
     /**
      * Instantiates a warning with set values.
-     * @param
+     * @param parent
      * 		The parent of warning object.
-     * @param amount
-     *      The amount of warnings.
-     * @param timestamp
-     *      The punishment stamp.
+     * @param eventDispatcher
+     *      The eventDispatcher to fire events.
+     * @param values
+     * 		The values.
      */
-    public Warning(ZenixUserInterface parent, EventDispatcher eventDispatcher, int amount, long timestamp) {
+    public Warning(ZenixUserInterface parent, EventDispatcher eventDispatcher, Triplet<Integer, Long, ArrayList<String>> values) {
     	this.eventDispatcher = eventDispatcher;
     	this.parent = parent;
-        this.amount = amount;
-        this.sentence = timestamp;
+        this.values = values;
     }
     
     /**
@@ -69,16 +74,18 @@ public class Warning {
      * @param timestamp
      *      The punishment timestamp.
      */
-    public void increment(long timestamp) {
+    public void increment(long duration, String reason) {
         
+    	System.out.println("Amount: " + values.getA());
+        values.setA(values.getA() + 1);
+        values.setB(values.getB() + duration);
+        values.getC().add(reason);
+    	
         //temp const
-        if (amount >= 3) {
+        if (values.getA() >= 3) {
         	eventDispatcher.callEvent(new ReachedMaxWarningEvent(parent));
             return;
         }
-        
-        amount = amount + 1;
-        sentence = sentence + timestamp;
     }
     
     /**
@@ -91,7 +98,7 @@ public class Warning {
             return;
     	}
         
-        amount = amount - 1;
+        values.setA(values.getA() - 1);
     }
     
     /**
@@ -99,7 +106,7 @@ public class Warning {
      */
     public boolean isMaximum() {
         //temp const
-        return amount >= 3;
+        return values.getA() >= 3;
     }
     
     /**
@@ -107,11 +114,54 @@ public class Warning {
      */
     public boolean isZero() {
     	
-    	if (amount < 0) {
-    		amount = 0;
+    	if (values.getA() < 0) {
+    		values.setA(0);
     	}
     	
-        return amount == 0;
+        return values.getA() == 0;
     }
-
+    
+    /**
+     * @return The amount of warnings.
+     */
+    public int getAmount() {
+    	return values.getA();
+    }
+    
+    /**
+     * @return The built-up sentence.
+     */
+    public long getSentence() {
+    	return values.getB();
+    }
+    
+    public String getReasonOne() {
+    	if (values.getC().size() >= 1) {
+    		return values.getC().get(0);
+    	}
+    	return " ";
+    }
+    
+    public String getReasonTwo() {
+    	if (values.getC().size() >= 2) {
+    		return values.getC().get(1);
+    	}
+    	return " ";
+    }
+    
+    public String getReasonThree() {
+    	if (values.getC().size() >= 3) {
+    		return values.getC().get(2);
+    	}
+    	return " ";
+    }
+    
+    public void setEventDispatcher(EventDispatcher eventDispatcher) {
+    	this.eventDispatcher = eventDispatcher;
+    }
+    
+    public void setParent(ZenixUserInterface zui) {
+    	this.parent = zui;
+    }
 }
+

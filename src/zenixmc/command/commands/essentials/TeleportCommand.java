@@ -8,7 +8,7 @@ import zenixmc.ZenixMCInterface;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
-import zenixmc.utils.JavaUtils;
+import zenixmc.utils.JavaUtil;
 
 /**
  * Teleport Command.
@@ -56,7 +56,7 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 			}
 			return true;
 		case 3:
-			if (JavaUtils.canBeIntegers(args[0], args[1], args[2])) {
+			if (JavaUtil.canBeIntegers(args[0], args[1], args[2])) {
 				
 				int x = Integer.parseInt(args[0]);
 				int y = Integer.parseInt(args[1]);

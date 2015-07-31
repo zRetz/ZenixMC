@@ -18,6 +18,11 @@ import org.bukkit.Material;
 public interface SettingsInterface {
     
 	/**
+	 * @return The format of duration of warning ban.
+	 */
+	String getWarningBanFormat();
+	
+	/**
 	 * @return The time to countdown before teleportation.
 	 */
 	long getTeleportTime();

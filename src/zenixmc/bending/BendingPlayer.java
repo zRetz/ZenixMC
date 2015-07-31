@@ -12,7 +12,13 @@ import zenixmc.user.ZenixUserInterface;
  * The default implementation of a bendingPlayer.
  */
 public class BendingPlayer implements BendingPlayerInterface {
+	
     /**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = 5489947461704879269L;
+
+	/**
      * The user.
      */
     private transient ZenixUserInterface zui;
@@ -45,7 +51,8 @@ public class BendingPlayer implements BendingPlayerInterface {
     /**
      * Instantiate.
      */
-    public BendingPlayer() {
+    public BendingPlayer(ZenixUserInterface zui) {
+    	this.zui = zui;
     }
 
     @Override

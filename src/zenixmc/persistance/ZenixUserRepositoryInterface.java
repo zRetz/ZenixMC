@@ -6,7 +6,9 @@
 package zenixmc.persistance;
 
 import java.util.UUID;
+
 import org.bukkit.entity.Player;
+
 import zenixmc.user.ZenixUserInterface;
 
 /**
@@ -46,20 +48,6 @@ public interface ZenixUserRepositoryInterface extends RepositoryInterface {
      * @return The user.
      */
     ZenixUserInterface getZenixUser(UUID uuid);
-    
-    /**
-     * Sets the repository's bendingPlayer repository.
-     * @param bendingRepository
-     * 		The repository to set.
-     */
-    void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository);
-    
-    /**
-     * Sets the repository's organizationPlayer repository.
-     * @param organizationRepository
-     * 		The repository to set.
-     */
-    void setOrganizationPlayerRepository(OrganizationPlayerRepositoryInterface organizationRepository);
     
     /**
      * Save a user.

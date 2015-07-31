@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.user.ZenixUserInterface;
-import zenixmc.utils.ExceptionUtils;
+import zenixmc.utils.ExceptionUtil;
 
 /**
  * Class that handles saving and loading users when joining or leaving.
@@ -88,9 +88,9 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
             if (key instanceof UUID) {
                 return getZenixUser((UUID) key);
             }
-            throw ExceptionUtils.illegalArgumentException("key is not valid type");
+            throw ExceptionUtil.illegalArgumentException("key is not valid type");
         }else {
-            throw ExceptionUtils.nullPointerException("key cannot be null");
+            throw ExceptionUtil.nullPointerException("key cannot be null");
         }
     }
 
@@ -133,16 +133,6 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
         
         return zui;
     }
-    
-    @Override
-	public void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository) {
-		parentRepository.setBendingRepository(bendingRepository);
-	}
-    
-    @Override
-	public void setOrganizationPlayerRepository(OrganizationPlayerRepositoryInterface organizationRepository) {
-		parentRepository.setOrganizationPlayerRepository(organizationRepository);
-	}
 
     @Override
     public void save(ZenixUserInterface zenixUser) {

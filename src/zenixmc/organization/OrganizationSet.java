@@ -9,6 +9,11 @@ import zenixmc.utils.InterfaceSet;
 public class OrganizationSet extends InterfaceSet<Organization> {
 
 	/**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = -6982360192844491268L;
+
+	/**
 	 * Instantiate.
 	 */
 	public OrganizationSet() {

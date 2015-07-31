@@ -9,7 +9,13 @@ import zenixmc.bending.Slot;
  * Default implementation of presets.
  */
 public class Preset implements PresetInterface {
+	
     /**
+	 *  SerialVersionUID.
+	 */
+	private static final long serialVersionUID = -1964827587020057839L;
+
+	/**
      * The name of the preset.
      */
     private final String name;
@@ -22,7 +28,7 @@ public class Preset implements PresetInterface {
     /**
      * The list of enabled passive abilities.
      */
-    private Set<AbilityInterface> enabledPassiveAbilities = new HashSet<AbilityInterface>();
+    private transient Set<AbilityInterface> enabledPassiveAbilities = new HashSet<AbilityInterface>();
 
     /**
      * Create a preset by name.

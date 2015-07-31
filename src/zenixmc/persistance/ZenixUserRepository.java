@@ -5,25 +5,23 @@
  */
 package zenixmc.persistance;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.entity.Player;
 
-import com.google.gson.Gson;
-
 import zenixmc.ZenixMCInterface;
 import zenixmc.event.EventDispatcher;
-import zenixmc.user.DefaultUserData;
 import zenixmc.user.ZenixUser;
-import zenixmc.user.ZenixUserData;
 import zenixmc.user.ZenixUserInterface;
+import zenixmc.user.objects.Teleport;
 
 /**
  * Persistence of users on disk.
@@ -40,16 +38,6 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
      * The event dispatcher to fire events.
      */
     private final EventDispatcher eventDispatcher;
-    
-    /**
-     * Repository to push/fetch bendingPlayer data.
-     */
-    private BendingPlayerRepositoryInterface bendingRepository;
-    
-    /**
-     * Repository to push/fetch organizationPlayer data.
-     */
-    private OrganizationPlayerRepositoryInterface organizationRepository;
     
     /**
      * Repository to push/fetch text data.
@@ -78,45 +66,39 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
      *            The player to find the file for.
      * @return The file of the specified player.
      */
-    protected File getZenixUserFile(Player player) {
-        return new File(this.directory, player.getUniqueId() + ".json");
+    protected File getZenixUserFile(UUID uuid) {
+        return new File(this.directory, uuid + ".dat");
     }
     
     @Override
     public ZenixUserInterface getZenixUser(Player player) {
-    	final Gson g = new Gson();	
-        final File f = getZenixUserFile(player);
+    	
+    	final File f = getZenixUserFile(player.getUniqueId());
+    	
+    	ZenixUserInterface zui = null;
+    	
+    	if (!(f.exists())) {
+    		zui = new ZenixUser(player, zenix, eventDispatcher);
+    		save(zui);
+    		return zui;
+    	}
+    	
+		try {
+			FileInputStream fis = new FileInputStream(f);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			zui = (ZenixUser) ois.readObject();
+			ois.close();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		zui.setPlayer(player);
+		zui.setTeleport(new Teleport(zui, zenix));
+		zui.setZenixMC(zenix);
+		zui.setEventDispatcher(eventDispatcher);
+		zui.handleSerialize();
         
-        final ZenixUserInterface zui = new ZenixUser(player, zenix);
-        
-        zui.setBendingPlayer(bendingRepository.getBendingPlayer(zui));
-        zui.setOrganizationPlayer(organizationRepository.getOrganizationPlayer(zui));
-        
-        if (!(f.exists())) {
-        	zui.setData(new DefaultUserData(zui, eventDispatcher));
-        	save(zui);
-        	return zui;
-        }
-        
-        ZenixUserData zuiData = null; 
-        
-        try{
-	        BufferedReader reader = new BufferedReader(new FileReader(f.getAbsoluteFile()));
-	        
-	        zuiData = g.fromJson(reader, ZenixUserData.class);
-	        reader.close();
-        }catch (IOException e) {
-        	logger.log(Level.WARNING, "Zenix User Data is failing to load.");
-        }
-        
-        if (zuiData == null) {
-        	zuiData = new DefaultUserData(zui, eventDispatcher);
-        	logger.log(Level.WARNING, "Zenix User Data failed to load, loading default data.");
-        }
-        
-        zui.setData(zuiData);
-        
-        logger.log(Level.INFO, "Zenix User Data has been loaded.");
+        logger.log(Level.INFO, "Zenix User " + zui.getName() + " has been loaded.");
         
         return zui;
     }
@@ -136,16 +118,6 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
         throw new UnsupportedOperationException("This is not a cache class.");
     }
     
-    @Override
-    public void setBendingRepository(BendingPlayerRepositoryInterface bendingRepository) {
-    	this.bendingRepository = bendingRepository;
-    }
-    
-    @Override
-	public void setOrganizationPlayerRepository(OrganizationPlayerRepositoryInterface organizationRepository) {
-		this.organizationRepository = organizationRepository;
-	}
-    
     public void setTextRepository(TextRepositoryInterface textRepository) {
     	this.textRepository = textRepository;
     }
@@ -153,23 +125,19 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
     @Override
     public void save(ZenixUserInterface zenixUser) {
     	
-    	bendingRepository.save(zenixUser.getBendingPlayer());
-        organizationRepository.save(zenixUser.getOrganizationPlayer());
-    	
-        final Player player = zenixUser.getPlayer();
-        
-        final File f = getZenixUserFile(player);
-        final Gson g = new Gson();
-        
-        try {
-			FileWriter writer = new FileWriter(f.getAbsoluteFile());
-			writer.write(g.toJson(zenixUser.getData()));
-			writer.close();
+    	final File f = getZenixUserFile(zenixUser.getUniqueId());
+    
+		try {
+			FileOutputStream fos = new FileOutputStream(f);
+		    ObjectOutputStream oos = new ObjectOutputStream(fos);
+		    oos.writeObject(zenixUser);
+		    oos.flush();
+		    oos.close();
 		} catch (IOException e) {
-			logger.log(Level.WARNING, "Zenix User Data is failing to save.");
-		}
-        
-        logger.log(Level.INFO, zenixUser.getName() + "'s Zenix User Data has been saved.");
+			logger.log(Level.SEVERE, "Zenix User has failed to saved.");
+		} 
+
+        logger.log(Level.INFO, "Zenix User " + zenixUser.getName() + " has been saved.");
     }
 
     @Override

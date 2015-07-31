@@ -26,16 +26,17 @@ import zenixmc.command.commands.clans.ClanCommands;
 import zenixmc.command.commands.essentials.HealCommand;
 import zenixmc.command.commands.essentials.HelloCommand;
 import zenixmc.command.commands.essentials.TeleportCommand;
+import zenixmc.command.commands.essentials.WarningCommand;
 import zenixmc.event.EventDispatcher;
-import zenixmc.persistance.BendingPlayerRepository;
 import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
-import zenixmc.persistance.OrganizationPlayerRepository;
 import zenixmc.persistance.OrganizationRepository;
 import zenixmc.persistance.ZenixUserRepository;
+import zenixmc.user.Console;
 import zenixmc.user.ZenixUserInterface;
+import zenixmc.user.ZenixUserListener;
 import zenixmc.user.ZenixUserManager;
-import zenixmc.utils.ExceptionUtils;
+import zenixmc.utils.ExceptionUtil;
 
 /**
  *
@@ -44,6 +45,11 @@ import zenixmc.utils.ExceptionUtils;
  */
 public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     
+	/**
+	 * The handler for punishments.
+	 */
+	PunishmentHandler punishmentHandler = new PunishmentHandler(this);
+	
 	/**
 	 * Plugin Settings.
 	 */
@@ -55,6 +61,11 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     EventDispatcher eventDispatcher = new EventDispatcher(this);
     
     /**
+     * The servers console.
+     */
+    Console console = new Console("Console", this);
+    
+    /**
      * Persistence of organization data to disk.
      */
     OrganizationRepository organizationRepository = new OrganizationRepository(this.getLogger(), new File(this.getDataFolder(), "organization"));
@@ -63,16 +74,6 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
      * Loading/Saving on Enable/Disable.
      */
     CachedOrganizationRepository cachedOrganizationRepository = new CachedOrganizationRepository(organizationRepository, this.getLogger());
-    
-    /**
-     * Persistence of bending data to disk.
-     */
-    BendingPlayerRepository bendingPlayerRepository = new BendingPlayerRepository(this.getLogger(), new File(this.getDataFolder(), "bending"));
-    
-    /**
-     * Persistence of organization data to disk.
-     */
-    OrganizationPlayerRepository organizationPlayerRepository = new OrganizationPlayerRepository(this.getLogger(), new File(this.getDataFolder(), "organization"));
     
     /**
      * Persistence of user data to disk.
@@ -94,26 +95,26 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
      */
     ZenixUserManager zenixUserManager = new ZenixUserManager(cachedZenixUserRepository, eventDispatcher);
     
+    /**
+     * The Zenix Listener.
+     */
+    ZenixUserListener zenixListener = new ZenixUserListener(punishmentHandler, this, zenixUserManager, eventDispatcher);
+    
     @Override
     public void onEnable() {
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
         
         cachedOrganizationRepository.open("Organization Repository has opened.");
-        bendingPlayerRepository.setZenixUserRepository(cachedZenixUserRepository);
-        bendingPlayerRepository.open("Bending Player Repository has opened.");
-        organizationPlayerRepository.setZenixUserRepository(cachedZenixUserRepository);
-        organizationPlayerRepository.setOrganizationRepository(cachedOrganizationRepository);
-        organizationPlayerRepository.open("Organization Player Repository has opened.");
-        cachedZenixUserRepository.setBendingRepository(bendingPlayerRepository);
-        cachedZenixUserRepository.setOrganizationPlayerRepository(organizationPlayerRepository);
         cachedZenixUserRepository.open("Zenix User Repository has opened.");
         
         eventDispatcher.registerEventListener(cachedZenixUserRepository);
+        eventDispatcher.registerEventListener(zenixListener);
         
         getCommand("z").setExecutor(mainCommandExecuter);
         mainCommandExecuter.addSubCommand(new HelloCommand(this, zenixUserManager));
         mainCommandExecuter.addSubCommand(new HealCommand(this, zenixUserManager));
         mainCommandExecuter.addSubCommand(new TeleportCommand(this, zenixUserManager));
+        mainCommandExecuter.addSubCommand(new WarningCommand(this, zenixUserManager));
         mainCommandExecuter.addSubCommand(new ClanCommands(this));
         
         for (final Player player : getServer().getOnlinePlayers()) {
@@ -140,6 +141,11 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     public SettingsInterface getSettings() {
         return settings;
     }
+    
+    @Override
+	public Console getConsole() {
+		return console;
+	}
     
     @Override
     public BukkitScheduler getScheduler() {
@@ -241,7 +247,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     public World getWorld(String name) throws NullPointerException {
         
         if (name == null || name.isEmpty()) {
-            throw ExceptionUtils.nullPointerException("name cannot be null");
+            throw ExceptionUtil.nullPointerException("name cannot be null");
         }
         
         World result = null;
@@ -253,7 +259,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         }
         
         if (result == null) {
-            throw ExceptionUtils.nullPointerException("result cannot be null");
+            throw ExceptionUtil.nullPointerException("result cannot be null");
         }else {
             return result;
         }

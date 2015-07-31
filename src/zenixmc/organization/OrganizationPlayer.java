@@ -8,21 +8,26 @@ import java.util.logging.Logger;
 import zenixmc.user.ZenixUserInterface;
 
 public class OrganizationPlayer implements OrganizationPlayerInterface {
-
-	/**
-	 * The logger to debug/log.
-	 */
-	private final Logger logger;
 	
+	/**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = 467064890550309721L;
+
 	/**
 	 * The user of the organizationPlayer.
 	 */
-	private ZenixUserInterface zui;
+	private transient ZenixUserInterface zui;
 	
 	/**
-	 * The organizationPlayer data.
+	 * The maximum amount of influence.
 	 */
-	private OrganizationPlayerData d;
+	private int maxInfluence = 10;
+	
+	/**
+	 * The amount of influence.
+	 */
+	private int influence = 0;
 	
 	/**
 	 * The users organizations.
@@ -34,12 +39,7 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	 * @param logger
 	 * 		The logger to debug/log.
 	 */
-	public OrganizationPlayer(Logger logger) {
-		this.logger = logger;
-	}
-	
-	@Override
-	public void setZenixUser(ZenixUserInterface zui) {
+	public OrganizationPlayer(ZenixUserInterface zui) {
 		this.zui = zui;
 	}
 
@@ -55,12 +55,12 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 			return;
 		}
 		
-		d.influence = value;
+		this.influence = value;
 	}
 
 	@Override
 	public int getInfluence() {
-		return d.influence;
+		return this.influence;
 	}
 	
 	@Override
@@ -70,28 +70,12 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 			setInfluence(value);
 		}
 		
-		d.maxInfluence = value;
+		this.maxInfluence = value;
 	}
 
 	@Override
 	public int getMaxInfluence() {
-		return d.maxInfluence;
-	}
-	
-	@Override
-	public Map<String, Class<?>> getMappedOrganizations() {
-		
-		Map<String, Class<?>> result = new HashMap<>();
-		
-		for (Map.Entry<String, String> map : d.organizations.entrySet()) {
-			try {
-				result.put(map.getKey(), Class.forName(map.getValue()));
-			} catch (ClassNotFoundException e) {
-				logger.log(Level.WARNING, "Cannot find organization class.");
-			}
-		}
-		
-		return result;
+		return this.maxInfluence;
 	}
 
 	@Override
@@ -106,24 +90,12 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 
 	@Override
 	public void setClan(Clan clan) {
-		d.organizations.remove(organizations.getClan());
-		d.organizations.put(clan.getName(), Clan.class.getName());
 		organizations.setClan(clan);
 	}
 
 	@Override
 	public Clan getClan() {
 		return organizations.getClan();
-	}
-
-	@Override
-	public void setData(OrganizationPlayerData data) {
-		this.d = data;
-	}
-
-	@Override
-	public OrganizationPlayerData getData() {
-		return d;
 	}
 
 }

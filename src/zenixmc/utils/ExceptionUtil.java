@@ -14,7 +14,7 @@ import zenixmc.utils.exceptions.NotEvenException;
  *
  * @author james
  */
-public class ExceptionUtils {
+public class ExceptionUtil {
     
     /**
      * Static logger to debug/log.

@@ -5,7 +5,9 @@
  */
 package zenixmc.utils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,7 +19,7 @@ import zenixmc.utils.exceptions.NotEvenException;
  * Utilities class for Java objects.
  * @author james
  */
-public class JavaUtils {
+public class JavaUtil {
 
     /**
      * Converts two arrays of the same length to a tree map.
@@ -32,7 +34,7 @@ public class JavaUtils {
     public static <A, B> TreeMap<A, B> arraysToTreeMap(A[] as, B[] bs) throws NotEvenException {
 
         if (as.length != bs.length) {
-            throw ExceptionUtils.notEvenException("strings and objects need to be even.");
+            throw ExceptionUtil.notEvenException("strings and objects need to be even.");
         }
 
         TreeMap<A, B> result = new TreeMap<>();
@@ -101,7 +103,7 @@ public class JavaUtils {
                 output.put(key, value);
             }
         }else {
-            throw ExceptionUtils.indexOutOfBoundsException("index cant be bigger or smaller than input");
+            throw ExceptionUtil.indexOutOfBoundsException("index cant be bigger or smaller than input");
         }
 
         return output;
@@ -129,7 +131,7 @@ public class JavaUtils {
             input.remove(keys.get(index));
             output.putAll(input);
         }else {
-            throw ExceptionUtils.indexOutOfBoundsException("index cant be bigger or smaller than input");
+            throw ExceptionUtil.indexOutOfBoundsException("index cant be bigger or smaller than input");
         }
         
         return output;
@@ -156,6 +158,12 @@ public class JavaUtils {
         return map;
     }
     
+    /**
+     * Checks if the given string can be parsed as an integer. 
+     * @param integer
+     * 		The string to check.
+     * @return <code>true</code> If the string can be parsed as an integer.
+     */
     public static boolean canBeInteger(String integer) {
     	for (int i = 0; i < integer.length(); i++) {
     		char c = integer.charAt(i);
@@ -166,6 +174,12 @@ public class JavaUtils {
     	return true;
     }
     
+    /**
+     * Checks if given strings can be parsed as integers.
+     * @param integers
+     * 		The strings to check.
+     * @return <code>true</code> If they can be parsed as integers.
+     */
     public static boolean canBeIntegers(String... integers) {
     	
     	for (String s : integers) {
@@ -174,5 +188,44 @@ public class JavaUtils {
     		}
     	}
     	return true;
+    }
+    
+    /**
+     * Removes specified elements from an array.
+     * @param array
+     * 		The array to modify.
+     * @param type
+     * 		The type inside the array.
+     * @param indices
+     * 		The indices to remove the elements from.
+     * @return The modified array.
+     * 
+     */
+    @SuppressWarnings("unchecked")
+	public static <T> T[] removeElementsFromArray(T[] array, Class<T> type, Integer... indices) {
+    	
+    	List<T> result = new ArrayList<>(Arrays.asList(array));
+    	
+    	for (Integer i : indices) {
+    		if (i < result.size()) {
+    			result.remove(i);
+    		}
+    	}
+    	
+    	return result.toArray((T[]) Array.newInstance(type, result.size()));
+    }
+    
+    public static String arrayToString(String[] array) {
+    	
+    	StringBuilder sb = new StringBuilder();
+    	
+    	for (int i=0; i < array.length; i++) {
+    		if (i != 0) {
+    			sb.append(" ");
+    		}
+    		sb.append(array[i]);
+    	}
+    	
+    	return sb.toString();
     }
 }

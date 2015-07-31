@@ -7,12 +7,15 @@ package zenixmc;
 
 import java.util.Collection;
 import java.util.UUID;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
+
+import zenixmc.user.Console;
 import zenixmc.user.ZenixUserInterface;
 
 /**
@@ -30,6 +33,11 @@ public interface ZenixMCInterface extends Plugin {
      * @return The plugins settings.
      */
     SettingsInterface getSettings();
+    
+    /**
+     * @return The console of the server.
+     */
+    Console getConsole();
     
     /**
      * @return The servers scheduler object.

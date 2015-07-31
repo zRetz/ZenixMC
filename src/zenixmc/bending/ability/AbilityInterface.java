@@ -1,5 +1,7 @@
 package zenixmc.bending.ability;
 
+import java.io.Serializable;
+
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.bending.Element;
 
@@ -8,7 +10,7 @@ import zenixmc.bending.Element;
  * passive ability.
  */
 
-public interface AbilityInterface {
+public interface AbilityInterface extends Serializable {
 
     /**
      * @return The <b>unique</b> name to identify this ability.

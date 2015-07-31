@@ -58,7 +58,7 @@ public class ReachedMaxWarningEvent extends ZenixUserEvent implements Cancellabl
 	/**
 	 * @return A list of handlers.
 	 */
-	public static HandlerList getHandlerLists() {
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 }

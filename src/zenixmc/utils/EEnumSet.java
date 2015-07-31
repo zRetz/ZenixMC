@@ -1,5 +1,6 @@
 package zenixmc.utils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -12,9 +13,14 @@ import java.util.Set;
  * @param <E>
  *     	The enum to make a set of.
  */
-public class EEnumSet<E extends Enum<E>> implements Set<E> {
+public class EEnumSet<E extends Enum<E>> implements Set<E>, Serializable {
 	
     /**
+     *	SerialVersionUID. 
+	 */
+	private static final long serialVersionUID = -2923315364755481245L;
+	
+	/**
      * Actual set that contains the values.
      */
     private EnumSet<E> values;

@@ -1,5 +1,6 @@
 package zenixmc.utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,7 +12,12 @@ import java.util.Set;
  * Set to allow only one implementation each of an interface.
  * @author james
  */
-public class InterfaceSet<E> implements Set<E> {
+public class InterfaceSet<E> implements Set<E>, Serializable {
+
+	/**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = -4781957456970628879L;
 
 	/**
 	 * Values.

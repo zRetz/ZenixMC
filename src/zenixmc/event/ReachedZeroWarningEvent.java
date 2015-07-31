@@ -42,7 +42,7 @@ public class ReachedZeroWarningEvent extends ZenixUserEvent {
 	/**
 	 * @return A list of handlers.
 	 */
-	public static HandlerList getHandlerLists() {
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 }

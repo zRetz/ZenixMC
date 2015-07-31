@@ -5,6 +5,7 @@
  */
 package zenixmc.bending;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import zenixmc.bending.ability.AbilityInterface;
@@ -15,7 +16,7 @@ import zenixmc.user.ZenixUserInterface;
  * A bendingPlayer internally used by this plugin.
  * @author james
  */
-public interface BendingPlayerInterface {
+public interface BendingPlayerInterface extends Serializable {
     
 	/**
 	 * Sets the user of the bendingPlayer.

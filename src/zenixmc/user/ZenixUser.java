@@ -5,6 +5,7 @@
  */
 package zenixmc.user;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,12 +15,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.bending.BendingPlayer;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
+import zenixmc.event.EventDispatcher;
+import zenixmc.organization.OrganizationPlayer;
 import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
 import zenixmc.user.objects.Warning;
+import zenixmc.utils.JavaUtil;
 import zenixmc.utils.StringFormatter;
 
 /**
@@ -30,56 +35,81 @@ import zenixmc.utils.StringFormatter;
  * @author james
  */
 public class ZenixUser implements ZenixUserInterface {
-    
+
+	/**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = -2047523602803536907L;
+	
 	/**
 	 * The plugin.
 	 */
-	private final ZenixMCInterface zenix;
+	private transient ZenixMCInterface zenix;
+	
+	/**
+	 * The event dispatcher to fire events.
+	 */
+	private transient EventDispatcher eventDispatcher;
 	
     /**
      * The bukkit representation of the user.
      */
-    private final Player player;
-
-    /**
-     * The users account name.
-     */
-    private final String username;
-
-    /**
-     * The users name displayed when messaging;
-     */
-    private final String displayName;
-
-    /**
-     * The users unique identifier.
-     */
-    private final UUID uuid;
+    private transient Player player;
     
     /**
      * The users teleportation object.
      */
-    private final Teleport teleport;
+    private transient Teleport teleport;
     
     /**
-	 * User data.
-	 */
-	private ZenixUserData d;
+     * The user requesting to teleport.
+     */
+    private transient ZenixUserInterface teleportRequester;
+
+    /**
+     * The users teleportation request time.
+     */
+    private transient long teleportRequestTime;
+    
+    /**
+     * The users command sender object.
+     */
+    private transient ZenixCommandSender zenixCommandSender;
+
+    /**
+     * The users account name.
+     */
+    private String username;
+
+    /**
+     * The users name displayed when messaging;
+     */
+    private String displayName;
+
+    /**
+     * The users unique identifier.
+     */
+    private UUID uuid;
+    
+    /**
+     * The users amount of warnings and sentence.
+     */
+	public Warning warning;
 
     /**
      * The users bendingPlayer data.
      */
-    private BendingPlayerInterface bendingPlayer;
+    private BendingPlayerInterface bendingPlayer = new BendingPlayer(this);
     
     /**
      * The users organizationPlayer data.
      */
-    private OrganizationPlayerInterface organizationPlayer;
+    private OrganizationPlayerInterface organizationPlayer = new OrganizationPlayer(this);
 
     /**
      * The users away from keyboard value;
      */
-    private boolean afk;
+    private boolean afk = false;
 
     /**
      * The users last known location.
@@ -87,22 +117,72 @@ public class ZenixUser implements ZenixUserInterface {
     private Location lastLocation;
 
     /**
-     * The user requesting to teleport.
-     */
-    private ZenixUserInterface teleportRequester;
-
-    /**
-     * The users teleportation request time.
-     */
-    private long teleportRequestTime;
-
-    /**
      * The time of the users last throttled action.
      */
-    private long lastThrottledAction;
-
+    private long lastThrottledAction = 0;
+    
     /**
-     * Instantiate.
+     * The users ability to speak.
+     */
+	public boolean muted = false;
+	
+	/**
+     * The users ability to move.
+     */
+	public boolean frozen = false;
+	
+	/**
+     * The users ability to take damage.
+     */
+	public boolean godMode = false;
+	
+	/**
+     * The users ability to be seen.
+     */
+	public boolean vanished = false;
+	
+	/**
+     * The users ability to socially spy.
+     */
+	public boolean socialSpy = false;
+	
+	/**
+     * The users collection of homes.
+     */
+	public List<Home> homes = new ArrayList<>();
+	
+	/**
+     * The users collection of mail.
+     */
+	public List<String> mails = new ArrayList<>();
+	
+	/**
+     * The users current jail. (Can be null)
+     */
+	public String jail = null;
+	
+	/**
+     * The users collection of ignoredUsers.
+     */
+	public List<UUID> ignoredUsers = new ArrayList<>();
+	
+	/**
+     * The start time of the users last activity. (Log-in time.) 
+     */
+	public long startActivity = System.currentTimeMillis();
+	
+	/**
+     * The duration of the users last session.
+     */
+	public long lastOnlineActivity = 0;
+	
+	/**
+     * The end time of the users last activity. (Can be log-off time.)
+     */
+	public long lastActivity = startActivity;
+	
+    /**
+     * Creates a new Zenix User.
      *
      * @param player
      *      The bukkit representation of user.
@@ -111,9 +191,11 @@ public class ZenixUser implements ZenixUserInterface {
      * @param punishmentHandler
      *      Handler for punishments.
      */
-    public ZenixUser(Player player, ZenixMCInterface zenix) {
-    	this.teleport = new Teleport(this, zenix);
+    public ZenixUser(Player player, ZenixMCInterface zenix, EventDispatcher eventDispatcher) {
     	this.zenix = zenix;
+    	this.teleport = new Teleport(this, this.zenix);
+    	this.eventDispatcher = eventDispatcher;
+    	this.warning = new Warning(this, this.eventDispatcher);
         this.player = player;
         this.uuid = player.getUniqueId();
         this.username = player.getName();
@@ -121,10 +203,25 @@ public class ZenixUser implements ZenixUserInterface {
     }
 
     @Override
+	public void setZenixMC(ZenixMCInterface zenix) {
+		this.zenix = zenix;
+	}
+
+	@Override
+	public void setEventDispatcher(EventDispatcher eventDispatcher) {
+		this.eventDispatcher = eventDispatcher;
+	}
+    
+    @Override
     public boolean isAuthorised(String node) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+    
     @Override
     public Player getPlayer() {
         return player;
@@ -271,89 +368,87 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public boolean canBuild() {
-        return !d.frozen;
+        return !frozen;
     }
 
     @Override
     public void setMuted(boolean value) {
-        d.muted = value;
+        muted = value;
     }
 
     @Override
     public boolean isMuted() {
-        return d.muted;
+        return muted;
     }
 
     @Override
     public void setFrozen(boolean value) {
-        d.frozen = value;
+        frozen = value;
     }
 
     @Override
     public boolean isFrozen() {
-        return d.frozen;
+        return frozen;
     }
 
     @Override
     public void setGodMode(boolean value) {
-        d.godMode = value;
+        godMode = value;
     }
 
     @Override
     public boolean isGodMode() {
-        return d.godMode;
+        return godMode;
     }
 
     @Override
     public void setVanished(boolean value) {
-        d.vanished = value;
+        vanished = value;
     }
 
     @Override
     public boolean isVanished() {
-        return d.vanished;
+        return vanished;
     }
 
     @Override
     public void setSocialSpy(boolean value) {
-        d.socialSpy = value;
+        socialSpy = value;
     }
 
     @Override
     public boolean isSocialSpying() {
-        return d.socialSpy;
+        return socialSpy;
     }
 
     @Override
-    public void incrementWarning(long time) {
+    public void incrementWarning(long time, String... reason) {
         if (time != 0) {
-        	d.warning.increment(time);
-            sendMessage(zenix.getSettings().getErrorColor() + "You have recieved a warning. That's bad.");
+        	String r = JavaUtil.arrayToString(reason);
+        	warning.increment(time, r);
+            sendMessage(zenix.getSettings().getErrorColor() + "You have recieved a warning. REASON: " + r);
         }
     }
 
     @Override
-    public void decrementWarning() {
-        d.warning.decrement();
+    public void decrementWarning(String... reason) {
+        warning.decrement();
+        sendMessage(zenix.getSettings().getNotificationColor() + "You have lost a warning. REASON: " + JavaUtil.arrayToString(reason));
     }
-
+    
     @Override
-	public void setWarning(Warning value) {	
-    	d.warning = value;
-    	
-    	if (d.warning.isMaximum()) {
-    		d.warning.increment(0);
-    	}
+	public void setWarning(Warning value) {
+    	this.warning = value;
 	}
     
     @Override
     public Warning getWarning() {
-        return d.warning;
+        return warning;
     }
 
     @Override
     public void setHome(String name, Location loc) {
-        if (d.homes == null) {
+        if (homes == null) {
             return;
         }
         
@@ -368,13 +463,13 @@ public class ZenixUser implements ZenixUserInterface {
         }
         
         Home h = new Home(name, loc);
-        d.homes.add(h);
+        homes.add(h);
     }
 
     @Override
     public void deleteHome(String name) {
         
-        if (d.homes == null) {
+        if (homes == null) {
             return;
         }
         
@@ -384,19 +479,19 @@ public class ZenixUser implements ZenixUserInterface {
         }
         
         Home h = getHome(name);
-        d.homes.remove(h);
+        homes.remove(h);
     }
 
     @Override
     public Home getHome(String name) {
         
-        if (d.homes == null) {
+        if (homes == null) {
             return null;
         }
         
         Home result = null;
         
-        for (Home h : d.homes) {
+        for (Home h : homes) {
             if (h.getName().equals(name)) {
                 result = h;
             }
@@ -408,13 +503,13 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public Home getHome(Location location) {
         
-        if (d.homes == null) {
+        if (homes == null) {
             return null;
         }
         
         Home result = null;
         
-        for (Home h : d.homes) {
+        for (Home h : homes) {
             if (h.getLocation().equals(location)) {
                 result = h;
             }
@@ -425,28 +520,28 @@ public class ZenixUser implements ZenixUserInterface {
     
     @Override
 	public void setHomes(List<Home> homes) {
-    	d.homes = homes;
+    	this.homes = homes;
 	}
 
     @Override
     public List<Home> getHomes() {
-        return d.homes;
+        return homes;
     }
 
     @Override
     public boolean hasHome() {
         
-        if (d.homes == null) {
+        if (homes == null) {
             return false;
         }
         
-        return d.homes.size() > 0;
+        return homes.size() > 0;
     }
     
     @Override
     public boolean homeExists(String name) {
         
-        if (d.homes == null) {
+        if (homes == null) {
             return false;
         }
         
@@ -456,7 +551,7 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public boolean homeExists(Location location) {
         
-        if (d.homes == null) {
+        if (homes == null) {
             return false;
         }
         
@@ -466,17 +561,17 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public void clearMail() {
         
-        if (d.mails == null) {
+        if (mails == null) {
             return;
         }
         
-        d.mails.clear();
+        mails.clear();
     }
 
     @Override
     public void addMail(String mail) {
         
-        if (d.mails == null) {
+        if (mails == null) {
             return;
         }
         
@@ -484,7 +579,7 @@ public class ZenixUser implements ZenixUserInterface {
             return;
         }
 
-        d.mails.add(mail);
+        mails.add(mail);
     }
 
     @Override
@@ -495,22 +590,22 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public String popMail(int index) {
 
-        if (d.mails == null) {
+        if (mails == null) {
             return null;
         }
         
-        if (index > d.mails.size() && d.mails.size() > 0) {
+        if (index > mails.size() && mails.size() > 0) {
             sendMessage(zenix.getSettings().getSortedColor() + "Index out of bounds. Retrieving first entry.");
             return popMail();
         }
         
-        if (index > d.mails.size()) {
+        if (index > mails.size()) {
             sendMessage(zenix.getSettings().getErrorColor() + "Index out of bounds.");
             return null;
         }
 
         String result = getMail(index);
-        d.mails.remove(result);
+        mails.remove(result);
 
         return result;
     }
@@ -523,31 +618,31 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public String getMail(int index) {
 
-        if (d.mails == null) {
+        if (mails == null) {
             return null;
         }
         
-        if (index > d.mails.size() && d.mails.size() > 0) {
+        if (index > mails.size() && mails.size() > 0) {
             sendMessage(zenix.getSettings().getSortedColor() + "Index out of bounds. Returning first entry.");
             return getMail();
         }
         
-        if (index > d.mails.size()) {
+        if (index > mails.size()) {
             sendMessage(zenix.getSettings().getErrorColor() + "Index out of bounds.");
             return null;
         }
 
-        return d.mails.get(index);
+        return mails.get(index);
     }
 
     @Override
 	public void setMails(List<String> mails) {
-    	d.mails = mails;
+    	this.mails = mails;
 	}
     
     @Override
     public List<String> getMails() {
-        return d.mails;
+        return mails;
     }
 
     @Override
@@ -565,6 +660,11 @@ public class ZenixUser implements ZenixUserInterface {
         return lastLocation;
     }
 
+    @Override
+    public void setTeleport(Teleport value) {
+        this.teleport = value;
+    }
+    
     @Override
     public Teleport getTeleport() {
         return teleport;
@@ -588,41 +688,41 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public void setStartActivity(long startActivity) {
     	
-    	if (d.startActivity > startActivity) {
+    	if (this.startActivity > startActivity) {
     		return;
     	}
     	
-    	d.startActivity = startActivity;
+    	this.startActivity = startActivity;
     }
     
     @Override
     public long getStartActivity() {
-    	return d.startActivity;
+    	return startActivity;
     }
     
     @Override
 	public void setLastOnlineActivity(long lastOnlineActivity) {
-    	d.lastOnlineActivity = lastOnlineActivity;
+    	this.lastOnlineActivity = lastOnlineActivity;
 	}
     
     @Override
     public long getLastOnlineActivity() {
-        return d.lastOnlineActivity;
+        return lastOnlineActivity;
     }
 
     @Override
 	public void setLastActivity(long lastActivity) {
 		
-		if (lastActivity < d.lastActivity) {
+		if (this.lastActivity < lastActivity) {
 			return;
 		}
 		
-		d.lastActivity = lastActivity;
+		this.lastActivity = lastActivity;
 	}
     
     @Override
     public long getLastActivity() {
-        return d.lastActivity;
+        return lastActivity;
     }
 
     @Override
@@ -632,23 +732,23 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public void setJail(String jail) {
-        d.jail = jail;
+        this.jail = jail;
     }
 
     @Override
     public String getJail() {
-        return d.jail;
+        return this.jail;
     }
 
     @Override
     public boolean isJailed() {
-        return d.jail != null;
+        return this.jail != null;
     }
 
     @Override
     public void ignoreUser(UUID uuid) {
         if (uuid != null) {
-            d.ignoredUsers.add(uuid);
+            ignoredUsers.add(uuid);
             //change to offline player
             sendMessage(zenix.getSettings().getNotificationColor() + "You've added " + uuid.toString() + " to your ignoredUsers.");
         }
@@ -662,7 +762,7 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public void unIgnoreUser(UUID uuid) {
         if (uuid != null) {
-            d.ignoredUsers.remove(uuid);
+            ignoredUsers.remove(uuid);
             //change to offline player
             sendMessage(zenix.getSettings().getNotificationColor() + "You've removed " + uuid.toString() + " from your ignoredUsers.");
         }
@@ -675,18 +775,18 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public void setIgnoredUsers(List<UUID> users) {
-        d.ignoredUsers = users;
+        ignoredUsers = users;
     }
 
     @Override
     public List<UUID> getIgnoredUsers() {
-        return d.ignoredUsers;
+        return ignoredUsers;
     }
 
     @Override
     public boolean isIgnoredUser(UUID uuid) {
 
-        for (UUID uu : d.ignoredUsers) {
+        for (UUID uu : ignoredUsers) {
             if (uu.compareTo(uuid) == 0) {
                 return true;
             }
@@ -707,17 +807,16 @@ public class ZenixUser implements ZenixUserInterface {
 
     @Override
     public ZenixCommandSender getCommandSender() {
-        return new ZenixCommandSender(player, this);
+    	if (zenixCommandSender == null) {
+    		zenixCommandSender = new ZenixCommandSender(player, this);
+    	}
+        return zenixCommandSender;
     }
 
 	@Override
-	public void setData(ZenixUserData data) {
-		this.d = data;
+	public void handleSerialize() {
+		this.warning.setParent(this);
+		this.warning.setEventDispatcher(eventDispatcher);
 	}
-
-	@Override
-	public ZenixUserData getData() {
-		return d;
-	}
-
+    
 }

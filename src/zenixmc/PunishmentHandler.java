@@ -8,8 +8,11 @@ package zenixmc;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
 import org.bukkit.BanList;
 import org.bukkit.Server;
+
 import zenixmc.persistance.CachedZenixUserRepository;
 import zenixmc.user.ZenixUserInterface;
 
@@ -22,19 +25,14 @@ public class PunishmentHandler {
     /**
      * The plugin.
      */
-    private final ZenixMC zenix;
-
-    /**
-     * Repository to push/fetch user data.
-     */
-    private CachedZenixUserRepository repository;
+    private final ZenixMCInterface zenix;
     
     /**
      * Instantiate.
      * @param zenix
      *      The plugin.
      */
-    public PunishmentHandler(ZenixMC zenix) {
+    public PunishmentHandler(ZenixMCInterface zenix) {
         this.zenix = zenix;
     }
     
@@ -70,15 +68,11 @@ public class PunishmentHandler {
         Server server = zenix.getServer();
         BanList banlist = server.getBanList(BanList.Type.NAME);
         
-        if (banlist.isBanned(banned.getName())) {
-            admin.sendMessage(zenix.getSettings().getSortedColor() + "This user is already banned.");
-            return;
-        }
-        
         Calendar expire = null;
         
         if (duration > 0 ) {
             expire = new GregorianCalendar();
+            expire.setTimeZone(TimeZone.getTimeZone("BST"));
             expire.setTimeInMillis(expire.getTimeInMillis() + duration);
         }
         

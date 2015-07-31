@@ -5,6 +5,7 @@
  */
 package zenixmc.user;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,8 +14,10 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
+import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
+import zenixmc.event.EventDispatcher;
 import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
@@ -24,8 +27,24 @@ import zenixmc.user.objects.Warning;
  * A user internally used by this plugin.
  * @author james
  */
-public interface ZenixUserInterface {
+public interface ZenixUserInterface extends Serializable {
     
+	
+	
+	/**
+	 * Sets the users zenixmc object.
+	 * @param zenix
+	 * 		The zenix object to set.
+	 */
+	void setZenixMC(ZenixMCInterface zenix);
+	
+	/**
+	 * Sets the users eventDispatcher.
+	 * @param eventDispatcher
+	 * 		The eventDispatcher to set.
+	 */
+	void setEventDispatcher(EventDispatcher eventDispatcher);
+	
     /**
      * Checks if user has authorisation under given node.
      * @param node The node being checked.
@@ -34,8 +53,15 @@ public interface ZenixUserInterface {
     boolean isAuthorised(String node);
     
     /**
+     * Sets the bukkit representation of a user.
+     * @param player
+     * 		The representation to set.
+     */
+    void setPlayer(Player player);
+    
+    /**
      * May soon be gone.
-     * @return The bukkit representation of a player.
+     * @return The bukkit representation of a user.
      */
     @Deprecated
     Player getPlayer();
@@ -63,8 +89,6 @@ public interface ZenixUserInterface {
     /**
      * @return The players world.
      */
-    
-    
     World getWorld();
     
     /**
@@ -234,16 +258,16 @@ public interface ZenixUserInterface {
      * @param time
      *      The time adding onto the punishment.
      */
-    void incrementWarning(long time);
+    void incrementWarning(long time, String... reason);
     
     /**
      * Decrements the warning value. This does not affect the already standing
      * punishment though.
      */
-    void decrementWarning();
+    void decrementWarning(String... reason);
     
     /**
-     * Sets the users warnings.
+     * Sets the users warning value.
      * @param value
      * 		The value to set.
      */
@@ -386,6 +410,13 @@ public interface ZenixUserInterface {
      * @return The users last known location.
      */
     Location getLastLocation();
+    
+    /**
+     * Sets the teleport object to a value.
+     * @param value
+     * 		The value to set.
+     */
+    void setTeleport(Teleport value);
     
     /**
      * @return The users teleportation object.
@@ -533,18 +564,9 @@ public interface ZenixUserInterface {
      * @return A command sender with this users information.
      */
     ZenixCommandSender getCommandSender();
-    
+   
     /**
-     * Sets the users data object.
-     * @param data
-     * 		The data to set to.
+     * Handles Serialization.
      */
-    void setData(ZenixUserData data);
-  
-    /**
-     * @return The users data object.
-     * 
-     * <b>NOTE:</b> Don't use this method. It's only for saving to repository.
-     */
-    ZenixUserData getData();
+    void handleSerialize();
 }

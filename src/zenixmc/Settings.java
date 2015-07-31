@@ -7,6 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import zenixmc.utils.DateUtil;
+import zenixmc.utils.ExceptionUtil;
 import zenixmc.utils.MinecraftUtils;
 
 /**
@@ -25,8 +27,16 @@ public class Settings implements SettingsInterface {
 	 */
 	private FileConfiguration config;
 	
+	/**
+	 * Instantiate.
+	 * @param zenix
+	 * 		The plugin.
+	 * @param config
+	 * 		The plugins configuration file.
+	 */
 	public Settings(ZenixMCInterface zenix, FileConfiguration config) {
 		
+		config.addDefault("warningBanFormat", "minute");
 		config.addDefault("teleportTime", 5000);
     	config.addDefault("canMoveBeforeTeleport", false);
     	config.addDefault("errorColor", "RED");
@@ -45,6 +55,14 @@ public class Settings implements SettingsInterface {
     	
 		this.config = config;
 		this.zenix = zenix;
+	}
+	
+	@Override
+	public String getWarningBanFormat() {
+		
+		String format = config.getString("warningBanFormat");
+		
+		return format;
 	}
 	
 	@Override
