@@ -22,7 +22,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import zenixmc.command.MainCommandExecuter;
-import zenixmc.command.commands.clans.ClanCommands;
 import zenixmc.command.commands.essentials.HealCommand;
 import zenixmc.command.commands.essentials.HelloCommand;
 import zenixmc.command.commands.essentials.TeleportCommand;
@@ -115,7 +114,6 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         mainCommandExecuter.addSubCommand(new HealCommand(this, zenixUserManager));
         mainCommandExecuter.addSubCommand(new TeleportCommand(this, zenixUserManager));
         mainCommandExecuter.addSubCommand(new WarningCommand(this, zenixUserManager));
-        mainCommandExecuter.addSubCommand(new ClanCommands(this));
         
         for (final Player player : getServer().getOnlinePlayers()) {
         	cachedZenixUserRepository.onPlayerJoin(new PlayerJoinEvent(player, null));
