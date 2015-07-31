@@ -90,6 +90,8 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 
 	@Override
 	public void setClan(Clan clan) {
+		organizations.remove(organizations.getClan());
+		Organization.o.put(this, clan);
 		organizations.setClan(clan);
 	}
 
