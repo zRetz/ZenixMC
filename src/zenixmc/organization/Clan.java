@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Clan implements Organization {
+	List<SubGroup> subgroups = new ArrayList<>();
 
-	private OrganizationPlayerInterface player;
+	private OrganizationPlayerInterface leader;
 	private String name;
 	private String[] desc;
 
-	public Clan(OrganizationPlayerInterface player, String name, String[] desc) {
-		this.player = player;
+	public Clan(OrganizationPlayerInterface leader, String name, String[] desc) {
+		this.leader = leader;
 		this.name = name;
 		this.desc = desc;
 
-		player.setClan(this);
+		leader.setClan(this);
+		new SubGroup(leader, null, "Leader", "Leader ", new String[] { "Leader of the Clan!" });
 	}
 
 	@Override
@@ -29,7 +31,7 @@ public class Clan implements Organization {
 
 	@Override
 	public OrganizationPlayerInterface getLeader() {
-		return player;
+		return leader;
 	}
 
 	@Override
