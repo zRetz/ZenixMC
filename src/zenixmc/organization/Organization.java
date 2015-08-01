@@ -14,14 +14,19 @@ import java.util.Map;
  * @author james
  */
 public interface Organization {
-	public Map<OrganizationPlayerInterface, Organization> o = new HashMap<>();
+	Map<Organization, OrganizationPlayerInterface> organizations = new HashMap<>();
+	Map<OrganizationPlayerInterface, Organization> invites = new HashMap<>();
     
-	public String getName();
+	String getName();
 	
-	public String[] getDescription();
+	String[] getDescription();
 	
-	public OrganizationPlayerInterface getLeader();
+	OrganizationPlayerInterface getLeader();
 	
-	public List<OrganizationPlayerInterface> getPlayers();
+	List<OrganizationPlayerInterface> getPlayers();
+	
+	void sendInvite(OrganizationPlayerInterface player);
+	
+	void disband();
 	
 }
