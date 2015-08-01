@@ -1,6 +1,7 @@
 package zenixmc.organization;
 
-import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import zenixmc.user.ZenixUserInterface;
 
@@ -8,7 +9,14 @@ import zenixmc.user.ZenixUserInterface;
  * A organizationPlayer internally used by this plugin.
  * @author james
  */
-public interface OrganizationPlayerInterface extends Serializable {
+public interface OrganizationPlayerInterface {
+
+	/**
+	 * Sets the user of this organizationPlayer.
+	 * @param zui
+	 * 		The user to set.
+	 */
+	void setZenixUser(ZenixUserInterface zui);
 	
 	/**
 	 * @return The user of this organizationPlayer.
@@ -40,6 +48,11 @@ public interface OrganizationPlayerInterface extends Serializable {
 	int getMaxInfluence();
 	
 	/**
+	 * @return The organizationPlayers' organizations in a map form.
+	 */
+	Map<String, Class<?>> getMappedOrganizations();
+	
+	/**
 	 * Sets the organizationPlayers organizations.
 	 * @param organizations
 	 * 		The organizations to set.
@@ -58,9 +71,29 @@ public interface OrganizationPlayerInterface extends Serializable {
 	 */
 	void setClan(Clan clan);
 	
+	/*
+	 * 
+	 * Returns a list of pending invites
+	 * 
+	 */
+	
+	List<Organization> getInvites();
+	
 	/**
 	 * @return The users current clan.
 	 */
+	
 	Clan getClan();
-
+	
+	/**
+	 * Sets the organizationPlayers data.
+	 * @param data
+	 * 		The data to set.
+	 */
+	void setData(OrganizationPlayerData data);
+	
+	/**
+	 * @return The organizationPlayers data.
+	 */
+	OrganizationPlayerData getData();
 }
