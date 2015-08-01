@@ -35,14 +35,31 @@ public class Clan implements Organization {
 	@Override
 	public List<OrganizationPlayerInterface> getPlayers() {
 		List<OrganizationPlayerInterface> l = new ArrayList<>();
-		for (OrganizationPlayerInterface p : o.keySet()) {
-			if (!o.containsKey(p)) {
+		for (OrganizationPlayerInterface p : organizations.values()) {
+			if (!organizations.containsKey(this)) {
 				return null;
 			}
-			if (o.get(p) == this) {
-				l.add(p);
-			}
+			l.add(p);
 		}
 		return l;
+	}
+
+	@Override
+	public void sendInvite(OrganizationPlayerInterface player) {
+		invites.put(player, this);
+		player.getZenixUser().addMail("You have been invited to:" + this.getName());
+		
+	}
+
+	@Override
+	public void disband() {
+		if (organizations.containsKey(this)) {
+			
+		}
+		for (OrganizationPlayerInterface p : organizations.values()) {
+			p.setClan(null);
+			p.getZenixUser().addMail("The clan you we're in, " + this.getName() + " has disbanded!");
+		}
+		
 	}
 }
