@@ -12,7 +12,7 @@ public class Move implements Engine {
 		this.name = name;
 		this.desc = desc;
 		
-		states.add(new State());
+		states.add(new State(name));
 	}
 
 	@Override

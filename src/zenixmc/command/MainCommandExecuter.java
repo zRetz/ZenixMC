@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

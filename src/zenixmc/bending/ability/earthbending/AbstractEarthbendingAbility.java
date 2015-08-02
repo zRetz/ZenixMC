@@ -6,7 +6,7 @@ import zenixmc.bending.ability.AbilityInterface;
 /**
  * Base class for earthbending abilities.
  * 
- * @author jayms
+ * @author james
  */
 public abstract class AbstractEarthbendingAbility implements AbilityInterface {
 

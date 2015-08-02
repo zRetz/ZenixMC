@@ -6,7 +6,7 @@ import zenixmc.bending.ability.AbilityInterface;
 /**
  * Base class for firebending abilities.
  * 
- * @author jayms
+ * @author james
  */
 public abstract class AbstractFirebendingAbility implements AbilityInterface {
 	/**
