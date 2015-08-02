@@ -1,8 +1,6 @@
 package zenixmc.organization;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 import zenixmc.user.ZenixUserInterface;
 

@@ -49,7 +49,7 @@ public class ClanCommands extends AbstractClanCommand {
 				if(sender.zui.isAuthorised("clan.invite")) {
 					if (args.length > 2) {
 						sender.zui.sendMessage("You have invited " +  args[1] + " to the Clan!");
-						
+						sender.zui.getOrganizationPlayer().getClan().sendInvite(null);
 						break;
 					}
 				}

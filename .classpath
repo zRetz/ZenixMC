@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Users/james.CEX-PC/Desktop/ZenixMC Server/minecraft_server.jar"/>
+	<classpathentry kind="lib" path="/home/matt/spigot_server.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
