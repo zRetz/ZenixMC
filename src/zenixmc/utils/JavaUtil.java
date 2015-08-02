@@ -204,11 +204,11 @@ public class JavaUtil {
     @SuppressWarnings("unchecked")
 	public static <T> T[] removeElementsFromArray(T[] array, Class<T> type, Integer... indices) {
     	
-    	List<T> result = new ArrayList<>(Arrays.asList(array));
+    	ArrayList<T> result = new ArrayList<>(Arrays.asList(array));
     	
     	for (Integer i : indices) {
     		if (i < result.size()) {
-    			result.remove(i);
+    			result.remove(i.intValue());
     		}
     	}
     	

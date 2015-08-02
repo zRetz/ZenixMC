@@ -25,7 +25,8 @@ import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.commands.essentials.HealCommand;
 import zenixmc.command.commands.essentials.HelloCommand;
 import zenixmc.command.commands.essentials.TeleportCommand;
-import zenixmc.command.commands.essentials.WarningCommand;
+import zenixmc.command.commands.essentials.WarningDecrementCommand;
+import zenixmc.command.commands.essentials.WarningIncrementCommand;
 import zenixmc.event.EventDispatcher;
 import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
@@ -85,14 +86,14 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     CachedZenixUserRepository cachedZenixUserRepository = new CachedZenixUserRepository(zenixUserRepository, this, this.getLogger());
     
     /**
-     * Main command.
-     */
-    MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(cachedZenixUserRepository);
-    
-    /**
      * Zenix User Manager.
      */
     ZenixUserManager zenixUserManager = new ZenixUserManager(cachedZenixUserRepository, eventDispatcher);
+    
+    /**
+     * Main command.
+     */
+    MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(zenixUserManager);
     
     /**
      * The Zenix Listener.
@@ -106,14 +107,15 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         cachedOrganizationRepository.open("Organization Repository has opened.");
         cachedZenixUserRepository.open("Zenix User Repository has opened.");
         
+        mainCommandExecuter.addMainCommand(new HelloCommand(this, zenixUserManager));
+        mainCommandExecuter.addMainCommand(new HealCommand(this, zenixUserManager));
+        mainCommandExecuter.addMainCommand(new TeleportCommand(this, zenixUserManager));
+        mainCommandExecuter.addMainCommand(new WarningIncrementCommand(this, zenixUserManager));
+        mainCommandExecuter.addMainCommand(new WarningDecrementCommand(this, zenixUserManager));
+        
         eventDispatcher.registerEventListener(cachedZenixUserRepository);
         eventDispatcher.registerEventListener(zenixListener);
-        
-        getCommand("z").setExecutor(mainCommandExecuter);
-        mainCommandExecuter.addSubCommand(new HelloCommand(this, zenixUserManager));
-        mainCommandExecuter.addSubCommand(new HealCommand(this, zenixUserManager));
-        mainCommandExecuter.addSubCommand(new TeleportCommand(this, zenixUserManager));
-        mainCommandExecuter.addSubCommand(new WarningCommand(this, zenixUserManager));
+        eventDispatcher.registerEventListener(mainCommandExecuter);
         
         for (final Player player : getServer().getOnlinePlayers()) {
         	cachedZenixUserRepository.onPlayerJoin(new PlayerJoinEvent(player, null));

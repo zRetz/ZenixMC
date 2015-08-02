@@ -6,21 +6,27 @@
 package zenixmc.command;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+
+import zenixmc.command.commands.AbstractMainCommand;
 import zenixmc.command.commands.CommandInterface;
-import zenixmc.persistance.ZenixUserRepositoryInterface;
+import zenixmc.user.ZenixUserInterface;
+import zenixmc.user.ZenixUserManager;
+import zenixmc.utils.JavaUtil;
 
 /**
  * The main command executer.
  * @author james
  */
-public class MainCommandExecuter implements CommandExecutor, TabCompleter {
+public class MainCommandExecuter implements Listener {
 
     /**
      * The amount of commands to list on one page in the help text.
@@ -28,33 +34,33 @@ public class MainCommandExecuter implements CommandExecutor, TabCompleter {
     protected int commandsPerPage = 10;
     
     /**
-     * The repository to use to fetch user information from.
+     * The manager to handle users.
      */
-    protected ZenixUserRepositoryInterface repository;
+    protected ZenixUserManager manager;
 
     /**
-     * The registered sub commands.
+     * The registered mainCommands.
      */
-    protected List<CommandInterface> commands = new ArrayList<>();
+    protected List<AbstractMainCommand> mainCommands = new ArrayList<>();
 
     /**
      * Creates the main command executor.
      *
-     * @param repository
-     *            The repository to use.
+     * @param manager
+     *            The manager to use.
      */
-    public MainCommandExecuter(ZenixUserRepositoryInterface repository) {
-        this.repository = repository;
+    public MainCommandExecuter(ZenixUserManager manager) {
+        this.manager = manager;
     }
-
+    
     /**
-     * Registers a command.
+     * Registers a maincommand.
      *
-     * @param command
-     *            The command to register.
+     * @param mainCommand
+     *            The maincommand to register.
      */
-    public void addSubCommand(CommandInterface command) {
-        commands.add(command);
+    public void addMainCommand(AbstractMainCommand command) {
+        mainCommands.add(command);
     }
 
     /**
@@ -67,100 +73,94 @@ public class MainCommandExecuter implements CommandExecutor, TabCompleter {
      * @param command
      *            The command to get the help text for, null when main text.
      */
-    void showHelp(CommandSender sender, int page, CommandInterface command) {
-        final String[] help = command == null ? null : command.getHelp();
-
-        sender.sendMessage("---- "
-                + (command == null ? "Zenix" : command.getName())
-                + ": "
-                + (command == null ? "Index" : "Help")
-                + " ("
-                + page
-                + "/"
-                + ((command == null ? commands.size() : (help == null ? 0
-                        : help.length)) / commandsPerPage) + ") ------");
-
-        final int offset = page * commandsPerPage;
-
-        for (int i = offset; i < offset + commandsPerPage; i++) {
-            if (command != null && help != null) {
-                if (i >= 0 && i < help.length) {
-                    sender.sendMessage(help[i]);
-                }
-            } else if (i >= 0 && i < (command == null ? commands.size() : 1)) {
-                final CommandInterface subCommand = command == null ? commands
-                        .get(i) : command;
-                sender.sendMessage("-- /z " + subCommand.getName() + " "
-                        + subCommand.getFormat() + " -- "
-                        + subCommand.getDescription());
-            }
-        }
+    void showHelp(ZenixCommandSender sender, int page, CommandInterface command) {
+	        final String[] help = command == null ? null : command.getHelp();
+	
+	        sender.zui.sendMessage("---- "
+	                + (command == null ? "Zenix" : command.getName())
+	                + ": "
+	                + (command == null ? "Index" : "Help")
+	                + " ("
+	                + page
+	                + "/"
+	                + ((command == null ? mainCommands.size() : (help == null ? 0
+	                        : help.length)) / commandsPerPage) + ") ------");
+	
+	        final int offset = page * commandsPerPage;
+	
+	        for (int i = offset; i < offset + commandsPerPage; i++) {
+	            if (command != null && help != null) {
+	                if (i >= 0 && i < help.length) {
+	                    sender.zui.sendMessage(help[i]);
+	                }
+	            } else if (i >= 0 && i < (command == null ? mainCommands.size() : 1)) {
+	                final CommandInterface subCommand = command == null ? mainCommands
+	                        .get(i) : command;
+	                sender.zui.sendMessage("-- /z " + subCommand.getName() + " "
+	                        + subCommand.getFormat() + " -- "
+	                        + subCommand.getDescription());
+	            }
+	        }
     }
 
     /**
-     * Finds a subcommand by name or alias.
-     *
+     * Finds a subcommand of maincommand by name or alias.
+     * @param c
+     * 		The maincommand to search through.
      * @param alias
-     *            The alias to use.
+     *     	The alias to use.
      * @return The found subcommand or null.
      */
-    public CommandInterface findCommandByAlias(String alias) {
-        for (final CommandInterface command : commands) {
-            if (alias.equalsIgnoreCase(command.getName())) {
-                return command;
-            }
-
-            final String[] commandAliases = command.getAliases();
-
-            if (commandAliases != null) {
-                for (final String commandAlias : commandAliases) {
-                    if (alias.equalsIgnoreCase(commandAlias)) {
-                        return command;
-                    }
-                }
-            }
-        }
-
-        return null;
+    public CommandInterface findSubCommandByAlias(AbstractMainCommand c, String alias) {
+    	if (c != null) {
+    		return c.findSubCommandByAlias(alias);
+    	}
+    	
+    	CommandInterface wasnull = null;
+    	
+    	for (AbstractMainCommand co : mainCommands) {
+    		if (co.findSubCommandByAlias(alias) != null) {
+    			wasnull = co.findSubCommandByAlias(alias);
+    		}
+    	}
+    	
+    	return wasnull;
+    }
+    
+    /**
+     * @param cmd
+     * 		String to check.
+     * @return <code>true</code> If the string is equal to a commands name.
+     */
+    public boolean isMainCommand(String cmd) {
+    	
+    	for (AbstractMainCommand c : mainCommands) {
+    		if (c.getName().equalsIgnoreCase(cmd)) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command,
-            String label, String[] args) {
-
-        if (args.length > 0) {
-            final CommandInterface subCommand = findCommandByAlias(args[0]);
-
-            ArrayList<String> argsl = new ArrayList<>(Arrays.asList(args));
-            argsl.remove(0);
-            
-            if (subCommand != null) {
-                if (!subCommand.onCommand(getZenixCommandSender(sender),
-                        label, argsl.toArray(new String[argsl.size()]))) {
-                    showHelp(sender, 0, subCommand);
-                }
-                return true;
-            }
-
-            try {
-                showHelp(sender, Integer.parseInt(args[0]), null);
-            } catch (final NumberFormatException e) {
-                sender.sendMessage("Unkown command: " + args[0]);
-            }
-            return true;
-        }
-
-        showHelp(sender, 0, null);
-
-        return true;
+    public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
+    	
+		for (AbstractMainCommand c : mainCommands) {
+			if (label.equals(c.getName())) {
+				if (!(c.onCommand(sender, label, JavaUtil.removeElementsFromArray(args, String.class, 0)))) {
+					showHelp(sender, 0, c);
+				}
+				return true;
+			}
+		}
+		showHelp(sender, 0, null);
+		return true;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command,
+    public List<String> onTabComplete(ZenixCommandSender sender, Command command,
             String alias, String[] args) {
 
         for (final String arg : args) {
-            sender.sendMessage(arg);
+            sender.zui.sendMessage(arg);
         }
 
         if (args.length == 1) {
@@ -168,7 +168,7 @@ public class MainCommandExecuter implements CommandExecutor, TabCompleter {
 
             final String completionTarget = args[0].toLowerCase();
 
-            for (final CommandInterface subCommand : commands) {
+            for (final CommandInterface subCommand : mainCommands) {
                 final String subCommandName = subCommand.getName();
 
                 if (subCommandName != null
@@ -192,30 +192,35 @@ public class MainCommandExecuter implements CommandExecutor, TabCompleter {
             return completions;
 
         } else if (args.length > 1) {
-            final CommandInterface subCommand = findCommandByAlias(args[0]);
+            final CommandInterface subCommand = findSubCommandByAlias(null, args[0]);
 
             if (subCommand != null) {
-                return subCommand.onTabComplete(getZenixCommandSender(sender),
+                return subCommand.onTabComplete(sender,
                         alias, args);
             }
         }
         return null;
     }
-
-    /**
-     * Creates an zenix commandsender from commandsender.
-     *
-     * @param sender
-     *            The commandsender.
-     * @return The avatar command sender.
-     */
-    protected ZenixCommandSender getZenixCommandSender(CommandSender sender) {
-        if (sender instanceof Player) {
-            return new ZenixCommandSender(sender,
-                    repository.getZenixUser((Player) sender));
-        } else {
-            return new ZenixCommandSender(sender);
+    
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onCMD(AsyncPlayerChatEvent e){
+    	
+    	ZenixUserInterface zui = manager.getZenixUser(e.getPlayer());
+    	
+        if (e.getMessage().startsWith("!")) {
+        	String c = e.getMessage().substring(1);
+        	String[] a = c.split(" ");
+        	if (isMainCommand(a[0])) {
+        		onCommand(zui.getCommandSender(), a[0], a);
+        	}else {
+        		zui.sendMessage("Unknown command: " + a[0]);
+        	}
+        	e.setCancelled(true);
         }
     }
     
+    @EventHandler
+    public void cancelCMD(PlayerCommandPreprocessEvent e) {
+    	e.setCancelled(true);
+    }
 }

@@ -43,6 +43,7 @@ public class Settings implements SettingsInterface {
     	config.addDefault("notificationColor", "GREEN");
     	config.addDefault("sortedColor", "GOLD");
     	config.addDefault("materialBlackList", Arrays.asList("TNT"));
+    	config.addDefault("commandBlackList", Arrays.asList("hello"));
     	config.addDefault("allowSilentJoinQuit", true);
     	config.addDefault("quitMessage", "Zenix wishes you farewell, ");
     	config.addDefault("joinMessage", "Zenix greets you, ");
@@ -93,6 +94,11 @@ public class Settings implements SettingsInterface {
 	@Override
 	public List<Material> getBlockBlackList() {
 		return MinecraftUtils.stringToMaterialList(config.getStringList("materialBlackList"));
+	}
+	
+	@Override
+	public List<String> getCommandBlackList() {
+		return config.getStringList("commandBlackList");
 	}
 
 	@Override

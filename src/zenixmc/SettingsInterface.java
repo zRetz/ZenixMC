@@ -53,6 +53,11 @@ public interface SettingsInterface {
     List<Material> getBlockBlackList();
     
     /**
+     * @return The blacklisted commands.
+     */
+    List<String> getCommandBlackList();
+    
+    /**
      * @return <code>true</code> If silent join/quit is allowed.
      */
     boolean allowSilentJoinQuit();
@@ -76,4 +81,5 @@ public interface SettingsInterface {
      * @return The default kick message.
      */
     String getKickMessage();
+   
 }

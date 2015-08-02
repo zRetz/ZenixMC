@@ -1,15 +1,14 @@
 package zenixmc.command.commands.essentials;
 
 import zenixmc.ZenixMCInterface;
-import zenixmc.command.commands.AbstractCommand;
-import zenixmc.persistance.CachedZenixUserRepository;
+import zenixmc.command.commands.AbstractMainCommand;
 import zenixmc.user.ZenixUserManager;
 
 /**
  * Base for essential commands.
  * @author james
  */
-public abstract class AbstractEssentialsCommand extends AbstractCommand {
+public abstract class AbstractEssentialsCommand extends AbstractMainCommand {
 	
 	/**
 	 * Repository to get user data.

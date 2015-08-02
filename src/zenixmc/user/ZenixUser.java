@@ -94,7 +94,7 @@ public class ZenixUser implements ZenixUserInterface {
     /**
      * The users amount of warnings and sentence.
      */
-	public Warning warning;
+	private Warning warning;
 
     /**
      * The users bendingPlayer data.

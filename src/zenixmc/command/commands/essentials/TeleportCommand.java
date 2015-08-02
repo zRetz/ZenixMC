@@ -42,7 +42,7 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 
 	@Override
 	public String getDescription() {
-		return "Teleports to specified location.";
+		return "Teleports user to specified location.";
 	}
 
 	@Override

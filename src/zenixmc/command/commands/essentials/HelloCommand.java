@@ -22,11 +22,6 @@ public class HelloCommand extends AbstractEssentialsCommand {
 	}
 
 	@Override
-	public String[] getAliases() {
-		return null;
-	}
-
-	@Override
 	public String[] getHelp() {
 		return null;
 	}
