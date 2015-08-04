@@ -41,6 +41,7 @@ public class Settings implements SettingsInterface {
     	config.addDefault("canMoveBeforeTeleport", false);
     	config.addDefault("errorColor", "RED");
     	config.addDefault("notificationColor", "GREEN");
+    	config.addDefault("matchingNotificationColor", "DARK_GREEN");
     	config.addDefault("sortedColor", "GOLD");
     	config.addDefault("materialBlackList", Arrays.asList("TNT"));
     	config.addDefault("commandBlackList", Arrays.asList("hello"));
@@ -49,6 +50,7 @@ public class Settings implements SettingsInterface {
     	config.addDefault("joinMessage", "Zenix greets you, ");
     	config.addDefault("kickMessage", "Zenix kicked you.");
     	config.addDefault("banMessage", "Zenix banned you.");
+    	config.addDefault("maxClanDescLength", 21);
     	
     	config.options().copyDefaults(true);
 		
@@ -84,6 +86,11 @@ public class Settings implements SettingsInterface {
 	@Override
 	public ChatColor getNotificationColor() {
 		return ChatColor.valueOf(config.getString("notificationColor"));
+	}
+	
+	@Override
+	public ChatColor getMatchingNotificationColor() {
+		return ChatColor.valueOf(config.getString("matchingNotificationColor"));
 	}
 
 	@Override
@@ -124,6 +131,11 @@ public class Settings implements SettingsInterface {
 	@Override
 	public String getKickMessage() {
 		return config.getString("kickMessage");
+	}
+
+	@Override
+	public int getMaxClanDescLength() {
+		return config.getInt("maxClanDescLength");
 	}
 
 }

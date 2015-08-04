@@ -43,6 +43,11 @@ public interface SettingsInterface {
     ChatColor getNotificationColor();
     
     /**
+     * @return The colour to match the notification colour. (default: dark_green)
+     */
+    ChatColor getMatchingNotificationColor();
+    
+    /**
      * @return The color for sorted situations. (default: gold)
      */
     ChatColor getSortedColor();
@@ -82,4 +87,8 @@ public interface SettingsInterface {
      */
     String getKickMessage();
    
+    /**
+     * @return The max clan description length.
+     */
+    int getMaxClanDescLength();
 }

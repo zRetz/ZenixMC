@@ -2,6 +2,7 @@ package zenixmc.organization;
 
 import java.io.Serializable;
 
+import zenixmc.organization.clans.Clan;
 import zenixmc.user.ZenixUserInterface;
 
 /**
@@ -70,5 +71,25 @@ public interface OrganizationPlayerInterface extends Serializable {
 	 */
 	
 	Clan getClan();
+	
+	/**
+	 * Appends an invite request.
+	 * @param clanName
+	 * 		Name of clan sending the invitation.
+	 */
+	void addInviteRequest(String clanName);
 
+	/**
+	 * Removes an invite request.
+	 * @param clanName
+	 * 		Name of clan which sent the invitation.
+	 */
+	void removeInviteRequest(String clanName);
+	
+	/**
+	 * @param clanName
+	 * 		The name of the clan to check.
+	 * @return <code>true</code> If the organizationPlayer has invites from specified clan.
+	 */
+	boolean hasInviteFor(String clanName);
 }

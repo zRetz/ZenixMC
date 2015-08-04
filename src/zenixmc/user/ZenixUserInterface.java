@@ -92,6 +92,30 @@ public interface ZenixUserInterface extends Serializable {
     World getWorld();
     
     /**
+     * Sets the players exhaustion level.
+     * @param value
+     * 		The value to set.
+     */
+    void setExhaustion(float value);
+    
+    /**
+     * @return The players exhaustion level.
+     */
+    float getExhaustion();
+    
+    /**
+     * Sets the players food level.
+     * @param value
+     *      The value to set.
+     */
+    void setFoodLevel(int value);
+    
+    /**
+     * @return The players food level.
+     */
+    int getFoodLevel();
+    
+    /**
      * Sets the players amount of health.
      * @param value
      *      The value to set.

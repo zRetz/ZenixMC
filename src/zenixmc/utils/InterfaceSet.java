@@ -12,12 +12,7 @@ import java.util.Set;
  * Set to allow only one implementation each of an interface.
  * @author james
  */
-public class InterfaceSet<E> implements Set<E>, Serializable {
-
-	/**
-	 * SerialVersionUID.
-	 */
-	private static final long serialVersionUID = -4781957456970628879L;
+public class InterfaceSet<E> implements Set<E> {
 
 	/**
 	 * Values.

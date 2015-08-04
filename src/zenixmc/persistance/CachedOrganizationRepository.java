@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import zenixmc.organization.Clan;
 import zenixmc.organization.Organization;
+import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.organization.OrganizationSet;
+import zenixmc.organization.clans.Clan;
 
 public class CachedOrganizationRepository implements OrganizationRepositoryInterface {
-
+	
 	/**
 	 * Logger to debug/log.
 	 */
@@ -69,12 +70,12 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	}
 
 	@Override
-	public Clan getClan(String name) {
+	public Clan getClan(OrganizationPlayerInterface leader, String name) {
 		
 		Clan result = (Clan) organizations.get(name);
 		
-		if (result == null) {
-			result = parentRepository.getClan(name);
+		if (result == null && leader != null && !(clanNameUsed(name))) {
+			result = parentRepository.getClan(leader, name);
 			put(name, result);
 		}
 		
@@ -82,13 +83,30 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	}
 
 	@Override
-	public void save(Organization organization, Class<?> type) {
-		parentRepository.save(organization, type);
+	public void save(Organization organization) {
+		parentRepository.save(organization);
 	}
 
 	@Override
 	public void save(Clan clan) {
 		parentRepository.save(clan);
+	}
+	
+	@Override
+	public void delete(Organization organization) {
+		organizations.remove(organization);
+		parentRepository.delete(organization);
+	}
+
+	@Override
+	public void delete(Clan clan) {
+		organizations.remove(clan);
+		parentRepository.delete(clan);
+	}
+	
+	@Override
+	public boolean clanNameUsed(String name) {
+		return organizations.get(name) != null;
 	}
 	
 	private void put(String name, Organization org) {

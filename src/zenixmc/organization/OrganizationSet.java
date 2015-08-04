@@ -1,5 +1,9 @@
 package zenixmc.organization;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import zenixmc.organization.clans.Clan;
 import zenixmc.utils.InterfaceSet;
 
 /**
@@ -7,11 +11,6 @@ import zenixmc.utils.InterfaceSet;
  * @author james
  */
 public class OrganizationSet extends InterfaceSet<Organization> {
-
-	/**
-	 * SerialVersionUID.
-	 */
-	private static final long serialVersionUID = -6982360192844491268L;
 
 	/**
 	 * Instantiate.
@@ -43,6 +42,19 @@ public class OrganizationSet extends InterfaceSet<Organization> {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * @return Organization names and class types.
+	 */
+	public Map<String, Class<?>> getOrgs() {
+		Map<String, Class<?>> orgs = new HashMap<>();
+		for (Organization o : this.values) {
+			if (o instanceof Clan) {
+				orgs.put(o.getName(), Clan.class);
+			}
+		}
+		return orgs;
 	}
 	
 	/**

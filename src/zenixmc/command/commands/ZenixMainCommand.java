@@ -36,9 +36,4 @@ public class ZenixMainCommand extends AbstractMainCommand {
 		return false;
 	}
 
-	@Override
-	public List<String> onTabComplete(ZenixCommandSender sender, String alias, String[] args) {
-		return null;
-	}
-
 }

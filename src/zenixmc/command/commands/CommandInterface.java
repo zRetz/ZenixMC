@@ -54,19 +54,4 @@ public interface CommandInterface {
      */
     boolean onCommand(ZenixCommandSender sender, String label, String[] args);
 
-    /**
-     * Find tab completions of the subcommand.
-     *
-     * @param sender
-     *            The executor of the completion.
-     * @param alias
-     *            The alias of the subcommand used.
-     * @param args
-     *            The arguments passed so far to the subcommand, note that the
-     *            0th argument is the subcommand name.
-     * @return The list of possible completions for the last argument or null
-     *         for autocompleting with player names.
-     */
-    List<String> onTabComplete(ZenixCommandSender sender, String alias,
-            String[] args);
 }

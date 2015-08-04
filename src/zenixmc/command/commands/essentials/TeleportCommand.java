@@ -55,6 +55,12 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 				sender.zui.getTeleport().teleportToUser(target, zenix.getSettings().getTeleportTime() == 0 ? false : true, zenix.getSettings().canMoveBeforeTeleport(), zenix.getSettings().getTeleportTime());
 			}
 			return true;
+		case 2:
+			if (manager.isZenixUser(args[0]) && manager.isZenixUser(args[1])) {
+				ZenixUserInterface teleportee = manager.getZenixUser(args[0]);
+				ZenixUserInterface target = manager.getZenixUser(args[0]);
+				teleportee.getTeleport().teleportToUser(target, zenix.getSettings().getTeleportTime() == 0 ? false : true, zenix.getSettings().canMoveBeforeTeleport(), zenix.getSettings().getTeleportTime());
+			}
 		case 3:
 			if (JavaUtil.canBeIntegers(args[0], args[1], args[2])) {
 				
@@ -78,11 +84,6 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Too many arguments.");
 			return true;
 		}
-	}
-
-	@Override
-	public List<String> onTabComplete(ZenixCommandSender sender, String alias, String[] args) {
-		return null;
 	}
 
 }

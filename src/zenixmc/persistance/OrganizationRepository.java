@@ -2,22 +2,37 @@ package zenixmc.persistance;
 
 import java.io.File;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import zenixmc.organization.Clan;
+import zenixmc.ZenixMCInterface;
+import zenixmc.io.SeDe;
 import zenixmc.organization.Organization;
+import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.organization.OrganizationSet;
+import zenixmc.organization.clans.Clan;
+import zenixmc.user.ZenixUserManager;
 
 /**
  * Persistence of organizations on disk.
  * @author james
  */
 public class OrganizationRepository extends Repository implements OrganizationRepositoryInterface {
-
+	
 	/**
 	 * Directory to store clan data.
 	 */
 	private final File clansDirectory;
+	
+	/**
+	 * The plugin.
+	 */
+	private final ZenixMCInterface zenix;
+	
+	/**
+	 * User manager.
+	 */
+	private final ZenixUserManager manager;
 	
 	/**
 	 * Instantiate.
@@ -26,9 +41,11 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	 * @param directory
 	 * 		The directory to store organizations in.
 	 */
-	public OrganizationRepository(Logger logger, File directory) {
+	public OrganizationRepository(Logger logger, File directory, ZenixUserManager manager, ZenixMCInterface zenix) {
 		super(logger, directory);
 		this.clansDirectory = new File(directory, "clans");
+		this.manager = manager;
+		this.zenix = zenix;
 	}
 
 	/**
@@ -39,7 +56,7 @@ public class OrganizationRepository extends Repository implements OrganizationRe
      * @return The file of the clan.
      */
     protected File getClanFile(String name) {
-        return new File(this.directory, name + ".json");
+        return new File(this.directory, name + ".dat");
     }
 
 	
@@ -60,7 +77,7 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	public void save(Object object) {
 		if (object instanceof Organization) {
 			if (object instanceof Clan) {
-				save((Organization) object, Clan.class);
+				save((Organization) object);
 			}
 		}
 	}
@@ -80,20 +97,42 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	@Override
 	public Organization getOrganization(String name, Class<?> type) {
 		if (type == Clan.class) {
-			return getClan(name);
+			return getClan(null, name);
 		}
 		return null;
 	}
 
 	@Override
-	public Clan getClan(String name) {
-		return null;
+	public Clan getClan(OrganizationPlayerInterface leader, String name) {
+		
+		final File f = getClanFile(name);
+
+		Clan clan = null;
+
+		if (!(f.exists())) {
+			if (leader != null) {
+				clan = new Clan(zenix, manager, null, name);
+				save(clan);
+				return clan;
+			}else {
+				logger.log(Level.SEVERE, "New Clan with no leader!");
+				return null;
+			}
+		}
+
+		clan = SeDe.deserialize(f.getName(), Clan.class);
+		clan.setZenixMC(zenix);
+		clan.setZenixUserManager(manager);
+		
+		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been loaded.");
+
+		return clan;
 	}
 
 	@Override
-	public void save(Organization organization, Class<?> type) {
-		if (type == Clan.class) {
-			save(organization);
+	public void save(Organization organization) {
+		if (organization instanceof Clan) {
+			save((Clan) organization);
 			return;
 		}
 	}
@@ -101,6 +140,36 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	@Override
 	public void save(Clan clan) {
 		
+		final File f = getClanFile(clan.getName());
+		
+		SeDe.serialize(clan, f.getName());
+		
+		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been saved.");
+	}
+	
+	@Override
+	public void delete(Organization organization) {
+		if (organization instanceof Clan) {
+			delete((Clan) organization);
+			return;
+		}
+	}
+
+	@Override
+	public void delete(Clan clan) {
+		
+		final File f = getClanFile(clan.getName());
+		
+		if (!(f.exists())) {
+			return;
+		}
+		
+		f.delete();
+	}
+
+	@Override
+	public boolean clanNameUsed(String name) {
+		throw new UnsupportedOperationException("This is not a cache class.");
 	}
 
 }

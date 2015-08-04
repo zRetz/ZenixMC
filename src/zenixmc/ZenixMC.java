@@ -22,6 +22,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import zenixmc.command.MainCommandExecuter;
+import zenixmc.command.commands.essentials.FeedCommand;
 import zenixmc.command.commands.essentials.HealCommand;
 import zenixmc.command.commands.essentials.HelloCommand;
 import zenixmc.command.commands.essentials.TeleportCommand;
@@ -46,6 +47,12 @@ import zenixmc.utils.ExceptionUtil;
 public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     
 	/**
+	 * Instance of main class. Only use as last resort.
+	 * <b>NOTE: Reflect into instance.</b> 
+	 */
+	public static ZenixMC instance;
+	
+	/**
 	 * The handler for punishments.
 	 */
 	PunishmentHandler punishmentHandler = new PunishmentHandler(this);
@@ -66,16 +73,6 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     Console console = new Console("Console", this);
     
     /**
-     * Persistence of organization data to disk.
-     */
-    OrganizationRepository organizationRepository = new OrganizationRepository(this.getLogger(), new File(this.getDataFolder(), "organization"));
-    
-    /**
-     * Loading/Saving on Enable/Disable.
-     */
-    CachedOrganizationRepository cachedOrganizationRepository = new CachedOrganizationRepository(organizationRepository, this.getLogger());
-    
-    /**
      * Persistence of user data to disk.
      */
     ZenixUserRepository zenixUserRepository = new ZenixUserRepository(this.getLogger(), new File(this.getDataFolder(), "users"), this, eventDispatcher);
@@ -91,9 +88,19 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     ZenixUserManager zenixUserManager = new ZenixUserManager(cachedZenixUserRepository, eventDispatcher);
     
     /**
+     * Persistence of organization data to disk.
+     */
+    OrganizationRepository organizationRepository = new OrganizationRepository(this.getLogger(), new File(this.getDataFolder(), "organization"), zenixUserManager, this);
+    
+    /**
+     * Loading/Saving on Enable/Disable.
+     */
+    CachedOrganizationRepository cachedOrganizationRepository = new CachedOrganizationRepository(organizationRepository, this.getLogger());
+    
+    /**
      * Main command.
      */
-    MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(zenixUserManager);
+    MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(this, zenixUserManager);
     
     /**
      * The Zenix Listener.
@@ -102,6 +109,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     
     @Override
     public void onEnable() {
+    	instance = this;
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
         
         cachedOrganizationRepository.open("Organization Repository has opened.");
@@ -109,6 +117,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         
         mainCommandExecuter.addMainCommand(new HelloCommand(this, zenixUserManager));
         mainCommandExecuter.addMainCommand(new HealCommand(this, zenixUserManager));
+        mainCommandExecuter.addMainCommand(new FeedCommand(this, zenixUserManager));
         mainCommandExecuter.addMainCommand(new TeleportCommand(this, zenixUserManager));
         mainCommandExecuter.addMainCommand(new WarningIncrementCommand(this, zenixUserManager));
         mainCommandExecuter.addMainCommand(new WarningDecrementCommand(this, zenixUserManager));

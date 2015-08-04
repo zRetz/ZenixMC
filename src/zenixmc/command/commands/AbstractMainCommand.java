@@ -36,7 +36,9 @@ public abstract class AbstractMainCommand extends AbstractCommand implements Com
 	 * 		The command to add.
 	 */
 	protected void addSubCommand(CommandInterface command) {
-		subCommands.add(command);
+		if (!(subCommands.contains(command))) {
+			subCommands.add(command);
+		}
 	}
 	
 	/**

@@ -8,6 +8,7 @@ package zenixmc.command;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
+import zenixmc.ZenixMCInterface;
 import zenixmc.command.commands.AbstractMainCommand;
 import zenixmc.command.commands.CommandInterface;
 import zenixmc.user.ZenixUserInterface;
@@ -27,6 +29,11 @@ import zenixmc.utils.JavaUtil;
  */
 public class MainCommandExecuter implements Listener {
 
+	/**
+	 * The plugin.
+	 */
+	protected ZenixMCInterface zenix;
+	
     /**
      * The amount of commands to list on one page in the help text.
      */
@@ -48,7 +55,8 @@ public class MainCommandExecuter implements Listener {
      * @param manager
      *            The manager to use.
      */
-    public MainCommandExecuter(ZenixUserManager manager) {
+    public MainCommandExecuter(ZenixMCInterface zenix, ZenixUserManager manager) {
+    	this.zenix = zenix;
         this.manager = manager;
     }
     
@@ -75,7 +83,7 @@ public class MainCommandExecuter implements Listener {
     void showHelp(ZenixCommandSender sender, int page, CommandInterface command) {
 	        final String[] help = command == null ? null : command.getHelp();
 	
-	        sender.zui.sendMessage("---- "
+	        sender.zui.sendMessage(zenix.getSettings().getMatchingNotificationColor() + "---- "
 	                + (command == null ? "Zenix" : command.getName())
 	                + ": "
 	                + (command == null ? "Index" : "Help")
@@ -93,11 +101,11 @@ public class MainCommandExecuter implements Listener {
 	                    sender.zui.sendMessage(help[i]);
 	                }
 	            } else if (i >= 0 && i < (command == null ? mainCommands.size() : 1)) {
-	                final CommandInterface subCommand = command == null ? mainCommands
+	                final CommandInterface Command = command == null ? mainCommands
 	                        .get(i) : command;
-	                sender.zui.sendMessage("-- /z " + subCommand.getName() + " "
-	                        + subCommand.getFormat() + " -- "
-	                        + subCommand.getDescription());
+	                sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "-- !" + Command.getName() + " "
+	                        + Command.getFormat() + " -- "
+	                        + Command.getDescription());
 	            }
 	        }
     }
@@ -137,6 +145,11 @@ public class MainCommandExecuter implements Listener {
     		if (c.getName().equalsIgnoreCase(cmd)) {
     			return true;
     		}
+    		if (c.getAliases() != null) {
+    			if (JavaUtil.arrayContainsElements(c.getAliases(), cmd)) {
+    				return true;
+    			}
+    		}
     	}
     	return false;
     }
@@ -155,6 +168,7 @@ public class MainCommandExecuter implements Listener {
 		return true;
     }
 
+    /*
     public List<String> onTabComplete(ZenixCommandSender sender, Command command,
             String alias, String[] args) {
 
@@ -200,6 +214,7 @@ public class MainCommandExecuter implements Listener {
         }
         return null;
     }
+    */
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCMD(AsyncPlayerChatEvent e){
@@ -213,12 +228,13 @@ public class MainCommandExecuter implements Listener {
         		onCommand(zui.getCommandSender(), a[0], a);
         	}else {
         		zui.sendMessage("Unknown command: " + a[0]);
+        		showHelp(zui.getCommandSender(), 0, null);
         	}
         	e.setCancelled(true);
         }
     }
     
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void cancelCMD(PlayerCommandPreprocessEvent e) {
     	e.setCancelled(true);
     }

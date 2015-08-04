@@ -1,5 +1,15 @@
 package zenixmc.organization;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.Set;
+
+import zenixmc.ZenixMC;
+import zenixmc.organization.clans.Clan;
+import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.user.ZenixUserInterface;
 
 public class OrganizationPlayer implements OrganizationPlayerInterface {
@@ -15,15 +25,20 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	private transient ZenixUserInterface zui;
 	
 	/**
-	* The maximum amount of influence.
-	*/
+	 * The pending invites of organizationPlayer.
+	 */
+	private transient Set<String> invites;
+
+	/**
+	 * The maximum amount of influence.
+	 */
 	private int maxInfluence = 10;
-	
+
 	/**
 	 * The amount of influence.
 	 */
 	private int influence = maxInfluence;
-	
+
 	/**
 	 * The users organizations.
 	 */
@@ -98,6 +113,63 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	@Override
 	public Clan getClan() {
 		return organizations.getClan();
+	}
+	
+	@Override
+	public void addInviteRequest(String clanName) {
+		if (!(hasInviteFor(clanName))) {
+			invites.add(clanName);
+		}
+	}
+
+	@Override
+	public void removeInviteRequest(String clanName) {
+		if (hasInviteFor(clanName)) {
+			invites.remove(clanName);
+		}
+	}
+	
+	@Override
+	public boolean hasInviteFor(String clanName) {
+		return invites.contains(clanName);
+	}
+
+	/**
+	 * Serialize this instance.
+	 * 
+	 * @param out
+	 *            Target to which this instance is written.
+	 * @throws IOException
+	 *             Thrown if exception occurs during serialization.
+	 */
+	private void writeObject(final ObjectOutputStream out) throws IOException {
+		out.writeInt(maxInfluence);
+		out.writeInt(influence);
+		Map<String, Class<?>> orgs = organizations.getOrgs();
+		out.writeObject(orgs);
+	}
+
+	/**
+	 * Deserialize this instance from input stream.
+	 * 
+	 * @param in
+	 *            Input Stream from which this instance is to be deserialized.
+	 * @throws IOException
+	 *             Thrown if error occurs in deserialization.
+	 * @throws ClassNotFoundException
+	 *             Thrown if expected class is not found.
+	 */
+	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+		maxInfluence = in.readInt();
+		influence = in.readInt();
+		try {
+			Field f = ZenixMC.instance.getClass().getDeclaredField("cachedOrganizationRepository");
+			f.setAccessible(true);
+			CachedOrganizationRepository cor = (CachedOrganizationRepository) f.get(ZenixMC.instance);
+			organizations = cor.getOrganizations((Map<String, Class<?>>) in.readObject());
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

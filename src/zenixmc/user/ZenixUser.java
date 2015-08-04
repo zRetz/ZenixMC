@@ -5,8 +5,13 @@
  */
 package zenixmc.user;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -250,6 +255,36 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public World getWorld() {
     	return player.getWorld();
+    }
+    
+    @Override
+    public void setExhaustion(float value) {
+    	
+    	if (isDead()) {
+    		return;
+    	}
+    	
+    	player.setExhaustion(value);
+    }
+    
+    @Override
+    public float getExhaustion() {
+    	return player.getExhaustion();
+    }
+    
+    @Override
+    public void setFoodLevel(int value) {
+    	
+    	if (isDead()) {
+    		return;
+    	}
+    	
+    	player.setFoodLevel(value);
+    }
+    
+    @Override
+    public int getFoodLevel() {
+    	return player.getFoodLevel();
     }
     
     @Override
@@ -580,6 +615,7 @@ public class ZenixUser implements ZenixUserInterface {
         }
 
         mails.add(mail);
+        sendMessage(zenix.getSettings().getNotificationColor() + "You have recieved mail!");
     }
 
     @Override
@@ -590,23 +626,10 @@ public class ZenixUser implements ZenixUserInterface {
     @Override
     public String popMail(int index) {
 
-        if (mails == null) {
-            return null;
-        }
-        
-        if (index > mails.size() && mails.size() > 0) {
-            sendMessage(zenix.getSettings().getSortedColor() + "Index out of bounds. Retrieving first entry.");
-            return popMail();
-        }
-        
-        if (index > mails.size()) {
-            sendMessage(zenix.getSettings().getErrorColor() + "Index out of bounds.");
-            return null;
-        }
-
         String result = getMail(index);
         mails.remove(result);
-
+        
+        sendMessage(zenix.getSettings().getNotificationColor() + "Retrieving mail.");
         return result;
     }
 
@@ -817,6 +840,8 @@ public class ZenixUser implements ZenixUserInterface {
 	public void handleSerialize() {
 		this.warning.setParent(this);
 		this.warning.setEventDispatcher(eventDispatcher);
+		this.organizationPlayer.setZenixUser(this);
+		
 	}
-    
+	
 }

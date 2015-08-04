@@ -59,9 +59,4 @@ public class WarningDecrementCommand extends AbstractEssentialsCommand {
 		}
 	}
 
-	@Override
-	public List<String> onTabComplete(ZenixCommandSender sender, String alias, String[] args) {
-		return null;
-	}
-
 }

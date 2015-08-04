@@ -215,6 +215,12 @@ public class JavaUtil {
     	return result.toArray((T[]) Array.newInstance(type, result.size()));
     }
     
+    /**
+     * Converts an array to string.
+     * @param array
+     * 		The array to convert.
+     * @return	The string.
+     */
     public static String arrayToString(String[] array) {
     	
     	StringBuilder sb = new StringBuilder();
@@ -227,5 +233,17 @@ public class JavaUtil {
     	}
     	
     	return sb.toString();
+    }
+    
+    /**
+     * Checks if an array contains specified elements.
+     * @param array
+     * 		The array.
+     * @param elements
+     * 		The elements to check.
+     * @return <code>true</code> If the array contains the elements.
+     */
+    public static <T> boolean arrayContainsElements(T[] array, T... elements) {
+    	return Arrays.asList(array).containsAll(Arrays.asList(elements));
     }
 }

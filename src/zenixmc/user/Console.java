@@ -20,6 +20,11 @@ import zenixmc.user.objects.Warning;
 public class Console implements ZenixUserInterface {
 	
 	/**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = 8982813029236727452L;
+
+	/**
 	 * The plugin.
 	 */
 	private final ZenixMCInterface zenix;
@@ -477,6 +482,30 @@ public class Console implements ZenixUserInterface {
 	public void handleSerialize() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setExhaustion(float value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getExhaustion() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setFoodLevel(int value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getFoodLevel() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 }

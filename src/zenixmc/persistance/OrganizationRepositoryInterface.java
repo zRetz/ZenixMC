@@ -2,9 +2,10 @@ package zenixmc.persistance;
 
 import java.util.Map;
 
-import zenixmc.organization.Clan;
 import zenixmc.organization.Organization;
+import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.organization.OrganizationSet;
+import zenixmc.organization.clans.Clan;
 
 public interface OrganizationRepositoryInterface extends RepositoryInterface {
 
@@ -26,18 +27,20 @@ public interface OrganizationRepositoryInterface extends RepositoryInterface {
 	
 	/**
 	 * Loads a clan into memory.
+	 * @param leader
+	 * 		The leader of the clan.
 	 * @param name
 	 * 		The name of the clan to load.
 	 * @return The clan.
 	 */
-	Clan getClan(String name);
+	Clan getClan(OrganizationPlayerInterface leader, String name);
 	
 	/**
      * Saves a organization.
      * @param organization
      *      The organization to save.
      */
-    void save(final Organization organization, Class<?> type);
+    void save(final Organization organization);
     
     /**
      * Saves a clan.
@@ -45,4 +48,28 @@ public interface OrganizationRepositoryInterface extends RepositoryInterface {
      * 		The clan to save.
      */
     void save(Clan clan);
+    
+    /**
+     * Deletes a organization.
+     * @param organization
+     * 		The organization to delete.
+     * @param type
+     * 		The class type of the organization.
+     */
+    void delete(final Organization organization);
+    
+    /**
+     * Deletes a clan.
+     * @param clan
+     * 		The clan to delete.
+     */
+    void delete(Clan clan);
+    
+    /**
+     * @param name
+     * 		The name to check.
+     * @return <code>true</code> If the name is used.
+     */
+    boolean clanNameUsed(String name);
+
 }
