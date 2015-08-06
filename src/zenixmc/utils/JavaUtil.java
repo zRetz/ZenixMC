@@ -159,19 +159,33 @@ public class JavaUtil {
     }
     
     /**
+     * Checks if the given string is an integer within the given radix.
+     * @param s
+     * 		The string to check.
+     * @param radix
+     * 		The radix.
+     * @return <code>true</code> If the string can be parsed to an integer.
+     */
+    public static boolean canBeInteger(String s, int radix) {
+        if(s.isEmpty()) return false;
+        for(int i = 0; i < s.length(); i++) {
+            if(i == 0 && s.charAt(i) == '-') {
+                if(s.length() == 1) return false;
+                else continue;
+            }
+            if(Character.digit(s.charAt(i),radix) < 0) return false;
+        }
+        return true;
+    }
+    
+    /**
      * Checks if the given string can be parsed as an integer. 
      * @param integer
      * 		The string to check.
      * @return <code>true</code> If the string can be parsed as an integer.
      */
     public static boolean canBeInteger(String integer) {
-    	for (int i = 0; i < integer.length(); i++) {
-    		char c = integer.charAt(i);
-    		if (!(Character.isDigit(c))) {
-    			return false;
-    		}
-    	}
-    	return true;
+    	return canBeInteger(integer, 10);
     }
     
     /**
@@ -229,7 +243,9 @@ public class JavaUtil {
     		if (i != 0) {
     			sb.append(" ");
     		}
-    		sb.append(array[i]);
+    		if (array[i] != null) {
+    			sb.append(array[i]);
+    		}
     	}
     	
     	return sb.toString();

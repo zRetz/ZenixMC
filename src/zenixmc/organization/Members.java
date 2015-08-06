@@ -1,9 +1,18 @@
 package zenixmc.organization;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import zenixmc.ZenixMC;
+import zenixmc.persistance.CachedOrganizationRepository;
+import zenixmc.user.ZenixUserManager;
 
 public class Members implements Serializable {
 
@@ -13,22 +22,28 @@ public class Members implements Serializable {
 	private static final long serialVersionUID = -4964152485432802327L;
 	
 	/**
+	 * Manager for users.
+	 */
+	private transient ZenixUserManager manager;
+	
+	/**
 	 * Leader of the members.
 	 */
-	private OrganizationPlayerInterface leader;
+	private UUID leader;
 	
 	/**
 	 * Members.
 	 */
-	private List<OrganizationPlayerInterface> members;
+	private List<UUID> members;
 	
 	/**
 	 * Instantiate.
 	 * @param leader
 	 * 		The leader of the members.
 	 */
-	public Members(OrganizationPlayerInterface leader) {
-		this.leader = leader;
+	public Members(OrganizationPlayerInterface leader, ZenixUserManager manager) {
+		this.manager = manager;
+		this.leader = leader.getZenixUser().getUniqueId();
 		this.members = new ArrayList<>();
 	}
 	
@@ -39,7 +54,7 @@ public class Members implements Serializable {
 	 */
 	public void setLeader(OrganizationPlayerInterface player) {
 		if (player != null) {
-			this.leader = player;
+			this.leader = player.getZenixUser().getUniqueId();
 		}
 	}
 	
@@ -47,7 +62,7 @@ public class Members implements Serializable {
 	 * @return The leader of the members.
 	 */
 	public OrganizationPlayerInterface getLeader() {
-		return leader;
+		return manager.isOnline(leader) ? manager.getZenixUser(leader).getOrganizationPlayer() : manager.getOfflineZenixUser(leader).getOrganizationPlayer();
 	}
 	
 	/**
@@ -57,7 +72,7 @@ public class Members implements Serializable {
 	 */
 	public void addMember(OrganizationPlayerInterface player) {
 		if (!(isMember(player))) {
-			members.add(player);
+			members.add(player.getZenixUser().getUniqueId());
 		}
 	}
 	
@@ -78,7 +93,7 @@ public class Members implements Serializable {
 	 * @return The member.
 	 */
 	public OrganizationPlayerInterface getMember(String name) {
-		for (OrganizationPlayerInterface o : members) {
+		for (OrganizationPlayerInterface o : getOnlineMembers()) {
 			if (o.getZenixUser().getName().equals(name)) {
 				return o;
 			}
@@ -92,7 +107,7 @@ public class Members implements Serializable {
 	 * @return The member.
 	 */
 	public OrganizationPlayerInterface getMember(UUID uuid) {
-		for (OrganizationPlayerInterface o : members) {
+		for (OrganizationPlayerInterface o : getOnlineMembers()) {
 			if (o.getZenixUser().getUniqueId().compareTo(uuid) == 0) {
 				return o;
 			}
@@ -106,17 +121,102 @@ public class Members implements Serializable {
 	 * @return <code>true</code> If the player is a member.
 	 */
 	public boolean isMember(OrganizationPlayerInterface player) {
-		return members.contains(player);
+		return members.contains(player.getZenixUser().getUniqueId());
 	}
 	
 	/**
-	 * @return The raw list of members.
+	 * @param uuid
+	 * 		The uuid to check.
+	 * @return <code>true</code> If the uuid is not in the members map.
 	 */
-	public List<OrganizationPlayerInterface> getMembers() {
+	public boolean isMember(UUID uuid) {
+		return members.contains(uuid);
+	}
+	
+	/**
+	 * @return The raw list of online members.
+	 */
+	public List<OrganizationPlayerInterface> getOnlineMembers() {
 		
-		List<OrganizationPlayerInterface> result = new ArrayList<>(members);
-		result.add(leader);
+		List<OrganizationPlayerInterface> result = new ArrayList<>();
+		
+		for (UUID uuid : members) {
+			if (manager.isOnline(uuid)) {
+				result.add(manager.getZenixUser(uuid).getOrganizationPlayer());
+			}
+		}
+		if (manager.isOnline(leader)) {
+			result.add(getLeader());
+		}
 		
 		return result;
 	}
+	
+	public List<OrganizationPlayerInterface> getOfflineMembers() {
+		
+		List<OrganizationPlayerInterface> result = new ArrayList<>();
+		
+		for (UUID uuid : members) {
+			if (!(manager.isOnline(uuid))) {
+				result.add(manager.getZenixUser(uuid).getOrganizationPlayer());
+			}
+		}
+		if (!(manager.isOnline(leader))) {
+			result.add(getLeader());
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @return The raw list of all members regardless of online/offline.
+	 */
+	public List<OrganizationPlayerInterface> getMembers() {
+		
+		List<OrganizationPlayerInterface> result = new ArrayList<>();
+		
+		result.addAll(getOnlineMembers());
+		result.addAll(getOfflineMembers());
+		
+		return result;
+	}
+	
+	public String onlineMembers() {
+		
+		StringBuilder result = new StringBuilder();
+		
+		for (OrganizationPlayerInterface o : getOnlineMembers()) {
+			result.append(o.getZenixUser().getName());
+		}
+		
+		return result.toString();
+	}
+	
+	public String offlineMembers() {
+		
+		StringBuilder result = new StringBuilder();
+		
+		for (OrganizationPlayerInterface o : getOfflineMembers()) {
+			result.append(o.getZenixUser().getName() + ", ");
+		}
+		
+		return result.toString();
+	}
+	
+	@Override
+	public String toString() {
+		
+		StringBuilder result = new StringBuilder();
+		
+		for (OrganizationPlayerInterface o : getMembers()) {
+			result.append(o.getZenixUser().getName());
+		}
+		
+		return result.toString();
+	}
+	
+	public void setZenixUserManager(ZenixUserManager value) {
+		this.manager = value;
+	}
+	
 }

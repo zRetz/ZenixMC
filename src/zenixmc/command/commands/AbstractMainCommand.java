@@ -4,12 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.command.MainCommandExecuter;
+import zenixmc.command.ZenixCommandSender;
+import zenixmc.user.ZenixUserManager;
 
 /**
  * Base class for main commands.
  * @author james
  */
 public abstract class AbstractMainCommand extends AbstractCommand implements CommandInterface {
+	
+	/**
+	 * The command executer.
+	 */
+	protected final MainCommandExecuter executer;
 	
 	/**
 	 * The subcommands of this command.
@@ -21,8 +29,9 @@ public abstract class AbstractMainCommand extends AbstractCommand implements Com
 	 * @param zenix
 	 * 		The plugin.
 	 */
-	public AbstractMainCommand(ZenixMCInterface zenix) {
-		super(zenix);
+	public AbstractMainCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+		super(zenix, manager);
+		this.executer = executer;
 	}
 	
 	@Override
@@ -50,6 +59,24 @@ public abstract class AbstractMainCommand extends AbstractCommand implements Com
 		if (subCommands.contains(command)) {
 			subCommands.remove(command);
 		}
+	}
+	
+	/**
+	 * Shows a subcommands help text.
+	 * @param sender
+	 * 		The executer of the command.
+	 * @param subCommand
+	 * 		The subCommand to get the help text for.
+	 */
+	protected void showSubHelp(ZenixCommandSender sender, CommandInterface subCommand) {
+		sender.zui.sendMessage(zenix.getSettings().getMatchingNotificationColor() + "---- " + subCommand.getName() + " : Help -----");
+		sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "-- !" + this.getName() + " " + subCommand.getName() + " "
+                + subCommand.getFormat() + " -- "
+                + subCommand.getDescription());
+	}
+	
+	public List<CommandInterface> getSubCommands() {
+		return subCommands;
 	}
 	
 	/**
@@ -85,4 +112,6 @@ public abstract class AbstractMainCommand extends AbstractCommand implements Com
 	public boolean hasSubCommands() {
 		return subCommands.size() > 0;
 	}
+	
+	abstract public String getTitle();
 }

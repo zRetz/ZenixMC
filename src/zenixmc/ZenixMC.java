@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -22,6 +23,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import zenixmc.command.MainCommandExecuter;
+import zenixmc.command.commands.clans.ClanMainCommand;
 import zenixmc.command.commands.essentials.FeedCommand;
 import zenixmc.command.commands.essentials.HealCommand;
 import zenixmc.command.commands.essentials.HelloCommand;
@@ -29,6 +31,8 @@ import zenixmc.command.commands.essentials.TeleportCommand;
 import zenixmc.command.commands.essentials.WarningDecrementCommand;
 import zenixmc.command.commands.essentials.WarningIncrementCommand;
 import zenixmc.event.EventDispatcher;
+import zenixmc.organization.OrganizationListener;
+import zenixmc.organization.OrganizationManager;
 import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
 import zenixmc.persistance.OrganizationRepository;
@@ -98,6 +102,11 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     CachedOrganizationRepository cachedOrganizationRepository = new CachedOrganizationRepository(organizationRepository, this.getLogger());
     
     /**
+     * Organization Manager.
+     */
+    OrganizationManager orgManager = new OrganizationManager(this, cachedOrganizationRepository, zenixUserManager, eventDispatcher);
+    
+    /**
      * Main command.
      */
     MainCommandExecuter mainCommandExecuter = new MainCommandExecuter(this, zenixUserManager);
@@ -107,23 +116,35 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
      */
     ZenixUserListener zenixListener = new ZenixUserListener(punishmentHandler, this, zenixUserManager, eventDispatcher);
     
+    /**
+     * The Organization Listener.
+     */
+    OrganizationListener orgListener = new OrganizationListener(this, zenixUserManager, orgManager, eventDispatcher);
+    
     @Override
     public void onEnable() {
     	instance = this;
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
         
+        organizationRepository.setOrganizationManager(orgManager);
+        
         cachedOrganizationRepository.open("Organization Repository has opened.");
         cachedZenixUserRepository.open("Zenix User Repository has opened.");
         
-        mainCommandExecuter.addMainCommand(new HelloCommand(this, zenixUserManager));
-        mainCommandExecuter.addMainCommand(new HealCommand(this, zenixUserManager));
-        mainCommandExecuter.addMainCommand(new FeedCommand(this, zenixUserManager));
-        mainCommandExecuter.addMainCommand(new TeleportCommand(this, zenixUserManager));
-        mainCommandExecuter.addMainCommand(new WarningIncrementCommand(this, zenixUserManager));
-        mainCommandExecuter.addMainCommand(new WarningDecrementCommand(this, zenixUserManager));
+        //Essentials Commands
+        mainCommandExecuter.addMainCommand(new HelloCommand(this, zenixUserManager, mainCommandExecuter));
+        mainCommandExecuter.addMainCommand(new HealCommand(this, zenixUserManager, mainCommandExecuter));
+        mainCommandExecuter.addMainCommand(new FeedCommand(this, zenixUserManager, mainCommandExecuter));
+        mainCommandExecuter.addMainCommand(new TeleportCommand(this, zenixUserManager, mainCommandExecuter));
+        mainCommandExecuter.addMainCommand(new WarningIncrementCommand(this, zenixUserManager, mainCommandExecuter));
+        mainCommandExecuter.addMainCommand(new WarningDecrementCommand(this, zenixUserManager, mainCommandExecuter));
+        
+        //Clans Commands
+        mainCommandExecuter.addMainCommand(new ClanMainCommand(this, zenixUserManager, orgManager, mainCommandExecuter));
         
         eventDispatcher.registerEventListener(cachedZenixUserRepository);
         eventDispatcher.registerEventListener(zenixListener);
+        eventDispatcher.registerEventListener(orgListener);
         eventDispatcher.registerEventListener(mainCommandExecuter);
         
         for (final Player player : getServer().getOnlinePlayers()) {
@@ -169,6 +190,16 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     @Override
     public Player getPlayer(UUID uuid) {
         return this.getServer().getPlayer(uuid);
+    }
+    
+    @Override
+    public OfflinePlayer getOfflinePlayer(String name) {
+        return this.getServer().getOfflinePlayer(name);
+    }
+    
+    @Override
+    public OfflinePlayer getOfflinePlayer(UUID uuid) {
+        return this.getServer().getOfflinePlayer(uuid);
     }
     
     @SuppressWarnings("unchecked")
@@ -262,16 +293,12 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         World result = null;
         
         for (World w : this.getServer().getWorlds()) {
-            if (w.equals(name)) {
+            if (w.getName().equals(name)) {
                 result = w;
             }
         }
         
-        if (result == null) {
-            throw ExceptionUtil.nullPointerException("result cannot be null");
-        }else {
-            return result;
-        }
+        return result;
     }
     
 }

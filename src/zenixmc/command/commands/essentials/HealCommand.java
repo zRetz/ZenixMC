@@ -3,9 +3,12 @@ package zenixmc.command.commands.essentials;
 import java.util.List;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
+import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 /**
  * Commad which heals users.
@@ -13,8 +16,8 @@ import zenixmc.user.ZenixUserManager;
  */
 public class HealCommand extends AbstractEssentialsCommand {
 
-	public HealCommand(ZenixMCInterface zenix, ZenixUserManager manager) {
-		super(zenix, manager);
+	public HealCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+		super(zenix, manager, executer);
 	}
 	
 	@Override
@@ -34,7 +37,7 @@ public class HealCommand extends AbstractEssentialsCommand {
 
 	@Override
 	public String getFormat() {
-		return "[no args | user]";
+		return "[no args] || [user]";
 	}
 
 	@Override
@@ -50,20 +53,20 @@ public class HealCommand extends AbstractEssentialsCommand {
 			sender.zui.setHealth(sender.zui.getMaxHealth());
 			sender.zui.setExhaustion(0);
 			sender.zui.setFoodLevel(20);
-			sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "You have been healed.");
+			sender.zui.sendMessage(StringFormatter.format("You have been healed.", MessageOccasion.ESSENTIAL, zenix));
 			return true;
 		case 1:
 			if (manager.isZenixUser(args[0])) {
 				ZenixUserInterface target = manager.getZenixUser(args[0]);
 				target.setHealth(target.getMaxHealth());
-				target.sendMessage(zenix.getSettings().getNotificationColor() + "You have been healed.");
-				sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "You have healed " + target.getName() + ".");
+				target.sendMessage(StringFormatter.format("You have been healed.", MessageOccasion.ESSENTIAL, zenix));
+				sender.zui.sendMessage(StringFormatter.format("You have healed " + target.getName() + ".", MessageOccasion.ESSENTIAL, zenix));
 				return true;
 			}else {
 				return false;
 			}
 		default:
-			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Too many arguements.");
+			sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));
 			return false;
 		}
 	}

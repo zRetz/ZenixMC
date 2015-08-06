@@ -8,7 +8,7 @@ import zenixmc.organization.OrganizationSet;
 import zenixmc.organization.clans.Clan;
 
 public interface OrganizationRepositoryInterface extends RepositoryInterface {
-
+	
 	/**
 	 * Loads a set of organizations into memory.
 	 * @param types
@@ -33,7 +33,7 @@ public interface OrganizationRepositoryInterface extends RepositoryInterface {
 	 * 		The name of the clan to load.
 	 * @return The clan.
 	 */
-	Clan getClan(OrganizationPlayerInterface leader, String name);
+	Clan getClan(OrganizationPlayerInterface leader, String name, boolean create);
 	
 	/**
      * Saves a organization.

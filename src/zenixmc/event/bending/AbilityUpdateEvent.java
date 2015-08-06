@@ -1,4 +1,4 @@
-package zenixmc.event;
+package zenixmc.event.bending;
 
 import org.bukkit.event.HandlerList;
 

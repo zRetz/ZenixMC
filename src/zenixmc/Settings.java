@@ -43,6 +43,12 @@ public class Settings implements SettingsInterface {
     	config.addDefault("notificationColor", "GREEN");
     	config.addDefault("matchingNotificationColor", "DARK_GREEN");
     	config.addDefault("sortedColor", "GOLD");
+    	config.addDefault("clanColor", "DARK_BLUE");
+    	config.addDefault("matchingClanColor", "BLUE");
+    	config.addDefault("bendingColor", "DARK_PURPLE");
+    	config.addDefault("matchingBendingColor", "LIGHT_PURPLE");
+    	config.addDefault("essentialColor", "WHITE");
+    	config.addDefault("matchingEssentialColor", "GRAY");
     	config.addDefault("materialBlackList", Arrays.asList("TNT"));
     	config.addDefault("commandBlackList", Arrays.asList("hello"));
     	config.addDefault("allowSilentJoinQuit", true);
@@ -50,6 +56,7 @@ public class Settings implements SettingsInterface {
     	config.addDefault("joinMessage", "Zenix greets you, ");
     	config.addDefault("kickMessage", "Zenix kicked you.");
     	config.addDefault("banMessage", "Zenix banned you.");
+    	config.addDefault("defaultClanDesc", "Default Clan Description ;3");
     	config.addDefault("maxClanDescLength", 21);
     	
     	config.options().copyDefaults(true);
@@ -97,6 +104,36 @@ public class Settings implements SettingsInterface {
 	public ChatColor getSortedColor() {
 		return ChatColor.valueOf(config.getString("sortedColor"));
 	}
+	
+	@Override
+	public ChatColor getClanColor() {
+		return ChatColor.valueOf(config.getString("clanColor"));
+	}
+	
+	@Override
+	public ChatColor getMatchingClanColor() {
+		return ChatColor.valueOf(config.getString("matchingClanColor"));
+	}
+
+	@Override
+	public ChatColor getBendingColor() {
+		return ChatColor.valueOf(config.getString("bendingColor"));
+	}
+
+	@Override
+	public ChatColor getMatchingBendingColor() {
+		return ChatColor.valueOf(config.getString("matchingBendingColor"));
+	}
+
+	@Override
+	public ChatColor getEssentialColor() {
+		return ChatColor.valueOf(config.getString("essentialColor"));
+	}
+
+	@Override
+	public ChatColor getMatchingEssentialColor() {
+		return ChatColor.valueOf(config.getString("matchingEssentialColor"));
+	}
 
 	@Override
 	public List<Material> getBlockBlackList() {
@@ -132,7 +169,12 @@ public class Settings implements SettingsInterface {
 	public String getKickMessage() {
 		return config.getString("kickMessage");
 	}
-
+	
+	@Override
+	public String getDefaultClanDesc() {
+		return config.getString("defaultClanDesc");
+	}
+	
 	@Override
 	public int getMaxClanDescLength() {
 		return config.getInt("maxClanDescLength");

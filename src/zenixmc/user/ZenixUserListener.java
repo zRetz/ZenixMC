@@ -7,8 +7,8 @@ import zenixmc.PunishmentHandler;
 import zenixmc.ZenixListener;
 import zenixmc.ZenixMCInterface;
 import zenixmc.event.EventDispatcher;
-import zenixmc.event.ReachedMaxWarningEvent;
-import zenixmc.event.ReachedZeroWarningEvent;
+import zenixmc.event.essential.ReachedMaxWarningEvent;
+import zenixmc.event.essential.ReachedZeroWarningEvent;
 import zenixmc.user.objects.Warning;
 import zenixmc.utils.DateUtil;
 

@@ -5,10 +5,13 @@ import java.util.List;
 import org.bukkit.Location;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.JavaUtil;
+import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 /**
  * Teleport Command.
@@ -16,8 +19,8 @@ import zenixmc.utils.JavaUtil;
  */
 public class TeleportCommand extends AbstractEssentialsCommand {
 
-	public TeleportCommand(ZenixMCInterface zenix, ZenixUserManager manager) {
-		super(zenix, manager);
+	public TeleportCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+		super(zenix, manager, executer);
 	}
 	
 	@Override
@@ -37,7 +40,7 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 
 	@Override
 	public String getFormat() {
-		return "[x, y, z | user]";
+		return "[user] || [user] [user] || [x] [y] [z]";
 	}
 
 	@Override
@@ -48,18 +51,27 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
+		System.out.println(JavaUtil.arrayToString(args));
+		
 		switch (args.length) {
 		case 1:
 			if (manager.isZenixUser(args[0])) {
 				ZenixUserInterface target = manager.getZenixUser(args[0]);
 				sender.zui.getTeleport().teleportToUser(target, zenix.getSettings().getTeleportTime() == 0 ? false : true, zenix.getSettings().canMoveBeforeTeleport(), zenix.getSettings().getTeleportTime());
+				return true;
+			}else { 
+				sender.zui.sendMessage(StringFormatter.format("Not valid user.", MessageOccasion.ERROR, zenix));
+				return false;
 			}
-			return true;
 		case 2:
 			if (manager.isZenixUser(args[0]) && manager.isZenixUser(args[1])) {
 				ZenixUserInterface teleportee = manager.getZenixUser(args[0]);
 				ZenixUserInterface target = manager.getZenixUser(args[0]);
 				teleportee.getTeleport().teleportToUser(target, zenix.getSettings().getTeleportTime() == 0 ? false : true, zenix.getSettings().canMoveBeforeTeleport(), zenix.getSettings().getTeleportTime());
+				return true;
+			}else {
+				sender.zui.sendMessage(StringFormatter.format("Not valid user.", MessageOccasion.ERROR, zenix));
+				return false;
 			}
 		case 3:
 			if (JavaUtil.canBeIntegers(args[0], args[1], args[2])) {
@@ -69,20 +81,21 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 				int z = Integer.parseInt(args[2]);
 				
 				if (y < 0 || y > 256) {
+					sender.zui.sendMessage(StringFormatter.format("Y Axis too high!", MessageOccasion.ERROR, zenix));
 					return false;
 				}
 				
 				Location l = new Location(sender.zui.getWorld(), (double) x, (double) y, (double) z);
 				
 				if (sender.zui.getTeleport().teleportToLocation(sender.zui, l, zenix.getSettings().getTeleportTime() == 0 ? false : true, zenix.getSettings().canMoveBeforeTeleport(), zenix.getSettings().getTeleportTime())) {
-					sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "You are being teleported to X: " + l.getX() + "; Y:" + l.getY() + "; Z:" + l.getZ() + ";");
+					sender.zui.sendMessage(StringFormatter.format("You are being teleported to X: " + l.getX() + "; Y:" + l.getY() + "; Z:" + l.getZ() + ";", MessageOccasion.ESSENTIAL, zenix));
 					return true;
 				}
 				return false;
 			}
 		default:
-			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Too many arguments.");
-			return true;
+			sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));
+			return false;
 		}
 	}
 

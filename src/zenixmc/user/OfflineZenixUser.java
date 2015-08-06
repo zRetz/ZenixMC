@@ -18,36 +18,50 @@ import zenixmc.user.objects.Home;
 import zenixmc.user.objects.Teleport;
 import zenixmc.user.objects.Warning;
 
-public class Console implements ZenixUserInterface {
+public class OfflineZenixUser implements ZenixUserInterface {
 	
 	/**
 	 * SerialVersionUID.
 	 */
-	private static final long serialVersionUID = 8982813029236727452L;
+	private static final long serialVersionUID = 1413415934763147360L;
+	
+	/**
+	 * Bukkit representation of the offline user.
+	 */
+	private final OfflinePlayer offlinePlayer;
+	
+	/**
+	 * Online user data.
+	 */
+	private final ZenixUser user;
+	
+	public OfflineZenixUser(OfflinePlayer player, ZenixUser user) {
+		this.offlinePlayer = player;
+		this.user = user;
+	}
+	
+	public OfflinePlayer getOfflinePlayer() {
+		return offlinePlayer;
+	}
 
-	/**
-	 * The plugin.
-	 */
-	private final ZenixMCInterface zenix;
-	
-	/**
-	 * The name of console.
-	 */
-	private final String name;
-	
-	/**
-	 * The consoles input command sender.
-	 */
-	private ZenixCommandSender zenixCommandSender;
-	
-	public Console(String name, ZenixMCInterface zenix) {
-		this.zenix = zenix;
-		this.name = name;
+	@Override
+	public void setZenixMC(ZenixMCInterface zenix) {
+		user.setZenixMC(zenix);
+	}
+
+	@Override
+	public void setEventDispatcher(EventDispatcher eventDispatcher) {
+		user.setEventDispatcher(eventDispatcher);
 	}
 
 	@Override
 	public boolean isAuthorised(String node) {
-		return false;
+		return user.isAuthorised(node);
+	}
+
+	@Override
+	public void setPlayer(Player player) {
+		return;
 	}
 
 	@Override
@@ -57,27 +71,47 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public String getName() {
-		return name;
+		return user.getName();
 	}
 
 	@Override
 	public String getDisplayName() {
-		return name;
+		return user.getDisplayName();
 	}
 
 	@Override
 	public UUID getUniqueId() {
-		return null;
+		return user.getUniqueId();
 	}
 
 	@Override
 	public Location getLocation() {
-		return null;
+		return user.getLocation();
 	}
 
 	@Override
 	public World getWorld() {
-		return null;
+		return user.getWorld();
+	}
+
+	@Override
+	public void setExhaustion(float value) {
+		return;
+	}
+
+	@Override
+	public float getExhaustion() {
+		return 0;
+	}
+
+	@Override
+	public void setFoodLevel(int value) {
+		return;
+	}
+
+	@Override
+	public int getFoodLevel() {
+		return 0;
 	}
 
 	@Override
@@ -147,7 +181,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public BendingPlayerInterface getBendingPlayer() {
-		return null;
+		return user.getBendingPlayer();
 	}
 
 	@Override
@@ -157,7 +191,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public OrganizationPlayerInterface getOrganizationPlayer() {
-		return null;
+		return user.getOrganizationPlayer();
 	}
 
 	@Override
@@ -172,7 +206,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public boolean isMuted() {
-		return false;
+		return user.isMuted();
 	}
 
 	@Override
@@ -182,7 +216,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public boolean isFrozen() {
-		return false;
+		return user.isFrozen();
 	}
 
 	@Override
@@ -192,7 +226,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public boolean isGodMode() {
-		return false;
+		return user.isGodMode();
 	}
 
 	@Override
@@ -202,7 +236,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public boolean isVanished() {
-		return false;
+		return user.isVanished();
 	}
 
 	@Override
@@ -212,22 +246,27 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public boolean isSocialSpying() {
-		return false;
+		return user.isSocialSpying();
 	}
 
 	@Override
 	public void incrementWarning(long time, String... reason) {
-		return;
+		user.incrementWarning(time, reason);
 	}
 
 	@Override
 	public void decrementWarning(String... reason) {
-		return;
+		user.decrementWarning(reason);
+	}
+
+	@Override
+	public void setWarning(Warning value) {
+		user.setWarning(value);
 	}
 
 	@Override
 	public Warning getWarning() {
-		return null;
+		return user.getWarning();
 	}
 
 	@Override
@@ -237,17 +276,17 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public void deleteHome(String name) {
-		return;
+		user.deleteHome(name);
 	}
 
 	@Override
 	public Home getHome(String name) {
-		return null;
+		return user.getHome(name);
 	}
 
 	@Override
 	public Home getHome(Location location) {
-		return null;
+		return user.getHome(location);
 	}
 
 	@Override
@@ -257,67 +296,67 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public List<Home> getHomes() {
-		return null;
+		return user.getHomes();
 	}
 
 	@Override
 	public boolean hasHome() {
-		return false;
+		return user.hasHome();
 	}
 
 	@Override
 	public boolean homeExists(String name) {
-		return false;
+		return user.homeExists(name);
 	}
 
 	@Override
 	public boolean homeExists(Location location) {
-		return false;
+		return user.homeExists(location);
 	}
 
 	@Override
 	public void clearMail() {
-		return;
+		user.clearMail();
 	}
 
 	@Override
 	public void addMail(String mail) {
-		return;
+		user.addMail(mail);
 	}
 
 	@Override
 	public String popMail() {
-		return null;
+		return user.popMail();
 	}
 
 	@Override
 	public String popMail(int index) {
-		return null;
+		return user.popMail(index);
 	}
 
 	@Override
 	public String getMail() {
-		return null;
+		return user.getMail();
 	}
 
 	@Override
 	public String getMail(int index) {
-		return null;
+		return user.getMail(index);
 	}
 
 	@Override
 	public void setMails(List<String> mails) {
-		return;
+		user.setMails(mails);
 	}
 
 	@Override
 	public List<String> getMails() {
-		return null;
+		return user.getMails();
 	}
 
 	@Override
 	public boolean isAFK() {
-		return false;
+		return user.isAFK();
 	}
 
 	@Override
@@ -327,12 +366,17 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public Location getLastLocation() {
-		return null;
+		return user.getLastLocation();
+	}
+
+	@Override
+	public void setTeleport(Teleport value) {
+		return;
 	}
 
 	@Override
 	public Teleport getTeleport() {
-		return null;
+		return user.getTeleport();
 	}
 
 	@Override
@@ -342,12 +386,12 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public ZenixUserInterface getTeleportRequester() {
-		return null;
+		return user.getTeleportRequester();
 	}
 
 	@Override
 	public long getTeleportRequestTime() {
-		return 0;
+		return user.getTeleportRequestTime();
 	}
 
 	@Override
@@ -357,7 +401,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public long getStartActivity() {
-		return 0;
+		return user.getStartActivity();
 	}
 
 	@Override
@@ -367,7 +411,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public long getLastOnlineActivity() {
-		return 0;
+		return user.getLastOnlineActivity();
 	}
 
 	@Override
@@ -377,27 +421,27 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public long getLastActivity() {
-		return 0;
+		return user.getLastActivity();
 	}
 
 	@Override
 	public long getLastThrottledAction() {
-		return 0;
+		return user.getLastThrottledAction();
 	}
 
 	@Override
-	public void setJail(String jail) {
-		return;
+	public void setJail(String jail) { 
+		user.setJail(jail);
 	}
 
 	@Override
 	public String getJail() {
-		return null;
+		return user.getJail();
 	}
 
 	@Override
 	public boolean isJailed() {
-		return false;
+		return user.isJailed();
 	}
 
 	@Override
@@ -427,98 +471,42 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public List<UUID> getIgnoredUsers() {
-		return null;
+		return user.getIgnoredUsers();
 	}
 
 	@Override
 	public boolean isIgnoredUser(UUID uuid) {
-		return false;
+		return user.isIgnoredUser(uuid);
 	}
 
 	@Override
 	public boolean isIgnoredUser(ZenixUserInterface zui) {
-		return false;
+		return user.isIgnoredUser(zui);
 	}
 
 	@Override
 	public void sendMessage(String message) {
-		getCommandSender().commandSender.sendMessage(message);
+		throw new UnsupportedOperationException("OfflienUsers can't be sent messages.");
 	}
 
 	@Override
 	public ZenixCommandSender getCommandSender() {
-		if (zenixCommandSender == null) {
-			zenixCommandSender = new ZenixCommandSender(this.zenix.getServer().getConsoleSender(), this);
-		}
-		return zenixCommandSender;
-	}
-
-	@Override
-	public void setZenixMC(ZenixMCInterface zenix) {
-		return;
-	}
-
-	@Override
-	public void setEventDispatcher(EventDispatcher eventDispatcher) {
-		return;
-	}
-
-	@Override
-	public void setPlayer(Player player) {
-		return;
-	}
-
-	@Override
-	public void setWarning(Warning value) {
-		return;
-	}
-
-	@Override
-	public void setTeleport(Teleport value) {
-		// TODO Auto-generated method stub
-		
+		return user.getCommandSender();
 	}
 
 	@Override
 	public void handleSerialize() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setExhaustion(float value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public float getExhaustion() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setFoodLevel(int value) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getFoodLevel() {
-		// TODO Auto-generated method stub
-		return 0;
+		throw new UnsupportedOperationException("OfflineUsers can't handle serialization.");
 	}
 
 	@Override
 	public ZenixUser toOnlineUser(Player player) {
-		// TODO Auto-generated method stub
-		return null;
+		user.setPlayer(player);
+		return user;
 	}
 
 	@Override
 	public OfflineZenixUser toOfflineUser(OfflinePlayer player) {
-		// TODO Auto-generated method stub
-		return null;
+		return this;
 	}
-	
 }

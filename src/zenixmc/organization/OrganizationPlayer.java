@@ -42,7 +42,7 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	/**
 	 * The users organizations.
 	 */
-	private OrganizationSet organizations;
+	private OrganizationSet organizations = new OrganizationSet();
 
 	/**
 	 * Instantiate.
@@ -113,6 +113,11 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	@Override
 	public Clan getClan() {
 		return organizations.getClan();
+	}
+	
+	@Override
+	public boolean hasClan() {
+		return getClan() != null;
 	}
 	
 	@Override

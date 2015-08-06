@@ -26,11 +26,21 @@ public class ZenixUserManager {
 	
 	/**
 	 * Wrapper for repository.
+	 * @param uuid
+	 * 		The unique identifier of the offline user.
+	 * @return The offline user.
+	 */
+	public OfflineZenixUser getOfflineZenixUser(UUID uuid) {
+		return repository.getOfflineZenixUser(uuid);
+	}
+	
+	/**
+	 * Wrapper for repository.
 	 * @param object
 	 * 		The key for user.
 	 * @return The user.
 	 */
-	public ZenixUserInterface getZenixUser(Object object) {
+	public ZenixUser getZenixUser(Object object) {
 		return repository.getZenixUser(object);
 	}
 	
@@ -40,7 +50,7 @@ public class ZenixUserManager {
 	 * 		The key for user.
 	 * @return The user.
 	 */
-	public ZenixUserInterface getZenixUser(String name) {
+	public ZenixUser getZenixUser(String name) {
 		return repository.getZenixUser(name);
 	}
 	
@@ -50,7 +60,7 @@ public class ZenixUserManager {
 	 * 		The key for user.
 	 * @return The user.
 	 */
-	public ZenixUserInterface getZenixUser(UUID uuid) {
+	public ZenixUser getZenixUser(UUID uuid) {
 		return repository.getZenixUser(uuid);
 	}
 	
@@ -60,8 +70,48 @@ public class ZenixUserManager {
 	 * 		The key for user.
 	 * @return The user.
 	 */
-	public ZenixUserInterface getZenixUser(Player player) {
+	public ZenixUser getZenixUser(Player player) {
 		return repository.getZenixUser(player);
+	}
+	
+	/**
+	 * Wrapper for repository.
+	 * @param name
+	 * 		The key for user.
+	 * @return The user.
+	 */
+	public ZenixUserInterface getRegardlessZenixUser(String name) {
+		return repository.getRegardlessZenixUser(name);
+	}
+	
+	/**
+	 * Wrapper for repository.
+	 * @param uuid
+	 * 		The key for user.
+	 * @return The user.
+	 */
+	public ZenixUserInterface getRegardlessZenixUser(UUID uuid) {
+		return repository.getRegardlessZenixUser(uuid);
+	}
+	
+	/**
+	 * Wrapper for repository.
+	 * @param name
+	 * 		The name to check.
+	 * @return <code>true</code> If the user the name correlates to, is online.
+	 */
+	public boolean isOnline(String name) {
+		return repository.isOnline(name);
+	}
+	
+	/**
+	 * Wrapper for repository.
+	 * @param uuid
+	 * 		The unique identifier to check.
+	 * @return <code>true</code> If the user the unique identifier correlates to, is online.
+	 */
+	public boolean isOnline(UUID uuid) {
+		return repository.isOnline(uuid);
 	}
 	
 	/**
@@ -83,4 +133,5 @@ public class ZenixUserManager {
 	public boolean isZenixUser(UUID uuid) {
 		return repository.isZenixUser(uuid);
 	}
+
 }

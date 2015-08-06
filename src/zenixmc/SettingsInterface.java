@@ -53,6 +53,36 @@ public interface SettingsInterface {
     ChatColor getSortedColor();
     
     /**
+     * @return The color for clans. (default: dark_blue)
+     */
+    ChatColor getClanColor();
+    
+    /**
+     * @return The color to match essential color (default: blue)
+     */
+    ChatColor getMatchingClanColor();
+    
+    /**
+     * @return The color for bending. (default: dark_purple)
+     */
+    ChatColor getBendingColor();
+    
+    /**
+     * @return The color to match essential color (default: light_purple)
+     */
+    ChatColor getMatchingBendingColor();
+    
+    /**
+     * @return The color for essential. (default: white)
+     */
+    ChatColor getEssentialColor();
+    
+    /**
+     * @return The color to match essential color (default: grey)
+     */
+    ChatColor getMatchingEssentialColor();
+    
+    /**
      * @return A list of banned blocks.
      */
     List<Material> getBlockBlackList();
@@ -87,6 +117,11 @@ public interface SettingsInterface {
      */
     String getKickMessage();
    
+    /**
+     * @return The default clan description.
+     */
+    String getDefaultClanDesc();
+    
     /**
      * @return The max clan description length.
      */

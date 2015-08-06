@@ -5,6 +5,9 @@
  */
 package zenixmc.persistance;
 
+import java.io.File;
+import java.util.Set;
+
 /**
  * Repository to persist information.
  * @author james
@@ -32,4 +35,21 @@ public interface RepositoryInterface {
      *      The object to save.
      */
     void save(final Object object);
+    
+    /**
+     * Deletes data.
+     * @param object
+     * 		The object to delete.
+     */
+    void delete(final Object object);
+    
+    /**
+     * @return All the names of the files in the repository directory.
+     */
+    Set<String> fileNames();
+    
+    /**
+     * @return An array of all the files in the repository directory.O
+     */
+    File[] files();
 }

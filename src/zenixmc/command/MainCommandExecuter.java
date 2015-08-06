@@ -74,17 +74,17 @@ public class MainCommandExecuter implements Listener {
      * Shows help text.
      *
      * @param sender
-     *            The executor of the command.
+     *   	The executor of the command.
      * @param page
-     *            The page of the help text.
+     *    	The page of the help text.
      * @param command
-     *            The command to get the help text for, null when main text.
+     *    	The command to get the help text for, null when main text.
      */
-    void showHelp(ZenixCommandSender sender, int page, CommandInterface command) {
+    public void showHelp(ZenixCommandSender sender, int page, AbstractMainCommand command) {
 	        final String[] help = command == null ? null : command.getHelp();
 	
 	        sender.zui.sendMessage(zenix.getSettings().getMatchingNotificationColor() + "---- "
-	                + (command == null ? "Zenix" : command.getName())
+	                + (command == null ? "Zenix" : command.getTitle())
 	                + ": "
 	                + (command == null ? "Index" : "Help")
 	                + " ("
@@ -100,38 +100,16 @@ public class MainCommandExecuter implements Listener {
 	                if (i >= 0 && i < help.length) {
 	                    sender.zui.sendMessage(help[i]);
 	                }
-	            } else if (i >= 0 && i < (command == null ? mainCommands.size() : 1)) {
+	            } else if (i >= 0 && i < (command == null ? mainCommands.size() : command.getSubCommands().size())) {
 	                final CommandInterface Command = command == null ? mainCommands
-	                        .get(i) : command;
-	                sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "-- !" + Command.getName() + " "
-	                        + Command.getFormat() + " -- "
-	                        + Command.getDescription());
+	                        .get(i) : command.getSubCommands().get(i);
+	                if (Command != null) {
+		                sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "-- !" + command.getName() + " " + Command.getName() + " "
+		                        + Command.getFormat() + " -- "
+		                        + Command.getDescription());
+	                }
 	            }
 	        }
-    }
-
-    /**
-     * Finds a subcommand of maincommand by name or alias.
-     * @param c
-     * 		The maincommand to search through.
-     * @param alias
-     *     	The alias to use.
-     * @return The found subcommand or null.
-     */
-    public CommandInterface findSubCommandByAlias(AbstractMainCommand c, String alias) {
-    	if (c != null) {
-    		return c.findSubCommandByAlias(alias);
-    	}
-    	
-    	CommandInterface wasnull = null;
-    	
-    	for (AbstractMainCommand co : mainCommands) {
-    		if (co.findSubCommandByAlias(alias) != null) {
-    			wasnull = co.findSubCommandByAlias(alias);
-    		}
-    	}
-    	
-    	return wasnull;
     }
     
     /**

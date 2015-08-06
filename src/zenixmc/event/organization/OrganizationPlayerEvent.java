@@ -1,16 +1,13 @@
-package zenixmc.event;
+package zenixmc.event.organization;
 
-import zenixmc.bending.BendingPlayerInterface;
+import zenixmc.organization.OrganizationPlayerInterface;
 
-/**
- * An event that is related to a player.
- */
-public abstract class BendingPlayerEvent extends ZenixEvent {
-	
-    /**
+public abstract class OrganizationPlayerEvent extends OrganizationEvent {
+
+	/**
      * The player in question.
      */
-    private BendingPlayerInterface player = null;
+    private OrganizationPlayerInterface player = null;
 
     /**
      * Creates a new event for the specified player.
@@ -18,14 +15,14 @@ public abstract class BendingPlayerEvent extends ZenixEvent {
      * @param player
      *            The player.
      */
-    public BendingPlayerEvent(BendingPlayerInterface player) {
+    public OrganizationPlayerEvent(OrganizationPlayerInterface player) {
         this.player = player;
     }
 
     /**
      * @return The player that is relevant for this event.
      */
-    public BendingPlayerInterface getPlayer() {
+    public OrganizationPlayerInterface getPlayer() {
         return player;
     }
 
@@ -35,7 +32,8 @@ public abstract class BendingPlayerEvent extends ZenixEvent {
      * @param player
      *            The player.
      */
-    public void setPlayer(BendingPlayerInterface player) {
+    public void setPlayer(OrganizationPlayerInterface player) {
         this.player = player;
     }
+	
 }

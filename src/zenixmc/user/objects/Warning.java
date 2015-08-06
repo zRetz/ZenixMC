@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import zenixjava.collections.Triplet;
 import zenixmc.ZenixMCInterface;
 import zenixmc.event.EventDispatcher;
-import zenixmc.event.ReachedMaxWarningEvent;
-import zenixmc.event.ReachedZeroWarningEvent;
+import zenixmc.event.essential.ReachedMaxWarningEvent;
+import zenixmc.event.essential.ReachedZeroWarningEvent;
 import zenixmc.user.ZenixUserInterface;
 
 /**

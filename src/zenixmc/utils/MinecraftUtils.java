@@ -59,7 +59,7 @@ public final class MinecraftUtils {
 			for (Block b : cube) {
 				if (isSafeBlock(b)) {
 					done = true;
-					result = b.getLocation();
+					result = (Location) b.getLocation();
 				}
 			}
 		}

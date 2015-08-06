@@ -6,20 +6,21 @@
 package zenixmc.persistance;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.FileFilter;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.event.EventDispatcher;
 import zenixmc.io.SeDe;
+import zenixmc.user.OfflineZenixUser;
 import zenixmc.user.ZenixUser;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.objects.Teleport;
@@ -69,26 +70,37 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 	 *            The player to find the file for.
 	 * @return The file of the specified player.
 	 */
-	protected File getZenixUserFile(UUID uuid) {
+	public File getZenixUserFile(UUID uuid) {
 		return new File(this.directory, uuid + ".dat");
+	}
+	
+	@Override
+	public OfflineZenixUser loadZenixUser(OfflinePlayer player) {
+		return getZenixUser(player.getUniqueId()).toOfflineUser(player);
+	}
+	
+	@Override
+	public OfflineZenixUser getOfflineZenixUser(UUID uuid) {
+		throw new UnsupportedOperationException("This is not a cache class.");
 	}
 
 	@Override
-	public ZenixUserInterface getZenixUser(Player player) {
+	public ZenixUser getZenixUser(UUID uuid) {
 
-		final File f = getZenixUserFile(player.getUniqueId());
+		final File f = getZenixUserFile(uuid);
 
-		ZenixUserInterface zui = null;
+		ZenixUser zui = null;
 
 		if (!(f.exists())) {
-			zui = new ZenixUser(player, zenix, eventDispatcher);
+			zui = new ZenixUser(zenix.getPlayer(uuid).isOnline() ? zenix.getPlayer(uuid) : null, zenix, eventDispatcher);
+			zui.handleSerialize();
 			save(zui);
 			return zui;
 		}
 
-		zui = SeDe.deserialize(f.getName(), ZenixUser.class);
+		zui = SeDe.deserialize(f, ZenixUser.class);
 
-		zui.setPlayer(player);
+		zui.setPlayer(zenix.getOfflinePlayer(uuid).isOnline() ? zenix.getPlayer(uuid) : null);
 		zui.setTeleport(new Teleport(zui, zenix));
 		zui.setZenixMC(zenix);
 		zui.setEventDispatcher(eventDispatcher);
@@ -100,17 +112,27 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 	}
 
 	@Override
-	public ZenixUserInterface getZenixUser(Object key) {
+	public ZenixUser getZenixUser(Object key) {
 		throw new UnsupportedOperationException("This is not a cache class.");
 	}
 
 	@Override
-	public ZenixUserInterface getZenixUser(String name) {
+	public ZenixUser getZenixUser(String name) {
 		throw new UnsupportedOperationException("This is not a cache class.");
 	}
 
 	@Override
-	public ZenixUserInterface getZenixUser(UUID uuid) {
+	public ZenixUser getZenixUser(Player player) {
+		throw new UnsupportedOperationException("This is not a cache class.");
+	}
+	
+	@Override
+	public ZenixUserInterface getRegardlessZenixUser(String name) {
+		throw new UnsupportedOperationException("This is not a cache class.");
+	}
+	
+	@Override
+	public ZenixUserInterface getRegardlessZenixUser(UUID uuid) {
 		throw new UnsupportedOperationException("This is not a cache class.");
 	}
 
@@ -119,7 +141,7 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 
 		final File f = getZenixUserFile(zenixUser.getUniqueId());
 
-		SeDe.serialize(zenixUser, f.getName());
+		SeDe.serialize(zenixUser, f);
 
 		logger.log(Level.INFO, "Zenix User " + zenixUser.getName() + " has been saved.");
 	}
@@ -140,9 +162,41 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 			save((ZenixUserInterface) object);
 		}
 	}
+	
+	@Override
+	public void delete(Object object) {
+		
+	}
 
 	public void setTextRepository(TextRepositoryInterface textRepository) {
 		this.textRepository = textRepository;
+	}
+
+	@Override
+	public Set<String> fileNames() {
+		
+		Set<String> result = new HashSet<>();
+		
+		File[] files = files();
+		
+		for (File f : files) {
+			result.add(f.getName().substring(0, f.getName().length()-4));
+			System.out.println("file: " + f.getName().substring(0, f.getName().length()-4));
+		}
+		
+		return result;
+	}
+
+	@Override
+	public File[] files() {
+		return this.directory.listFiles(new FileFilter() {
+
+			@Override
+			public boolean accept(File path) {
+				return path.getName().endsWith(".dat");
+			}
+			
+		});
 	}
 	
 }

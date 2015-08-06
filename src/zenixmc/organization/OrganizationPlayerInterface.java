@@ -73,6 +73,11 @@ public interface OrganizationPlayerInterface extends Serializable {
 	Clan getClan();
 	
 	/**
+	 * @return <code>true</code> If the organizationPlayer is in a clan.
+	 */
+	boolean hasClan();
+	
+	/**
 	 * Appends an invite request.
 	 * @param clanName
 	 * 		Name of clan sending the invitation.

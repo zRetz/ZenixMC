@@ -1,5 +1,6 @@
 package zenixmc.io;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class SeDe {
 	 * @throws IllegalArgumentException
 	 *             Thrown if either provided parameter is null.
 	 */
-	public static <T> void serialize(final T objectToSerialize, final String fileName) {
+	public static <T> void serialize(final T objectToSerialize, final File fileName) {
 		if (fileName == null) {
 			throw new IllegalArgumentException("Name of file to which to serialize object to cannot be null.");
 		}
@@ -61,7 +62,7 @@ public class SeDe {
 	 * @throws IllegalArgumentException
 	 *             Thrown if either provided parameter is null.
 	 */
-	public static <T> T deserialize(final String fileToDeserialize, final Class<T> classBeingDeserialized) {
+	public static <T> T deserialize(final File fileToDeserialize, final Class<T> classBeingDeserialized) {
 		if (fileToDeserialize == null) {
 			throw new IllegalArgumentException("Cannot deserialize from a null filename.");
 		}
@@ -71,8 +72,10 @@ public class SeDe {
 		T objectOut = null;
 		try (FileInputStream fis = new FileInputStream(fileToDeserialize);
 				ObjectInputStream ois = new ObjectInputStream(fis)) {
-			objectOut = (T) ois.readObject();
-			System.out.println("Deserialization of Object " + objectOut + " is completed.");
+			synchronized (ois) {
+				objectOut = (T) ois.readObject();
+				System.out.println("Deserialization of Object " + objectOut + " is completed.");
+			}
 		} catch (IOException | ClassNotFoundException exception) {
 			exception.printStackTrace();
 		}

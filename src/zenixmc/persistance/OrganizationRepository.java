@@ -1,13 +1,17 @@
 package zenixmc.persistance;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.io.SeDe;
 import zenixmc.organization.Organization;
+import zenixmc.organization.OrganizationManager;
 import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.organization.OrganizationSet;
 import zenixmc.organization.clans.Clan;
@@ -35,6 +39,11 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	private final ZenixUserManager manager;
 	
 	/**
+	 * Organization manager.
+	 */
+	private OrganizationManager orgManager;
+	
+	/**
 	 * Instantiate.
 	 * @param logger
 	 * 		The logger to debug/log.
@@ -56,7 +65,7 @@ public class OrganizationRepository extends Repository implements OrganizationRe
      * @return The file of the clan.
      */
     protected File getClanFile(String name) {
-        return new File(this.directory, name + ".dat");
+        return new File(this.clansDirectory, name + ".dat");
     }
 
 	
@@ -97,21 +106,21 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	@Override
 	public Organization getOrganization(String name, Class<?> type) {
 		if (type == Clan.class) {
-			return getClan(null, name);
+			return getClan(null, name, false);
 		}
 		return null;
 	}
 
 	@Override
-	public Clan getClan(OrganizationPlayerInterface leader, String name) {
+	public Clan getClan(OrganizationPlayerInterface leader, String name, boolean create) {
 		
 		final File f = getClanFile(name);
 
 		Clan clan = null;
 
-		if (!(f.exists())) {
+		if (!(f.exists()) && create) {
 			if (leader != null) {
-				clan = new Clan(zenix, manager, null, name);
+				clan = new Clan(zenix, manager, leader, name);
 				save(clan);
 				return clan;
 			}else {
@@ -120,9 +129,10 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 			}
 		}
 
-		clan = SeDe.deserialize(f.getName(), Clan.class);
+		clan = SeDe.deserialize(f, Clan.class);
 		clan.setZenixMC(zenix);
 		clan.setZenixUserManager(manager);
+		clan.setOrganizationManager(orgManager);
 		
 		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been loaded.");
 
@@ -142,9 +152,17 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 		
 		final File f = getClanFile(clan.getName());
 		
-		SeDe.serialize(clan, f.getName());
+		SeDe.serialize(clan, f);
 		
 		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been saved.");
+	}
+	
+	@Override
+	public void delete(Object ob) {
+		if (ob instanceof Organization) {
+			delete(ob);
+			return;
+		}
 	}
 	
 	@Override
@@ -165,11 +183,44 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 		}
 		
 		f.delete();
+		
+		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been deleted.");
 	}
 
 	@Override
 	public boolean clanNameUsed(String name) {
 		throw new UnsupportedOperationException("This is not a cache class.");
+	}
+	
+	@Override
+	public Set<String> fileNames() {
+
+		Set<String> result = new HashSet<>();
+		
+		File[] files = files();
+		
+		for (File f : files) {
+			result.add(f.getName().substring(0, f.getName().length()-4));
+			System.out.println("file: " + f.getName().substring(0, f.getName().length()-4));
+		}
+		
+		return result;
+	}
+
+	@Override
+	public File[] files() {
+		return this.clansDirectory.listFiles(new FileFilter() {
+
+			@Override
+			public boolean accept(File path) {
+				return path.getName().endsWith(".dat");
+			}
+			
+		});
+	}
+	
+	public void setOrganizationManager(OrganizationManager value) {
+		this.orgManager = value;
 	}
 
 }

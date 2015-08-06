@@ -11,7 +11,11 @@ import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+
+import zenixmc.ZenixMCInterface;
 
 /**
  * String formatting utility.
@@ -19,6 +23,53 @@ import org.bukkit.Location;
  */
 public class StringFormatter {
     
+	public enum MessageOccasion {
+		ERROR, ESSENTIAL, BENDING, CLAN, HANDLED;
+	}
+	
+	public static String format(String msg, MessageOccasion occasion, ZenixMCInterface inst) {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(ChatColor.BLACK + "[");
+	
+		String p = "";
+		ChatColor msgc = null;
+		
+		switch (occasion) {
+		case ESSENTIAL:
+			p = inst.getSettings().getEssentialColor() + "Essential";
+			msgc = inst.getSettings().getMatchingEssentialColor();
+			break;
+		case BENDING:
+			p = inst.getSettings().getBendingColor() + "Bending";
+			msgc = inst.getSettings().getMatchingBendingColor();
+			break;
+		case CLAN:
+			p = inst.getSettings().getClanColor() + "Clan";
+			msgc = inst.getSettings().getMatchingClanColor();
+			break;
+		case ERROR:
+			p = inst.getSettings().getErrorColor() + "Error";
+			msgc = inst.getSettings().getErrorColor();
+			break;
+		case HANDLED:
+			p = inst.getSettings().getSortedColor() + "Handled";
+			msgc = inst.getSettings().getSortedColor();
+			break;
+		default:
+			p = inst.getSettings().getMatchingNotificationColor() + "Zenix";
+			msgc = inst.getSettings().getNotificationColor();
+			break;
+		}
+		
+		sb.append(p);
+		sb.append(ChatColor.BLACK + "] ");
+		sb.append(msgc);
+		sb.append(msg);
+		
+		return sb.toString();
+	}
+	
     public static String format(Location loc) {
         return "Location: " + "X - " + loc.getX() + "; Y - " + loc.getY() + "; Z - " + loc.getZ() + ";";
     }

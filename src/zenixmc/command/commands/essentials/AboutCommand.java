@@ -1,7 +1,5 @@
 package zenixmc.command.commands.essentials;
 
-import java.util.List;
-
 import zenixmc.ZenixMCInterface;
 import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;
@@ -9,19 +7,15 @@ import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.StringFormatter;
 import zenixmc.utils.StringFormatter.MessageOccasion;
 
-/**
- * Test Command which returns 'Hello'.
- * @author james
- */
-public class HelloCommand extends AbstractEssentialsCommand {
+public class AboutCommand extends AbstractEssentialsCommand {
 
-	public HelloCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+	public AboutCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
 		super(zenix, manager, executer);
 	}
 	
 	@Override
 	public String getName() {
-		return "hello";
+		return "about";
 	}
 
 	@Override

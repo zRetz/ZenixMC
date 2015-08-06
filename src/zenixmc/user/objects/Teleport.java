@@ -6,11 +6,12 @@
 package zenixmc.user.objects;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.utils.MinecraftUtils;
+import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 /**
  * Teleportation object.
@@ -50,7 +51,7 @@ public class Teleport {
     		return false;
     	}
     	
-    	Location primary = target.clone();
+    	Location primary = (Location) target.clone();
     	
     	if (!(MinecraftUtils.isSafeLocation(primary))) {
     		primary = MinecraftUtils.getSafeLocation(primary);
@@ -58,7 +59,7 @@ public class Teleport {
     	
     	if (timed) {
     		new TimedTeleport(zenix, zui, teleportee, target, time, stay);
-    		teleportee.sendMessage(zenix.getSettings().getNotificationColor() + "Teleporting in... " + time / 1000 + " seconds.");
+    		teleportee.sendMessage(StringFormatter.format("Teleporting in... " + time / 1000 + " seconds.", MessageOccasion.ESSENTIAL, zenix));
     		return true;
     	}
     

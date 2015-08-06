@@ -1,7 +1,8 @@
-package zenixmc.event;
+package zenixmc.event.essential;
 
 import org.bukkit.event.HandlerList;
 
+import zenixmc.event.ZenixUserEvent;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.objects.Warning;
 

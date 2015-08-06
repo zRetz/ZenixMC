@@ -1,7 +1,10 @@
 package zenixmc.persistance;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import zenixmc.organization.Organization;
@@ -34,6 +37,9 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	@Override
 	public void open(String openMessage) {
 		parentRepository.open(openMessage);
+		for (String s : fileNames()) {
+        	getClan(null, s, false);
+        }
 	}
 
 	@Override
@@ -70,12 +76,12 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	}
 
 	@Override
-	public Clan getClan(OrganizationPlayerInterface leader, String name) {
+	public Clan getClan(OrganizationPlayerInterface leader, String name, boolean create) {
 		
 		Clan result = (Clan) organizations.get(name);
 		
-		if (result == null && leader != null && !(clanNameUsed(name))) {
-			result = parentRepository.getClan(leader, name);
+		if (result == null) {
+			result = parentRepository.getClan(leader, name, create);
 			put(name, result);
 		}
 		
@@ -90,6 +96,11 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	@Override
 	public void save(Clan clan) {
 		parentRepository.save(clan);
+	}
+	
+	@Override
+	public void delete(Object ob) {
+		parentRepository.delete(ob);
 	}
 	
 	@Override
@@ -112,5 +123,15 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	private void put(String name, Organization org) {
         organizations.put(name, org);
     }
+
+	@Override
+	public Set<String> fileNames() {
+		return parentRepository.fileNames();
+	}
+
+	@Override
+	public File[] files() {
+		return parentRepository.files();
+	}
 
 }

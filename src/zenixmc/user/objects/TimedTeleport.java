@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import zenixmc.ZenixMCInterface;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.utils.MinecraftUtils;
+import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 /**
  * Class for Timed Teleporting.
@@ -152,24 +154,24 @@ public class TimedTeleport implements Runnable {
 				if (teleportOwner.isOnline()) {
 					
 					if (reason.equals("Teleporting.")) {
-						teleportOwner.sendMessage(zenix.getSettings().getNotificationColor() + reason);
+						teleportOwner.sendMessage(StringFormatter.format(reason, MessageOccasion.ESSENTIAL, zenix));
 						return;
 					}
 					
-					teleportOwner.sendMessage(zenix.getSettings().getErrorColor() + "Teleportation cancelled.");
-					teleportOwner.sendMessage(zenix.getSettings().getErrorColor() + reason);
+					teleportOwner.sendMessage(StringFormatter.format("Teleportation cancelled.", MessageOccasion.ERROR, zenix));
+					teleportOwner.sendMessage(StringFormatter.format(reason, MessageOccasion.ERROR, zenix));
 				}
 			}
 			if (teleportee != null) {
 				if (teleportee.isOnline()) {
 					
 					if (reason.equals("Teleporting.")) {
-						teleportOwner.sendMessage(zenix.getSettings().getNotificationColor() + reason);
+						teleportOwner.sendMessage(StringFormatter.format(reason, MessageOccasion.ESSENTIAL, zenix));
 						return;
 					}
 					
-					teleportee.sendMessage(zenix.getSettings().getErrorColor() + "Teleportation cancelled.");
-					teleportee.sendMessage(zenix.getSettings().getErrorColor() + reason);
+					teleportee.sendMessage(StringFormatter.format("Teleportation cancelled.", MessageOccasion.ERROR, zenix));
+					teleportee.sendMessage(StringFormatter.format(reason, MessageOccasion.ERROR, zenix));
 				}
 			}
 		}

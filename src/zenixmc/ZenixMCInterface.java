@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -64,6 +65,22 @@ public interface ZenixMCInterface extends Plugin {
      * @return All players that are online.
      */
     Collection<Player> getOnlinePlayers();
+    
+    /**
+     * Returns a bukkit representation of a offline user by specified name.
+     * @param name
+     * 		The name of the offline player.
+     * @return The bukkit representation of offline user.
+     */
+    OfflinePlayer getOfflinePlayer(String name);
+    
+    /**
+     * Returns a bukkit representation of a offline user by specified UUID.
+     * @param uuid
+     * 		The unique identifier for player.
+     * @return The bukkit representation of offline user.
+     */
+    OfflinePlayer getOfflinePlayer(UUID uuid);
     
     /**
      * Broadcasts a message to the entire server.

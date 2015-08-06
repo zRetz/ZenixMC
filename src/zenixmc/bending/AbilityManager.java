@@ -14,10 +14,10 @@ import java.util.Set;
 import zenixmc.bending.ability.AbilityInterface;
 import zenixmc.bending.ability.Preset;
 import zenixmc.bending.ability.PresetInterface;
-import zenixmc.event.AbilityUpdateEvent;
-import zenixmc.event.BindEvent;
 import zenixmc.event.EventDispatcher;
-import zenixmc.event.PresetSwitchEvent;
+import zenixmc.event.bending.AbilityUpdateEvent;
+import zenixmc.event.bending.BindEvent;
+import zenixmc.event.bending.PresetSwitchEvent;
 import zenixmc.utils.StringFormatter;
 
 /**

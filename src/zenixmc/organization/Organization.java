@@ -20,14 +20,33 @@ import zenixmc.user.ZenixUserManager;
 public interface Organization extends Serializable {
     
 	/**
+	 * Sets the name of the organization.
+	 * @param name
+	 * 		The new name.
+	 */
+	void setName(String name);
+	
+	/**
 	 * @return The name of the organization.
 	 */
 	String getName();
 	
 	/**
+	 * Sets description of the organization.
+	 * @param desc
+	 *		The new description.
+	 */
+	void setDescription(String[] desc);
+	
+	/**
 	 * @return The description of the organization.
 	 */
 	String[] getDescription();
+	
+	/**
+	 * @return An array of strings about the organization.
+	 */
+	String[] about();
 	
 	/**
 	 * Sets the organizations leader.
@@ -42,6 +61,13 @@ public interface Organization extends Serializable {
 	OrganizationPlayerInterface getLeader();
 	
 	/**
+	 * Sends a message to the specified members
+	 * @param members
+	 * 		The members that should be sent this message.
+	 */
+	void sendMessage(String message, OrganizationPlayerInterface... members);
+	
+	/**
 	 * Adds a member to the organization.
 	 * @param player
 	 * 		The player to add.
@@ -54,6 +80,27 @@ public interface Organization extends Serializable {
 	 * 		The player to remove.
 	 */
 	void removeMember(OrganizationPlayerInterface player);
+	
+	/**
+	 * @param player
+	 * 		The player to check.
+	 * @return <code>true</code> If the player is a member of the organization.
+	 */
+	boolean isMember(OrganizationPlayerInterface player);
+	
+	/**
+	 * @param name
+	 * 		The name to check.
+	 * @return <code>true</code> If the users organizationPlayer that the name correlates to, is a member of the organization.
+	 */
+	boolean isMember(String name);
+	
+	/**
+	 * @param uuid
+	 * 		The unique identifier to check.
+	 * @return <code>true</code> If the users organizationPlayer that the unique identifier correlates to, is a member of the organization.
+	 */
+	boolean isMember(UUID uuid);
 	
 	/**
 	 * @param name
@@ -78,8 +125,9 @@ public interface Organization extends Serializable {
 	 * Invites a player to the organization. 
 	 * @param player
 	 * 		The player to invite.
+	 * @return <code>true</code> If the player has already been invited to the organization.
 	 */
-	void invite(OrganizationPlayerInterface player);
+	boolean invite(OrganizationPlayerInterface player);
 	
 	/**
 	 * Adds a player who has been invited to the organization.
@@ -106,6 +154,13 @@ public interface Organization extends Serializable {
 	 * 		The value to set.
 	 */
 	void setZenixUserManager(ZenixUserManager value);
+	
+	/**
+	 * Sets the organizations organization manager.
+	 * @param value
+	 * 		The value to set.
+	 */
+	void setOrganizationManager(OrganizationManager value);
 	
 	/**
 	 * @return The names of all members.

@@ -9,12 +9,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -22,6 +21,7 @@ import org.bukkit.inventory.PlayerInventory;
 import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayer;
 import zenixmc.bending.BendingPlayerInterface;
+import zenixmc.block.SerializableLocation;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.event.EventDispatcher;
 import zenixmc.organization.OrganizationPlayer;
@@ -31,6 +31,7 @@ import zenixmc.user.objects.Teleport;
 import zenixmc.user.objects.Warning;
 import zenixmc.utils.JavaUtil;
 import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 /**
  * A user internally used by this plugin also acts as wrapper for bukkit representation of user.
@@ -49,12 +50,12 @@ public class ZenixUser implements ZenixUserInterface {
 	/**
 	 * The plugin.
 	 */
-	private transient ZenixMCInterface zenix;
+	protected transient ZenixMCInterface zenix;
 	
 	/**
 	 * The event dispatcher to fire events.
 	 */
-	private transient EventDispatcher eventDispatcher;
+	protected transient EventDispatcher eventDispatcher;
 	
     /**
      * The bukkit representation of the user.
@@ -84,22 +85,22 @@ public class ZenixUser implements ZenixUserInterface {
     /**
      * The users account name.
      */
-    private String username;
+    protected String username;
 
     /**
      * The users name displayed when messaging;
      */
-    private String displayName;
+    protected String displayName;
 
     /**
      * The users unique identifier.
      */
-    private UUID uuid;
+    protected UUID uuid;
     
     /**
      * The users amount of warnings and sentence.
      */
-	private Warning warning;
+	protected Warning warning;
 
     /**
      * The users bendingPlayer data.
@@ -109,7 +110,7 @@ public class ZenixUser implements ZenixUserInterface {
     /**
      * The users organizationPlayer data.
      */
-    private OrganizationPlayerInterface organizationPlayer = new OrganizationPlayer(this);
+    protected OrganizationPlayerInterface organizationPlayer = new OrganizationPlayer(this);
 
     /**
      * The users away from keyboard value;
@@ -129,62 +130,62 @@ public class ZenixUser implements ZenixUserInterface {
     /**
      * The users ability to speak.
      */
-	public boolean muted = false;
+	private boolean muted = false;
 	
 	/**
      * The users ability to move.
      */
-	public boolean frozen = false;
+	private boolean frozen = false;
 	
 	/**
      * The users ability to take damage.
      */
-	public boolean godMode = false;
+	private boolean godMode = false;
 	
 	/**
      * The users ability to be seen.
      */
-	public boolean vanished = false;
+	private boolean vanished = false;
 	
 	/**
      * The users ability to socially spy.
      */
-	public boolean socialSpy = false;
+	private boolean socialSpy = false;
 	
 	/**
      * The users collection of homes.
      */
-	public List<Home> homes = new ArrayList<>();
+	private List<Home> homes = new ArrayList<>();
 	
 	/**
      * The users collection of mail.
      */
-	public List<String> mails = new ArrayList<>();
+	private List<String> mails = new ArrayList<>();
 	
 	/**
-     * The users current jail. (Can be null)
+     * The users current jail.
      */
-	public String jail = null;
+	private String jail = " ";
 	
 	/**
      * The users collection of ignoredUsers.
      */
-	public List<UUID> ignoredUsers = new ArrayList<>();
+	private List<UUID> ignoredUsers = new ArrayList<>();
 	
 	/**
      * The start time of the users last activity. (Log-in time.) 
      */
-	public long startActivity = System.currentTimeMillis();
+	private long startActivity = System.currentTimeMillis();
 	
 	/**
      * The duration of the users last session.
      */
-	public long lastOnlineActivity = 0;
+	private long lastOnlineActivity = 0;
 	
 	/**
      * The end time of the users last activity. (Can be log-off time.)
      */
-	public long lastActivity = startActivity;
+	private long lastActivity = startActivity;
 	
     /**
      * Creates a new Zenix User.
@@ -461,14 +462,14 @@ public class ZenixUser implements ZenixUserInterface {
         if (time != 0) {
         	String r = JavaUtil.arrayToString(reason);
         	warning.increment(time, r);
-            sendMessage(zenix.getSettings().getErrorColor() + "You have recieved a warning. REASON: " + r);
+            sendMessage(StringFormatter.format("You have recieved a warning. REASON: " + r, MessageOccasion.ERROR, zenix));
         }
     }
 
     @Override
     public void decrementWarning(String... reason) {
         warning.decrement();
-        sendMessage(zenix.getSettings().getNotificationColor() + "You have lost a warning. REASON: " + JavaUtil.arrayToString(reason));
+        sendMessage(StringFormatter.format("You have lost a warning. REASON: " + JavaUtil.arrayToString(reason), MessageOccasion.ESSENTIAL, zenix));
     }
     
     @Override
@@ -488,12 +489,12 @@ public class ZenixUser implements ZenixUserInterface {
         }
         
         if (homeExists(name)) {
-            sendMessage(zenix.getSettings().getErrorColor() + name + " is already a home.");
+            sendMessage(StringFormatter.format(name + " is already a home.", MessageOccasion.ERROR, zenix));
             return;
         }
         
         if (homeExists(loc)) {
-            sendMessage(zenix.getSettings().getErrorColor() + StringFormatter.format(loc) + " is already a home.");
+            sendMessage(StringFormatter.format(StringFormatter.format(loc) + " is already a home.", MessageOccasion.ERROR, zenix));
             return;
         }
         
@@ -509,7 +510,7 @@ public class ZenixUser implements ZenixUserInterface {
         }
         
         if (!(homeExists(name))) {
-            sendMessage(zenix.getSettings().getErrorColor() + "Home: " + name + " does not exist.");
+            sendMessage(StringFormatter.format("Home: " + name + " does not exist.", MessageOccasion.ERROR, zenix));
             return;
         }
         
@@ -629,7 +630,7 @@ public class ZenixUser implements ZenixUserInterface {
         String result = getMail(index);
         mails.remove(result);
         
-        sendMessage(zenix.getSettings().getNotificationColor() + "Retrieving mail.");
+        sendMessage(StringFormatter.format("Retrieving mail.", MessageOccasion.ESSENTIAL, zenix));
         return result;
     }
 
@@ -646,12 +647,12 @@ public class ZenixUser implements ZenixUserInterface {
         }
         
         if (index > mails.size() && mails.size() > 0) {
-            sendMessage(zenix.getSettings().getSortedColor() + "Index out of bounds. Returning first entry.");
+            sendMessage(StringFormatter.format("Index out of bounds. Returning first entry.", MessageOccasion.HANDLED, zenix));
             return getMail();
         }
         
         if (index > mails.size()) {
-            sendMessage(zenix.getSettings().getErrorColor() + "Index out of bounds.");
+            sendMessage(StringFormatter.format("Index out of bounds.", MessageOccasion.ERROR, zenix));
             return null;
         }
 
@@ -773,7 +774,7 @@ public class ZenixUser implements ZenixUserInterface {
         if (uuid != null) {
             ignoredUsers.add(uuid);
             //change to offline player
-            sendMessage(zenix.getSettings().getNotificationColor() + "You've added " + uuid.toString() + " to your ignoredUsers.");
+            sendMessage(StringFormatter.format("You've added " + uuid.toString() + " to your ignoredUsers.", MessageOccasion.ESSENTIAL, zenix));
         }
     }
 
@@ -787,7 +788,7 @@ public class ZenixUser implements ZenixUserInterface {
         if (uuid != null) {
             ignoredUsers.remove(uuid);
             //change to offline player
-            sendMessage(zenix.getSettings().getNotificationColor() + "You've removed " + uuid.toString() + " from your ignoredUsers.");
+            sendMessage(StringFormatter.format("You've removed " + uuid.toString() + " from your ignoredUsers.", MessageOccasion.ESSENTIAL, zenix));
         }
     }
 
@@ -841,7 +842,90 @@ public class ZenixUser implements ZenixUserInterface {
 		this.warning.setParent(this);
 		this.warning.setEventDispatcher(eventDispatcher);
 		this.organizationPlayer.setZenixUser(this);
-		
+		for (Home h : homes) {
+			if (h != null) {
+				h.setZenixUser(this);
+			}
+		}
+	}
+
+	@Override
+	public ZenixUser toOnlineUser(Player player) {
+		return this;
+	}
+
+	@Override
+	public OfflineZenixUser toOfflineUser(OfflinePlayer player) {
+		return new OfflineZenixUser(player, this);
 	}
 	
+	/**
+	 * Serialize this instance.
+	 * 
+	 * @param out
+	 *            Target to which this instance is written.
+	 * @throws IOException
+	 *             Thrown if exception occurs during serialization.
+	 */
+	private void writeObject(final ObjectOutputStream out) throws IOException {
+		out.writeUTF(username);
+		out.writeUTF(displayName);
+		out.writeObject(uuid);
+		out.writeObject(warning);
+		out.writeObject(bendingPlayer);
+		out.writeObject(organizationPlayer);
+		out.writeBoolean(afk);
+		if (lastLocation == null) {
+			setLastLocation(getLocation());
+		}
+		out.writeObject(new SerializableLocation(lastLocation));
+		out.writeLong(lastThrottledAction);
+		out.writeBoolean(muted);
+		out.writeBoolean(frozen);
+		out.writeBoolean(godMode);
+		out.writeBoolean(vanished);
+		out.writeBoolean(socialSpy);
+		out.writeObject(homes);
+		out.writeObject(mails);
+		out.writeUTF(jail);
+		out.writeObject(ignoredUsers);
+		out.writeLong(startActivity);
+		out.writeLong(lastOnlineActivity);
+		out.writeLong(lastActivity);
+	}
+
+	/**
+	 * Deserialize this instance from input stream.
+	 * 
+	 * @param in
+	 *            Input Stream from which this instance is to be deserialized.
+	 * @throws IOException
+	 *             Thrown if error occurs in deserialization.
+	 * @throws ClassNotFoundException
+	 *             Thrown if expected class is not found.
+	 */
+	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+		username = in.readUTF();
+		displayName = in.readUTF();
+		uuid = (UUID) in.readObject();
+		warning = (Warning) in.readObject();
+		bendingPlayer = (BendingPlayerInterface) in.readObject();
+		organizationPlayer = (OrganizationPlayerInterface) in.readObject();
+		afk = in.readBoolean();
+		lastLocation = ((SerializableLocation) in.readObject()).toLocation();
+		lastThrottledAction = in.readLong();
+		muted = in.readBoolean();
+		frozen = in.readBoolean();
+		godMode = in.readBoolean();
+		vanished = in.readBoolean();
+		socialSpy = in.readBoolean();
+		homes = (List<Home>) in.readObject();
+		mails = (List<String>) in.readObject();
+		jail = in.readUTF();
+		ignoredUsers = (List<UUID>) in.readObject();
+		startActivity = in.readLong();
+		lastOnlineActivity = in.readLong();
+		lastActivity = in.readLong();
+	}
 }
+

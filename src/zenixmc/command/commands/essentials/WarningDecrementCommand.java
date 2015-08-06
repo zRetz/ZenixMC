@@ -3,16 +3,19 @@ package zenixmc.command.commands.essentials;
 import java.util.List;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.DateUtil;
 import zenixmc.utils.JavaUtil;
+import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 public class WarningDecrementCommand extends AbstractEssentialsCommand {
 
-	public WarningDecrementCommand(ZenixMCInterface zenix, ZenixUserManager manager) {
-		super(zenix, manager);
+	public WarningDecrementCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+		super(zenix, manager, executer);
 	}
 	
 	@Override
@@ -39,12 +42,12 @@ public class WarningDecrementCommand extends AbstractEssentialsCommand {
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
 		if (args.length < 2) {
-			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Not enough arguments.");
+			sender.zui.sendMessage(StringFormatter.format("Not enough arguments.", MessageOccasion.ERROR, zenix));
 			return false;
 		}
 		
 		if (args.length > 2) {
-			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Too many arguments.");
+			sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));
 			return false;
 		}
 		
@@ -54,7 +57,7 @@ public class WarningDecrementCommand extends AbstractEssentialsCommand {
 			zui.decrementWarning(reason);
 			return true;
 		}else {
-			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Not valid user.");
+			sender.zui.sendMessage(StringFormatter.format("Not valid user.", MessageOccasion.ERROR, zenix));
 			return false;
 		}
 	}

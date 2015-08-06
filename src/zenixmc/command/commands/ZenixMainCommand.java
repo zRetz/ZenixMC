@@ -1,14 +1,14 @@
 package zenixmc.command.commands;
 
-import java.util.List;
-
 import zenixmc.ZenixMCInterface;
+import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;
+import zenixmc.user.ZenixUserManager;
 
 public class ZenixMainCommand extends AbstractMainCommand {
 
-	public ZenixMainCommand(ZenixMCInterface zenix) {
-		super(zenix);
+	public ZenixMainCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+		super(zenix, manager, executer);
 	}
 
 	@Override
@@ -34,6 +34,11 @@ public class ZenixMainCommand extends AbstractMainCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		return false;
+	}
+
+	@Override
+	public String getTitle() {
+		return "Zenix";
 	}
 
 }

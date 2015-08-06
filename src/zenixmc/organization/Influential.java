@@ -9,11 +9,15 @@ public interface Influential extends Organization {
 
 	/**
 	 * Calculates the total influence of a set of members.
-	 * @param members
-	 * 		The members to use.
 	 * @return The total influence of the members.
 	 */
 	int calcTotalInfluence();
+	
+	/**
+	 * Calculates the total max influence of a set of members.
+	 * @return The total max influence of the members.
+	 */
+	int calcTotalMaxInfluence();
 	
 	/**
 	 * @param members

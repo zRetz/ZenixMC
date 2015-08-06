@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -29,8 +30,6 @@ import zenixmc.user.objects.Warning;
  */
 public interface ZenixUserInterface extends Serializable {
     
-	
-	
 	/**
 	 * Sets the users zenixmc object.
 	 * @param zenix
@@ -593,4 +592,20 @@ public interface ZenixUserInterface extends Serializable {
      * Handles Serialization.
      */
     void handleSerialize();
+    
+    /**
+     * <b>Has to be offline user first.</b>
+     * @param player
+     * 		The online bukkit representation.
+     * @return An online user.
+     */
+    ZenixUser toOnlineUser(Player player);
+    
+    /**
+     * <b>Has to be online user first.</b>
+     * @param player
+     * 		The offline bukkit representation.
+     * @return An offline user.
+     */
+    OfflineZenixUser toOfflineUser(OfflinePlayer player);
 }

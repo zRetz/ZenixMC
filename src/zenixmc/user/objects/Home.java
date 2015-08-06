@@ -5,15 +5,21 @@
  */
 package zenixmc.user.objects;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import org.bukkit.Location;
 
+import zenixmc.block.SerializableLocation;
 import zenixmc.user.ZenixUserInterface;
 
 /**
  * Personal set location.
  * @author james
  */
-public class Home {
+public class Home implements Serializable {
     
     /**
      * The owner of the home.
@@ -23,12 +29,12 @@ public class Home {
     /**
      * The name of the home.
      */
-    private final String name;
+    private String name;
     
     /**
      * The location of the home.
      */
-    private final Location location;
+    private Location location;
     
     /**
      * Instantiates a home with set values.
@@ -50,9 +56,18 @@ public class Home {
     }
     
     /**
+     * Sets the homes parent.
+     * @param zui
+     * 		The zenix user.
+     */
+    public void setZenixUser(ZenixUserInterface zui) {
+    	this.zui = zui;
+    }
+    
+    /**
      * @return The owner of the home.
      */
-    public ZenixUserInterface getZui() {
+    public ZenixUserInterface getZenixUser() {
         return zui;
     }
     
@@ -69,5 +84,33 @@ public class Home {
     public Location getLocation() {
         return location;
     }
+    
+    /**
+	 * Serialize this instance.
+	 * 
+	 * @param out
+	 *            Target to which this instance is written.
+	 * @throws IOException
+	 *             Thrown if exception occurs during serialization.
+	 */
+	private void writeObject(final ObjectOutputStream out) throws IOException {
+		out.writeUTF(name);
+		out.writeObject(new SerializableLocation(location));
+	}
 
+	/**
+	 * Deserialize this instance from input stream.
+	 * 
+	 * @param in
+	 *            Input Stream from which this instance is to be deserialized.
+	 * @throws IOException
+	 *             Thrown if error occurs in deserialization.
+	 * @throws ClassNotFoundException
+	 *             Thrown if expected class is not found.
+	 */
+	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+		name = in.readUTF();
+		location = ((SerializableLocation) in.readObject()).toLocation();
+	}
+    
 }

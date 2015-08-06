@@ -1,6 +1,7 @@
 package zenixmc.persistance;
 
 import java.io.File;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -32,6 +33,24 @@ public class TextRepository extends Repository implements TextRepositoryInterfac
 	@Override
 	public void save(TextInterface text) {
 		
+	}
+
+	@Override
+	public void delete(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Set<String> fileNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public File[] files() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

@@ -6,6 +6,7 @@
 package zenixmc.command.commands;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.user.ZenixUserManager;
 
 /**
  * Common base class that most commands are based on.
@@ -18,6 +19,11 @@ public abstract class AbstractCommand implements CommandInterface {
 	 */
 	protected ZenixMCInterface zenix;
 	
+	/**
+	 * Repository to get user data.
+	 */
+	protected final ZenixUserManager manager;
+	
     //TODO: Add MessageManager
 
     /**
@@ -25,8 +31,9 @@ public abstract class AbstractCommand implements CommandInterface {
      * @param zenix
      * 		The plugin.
      */
-    public AbstractCommand(ZenixMCInterface zenix) {
+    public AbstractCommand(ZenixMCInterface zenix, ZenixUserManager manager) {
         this.zenix = zenix;
+        this.manager = manager;
     }
 
 }

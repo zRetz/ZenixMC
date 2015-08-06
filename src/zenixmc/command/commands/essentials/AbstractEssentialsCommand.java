@@ -1,6 +1,7 @@
 package zenixmc.command.commands.essentials;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.commands.AbstractMainCommand;
 import zenixmc.user.ZenixUserManager;
 
@@ -10,14 +11,13 @@ import zenixmc.user.ZenixUserManager;
  */
 public abstract class AbstractEssentialsCommand extends AbstractMainCommand {
 	
-	/**
-	 * Repository to get user data.
-	 */
-	protected final ZenixUserManager manager;
+	public AbstractEssentialsCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+		super(zenix, manager, executer);
+	}
 	
-	public AbstractEssentialsCommand(ZenixMCInterface zenix, ZenixUserManager manager) {
-		super(zenix);
-		this.manager = manager;
+	@Override
+	public String getTitle() {
+		return "Essential";
 	}
 	
 }

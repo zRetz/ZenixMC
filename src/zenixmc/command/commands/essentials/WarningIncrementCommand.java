@@ -3,16 +3,19 @@ package zenixmc.command.commands.essentials;
 import java.util.List;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.DateUtil;
 import zenixmc.utils.JavaUtil;
+import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 public class WarningIncrementCommand extends AbstractEssentialsCommand {
 
-	public WarningIncrementCommand(ZenixMCInterface zenix, ZenixUserManager manager) {
-		super(zenix, manager);
+	public WarningIncrementCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+		super(zenix, manager, executer);
 	}
 	
 	@Override
@@ -39,7 +42,7 @@ public class WarningIncrementCommand extends AbstractEssentialsCommand {
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
 		if (args.length < 4) {
-			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Not enough arguments.");
+			sender.zui.sendMessage(StringFormatter.format("Not enough arguments.", MessageOccasion.ERROR, zenix));
 			return false;
 		}
 		
@@ -56,15 +59,15 @@ public class WarningIncrementCommand extends AbstractEssentialsCommand {
 					zui.incrementWarning(DateUtil.formatDuration(format, duration), reason);
 					return true;
 				}else {
-					sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Cannot be an integer.");
+					sender.zui.sendMessage(StringFormatter.format("Cannot be an integer.", MessageOccasion.ERROR, zenix));
 					return false;
 				}
 			}else {
-				sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Not valid format.");
+				sender.zui.sendMessage(StringFormatter.format("Not valid format.", MessageOccasion.ERROR, zenix));
 				return false;
 			}
 		}else {
-			sender.zui.sendMessage(zenix.getSettings().getErrorColor() + "Not valid user.");
+			sender.zui.sendMessage(StringFormatter.format("Not valid user.", MessageOccasion.ERROR, zenix));
 			return false;
 		}
 	}
