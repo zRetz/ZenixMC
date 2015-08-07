@@ -63,6 +63,11 @@ public class Clan implements Influential {
 	 * The clans members.
 	 */
 	private Members members;
+	
+	/**
+	 * Whether users need invitations to join the clan.
+	 */
+	private boolean invite = true;
 
 	/**
 	 * Instantiate.
@@ -75,7 +80,7 @@ public class Clan implements Influential {
 		this.zenix = zenix;
 		this.manager = manager;
 		this.name = name;
-		this.desc = zenix.getSettings().getDefaultClanDesc().length() < zenix.getSettings().getMaxClanDescLength() ? new String[]{zenix.getSettings().getDefaultClanDesc()} : new String[]{"Default Clan Description ;3"};
+		this.desc = zenix.getSettings().clanDescMessage().length() < zenix.getSettings().maxClanDescLength() ? new String[]{zenix.getSettings().clanDescMessage()} : new String[]{"Default Clan Description ;3"};
 		this.members = new Members(leader, this.manager);
 		leader.setClan(this);
 	}
@@ -137,6 +142,11 @@ public class Clan implements Influential {
 	}
 	
 	@Override
+	public boolean isLeader(OrganizationPlayerInterface player) {
+		return members.getLeader().getZenixUser().compareTo(player.getZenixUser()) == 0;
+	}
+	
+	@Override
 	public void sendMessage(String message, OrganizationPlayerInterface... members) {
 		for (int i = 0; i < members.length; i++) {
 			if (isMember(members[i])) {
@@ -150,7 +160,6 @@ public class Clan implements Influential {
 		if (!(members.isMember(player))) {
 			members.addMember(player);
 			player.setClan(this);
-			sendMessage(StringFormatter.format(player.getZenixUser().getName() + " joined your clan.", MessageOccasion.CLAN, zenix));
 		}
 		
 	}
@@ -158,9 +167,17 @@ public class Clan implements Influential {
 	@Override
 	public void removeMember(OrganizationPlayerInterface player) {
 		if (members.isMember(player)) {
+			
+			if (isLeader(player)) {
+				if (getMembers().size() > 1) {
+					setLeader(getMembers().getMembers().get(0));
+				}else {
+					disband();
+				}
+			}
+			
 			members.removeMember(player);
 			player.setClan(null);
-			sendMessage(StringFormatter.format(player.getZenixUser().getName() + " left your clan.", MessageOccasion.CLAN, zenix));
 		}
 	}
 	
@@ -183,25 +200,36 @@ public class Clan implements Influential {
 	public boolean isMember(UUID uuid) {
 		return members.isMember(uuid);
 	}
+	
+	@Override
+	public void setInvite(boolean set) {
+		this.invite = set;
+	}
+	
+	@Override
+	public boolean needInvite() {
+		return invite;
+	}
 
 	@Override
 	public boolean invite(OrganizationPlayerInterface player) {
 		if (!(player.hasInviteFor(name))) {
 			player.addInviteRequest(name);
-			sendMessage(StringFormatter.format(player.getZenixUser().getName() + " has been invited your clan.", MessageOccasion.CLAN, zenix));
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	@Override
-	public void completeInvite(OrganizationPlayerInterface player) {
+	public boolean completeInvite(OrganizationPlayerInterface player) {
 		
 		if (!(player.hasInviteFor(name))) {
-			return;
+			return false;
 		}
 		
+		player.removeInviteRequest(name);
 		addMember(player);
+		return true;
 	}
 
 	@Override
@@ -228,6 +256,16 @@ public class Clan implements Influential {
 	@Override
 	public Members getMembers() {
 		return members;
+	}
+	
+	@Override
+	public OrganizationPlayerInterface[] onlineArray() {
+		return members.getOnlineMembers().toArray(new OrganizationPlayerInterface[members.getOnlineMembers().size()]);
+	}
+
+	@Override
+	public OrganizationPlayerInterface[] offlineArray() {
+		return members.getOfflineMembers().toArray(new OrganizationPlayerInterface[members.getOfflineMembers().size()]);
 	}
 
 	@Override
@@ -298,4 +336,9 @@ public class Clan implements Influential {
 		return disbanded;
 	}
 	
+	@Override
+	public String toString() {
+		return getName();
+	}
+
 }

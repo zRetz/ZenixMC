@@ -36,6 +36,11 @@ public class Console implements ZenixUserInterface {
 	private final String name;
 	
 	/**
+	 * The consoles uuid;
+	 */
+	private final UUID uuid;
+	
+	/**
 	 * The consoles input command sender.
 	 */
 	private ZenixCommandSender zenixCommandSender;
@@ -43,6 +48,7 @@ public class Console implements ZenixUserInterface {
 	public Console(String name, ZenixMCInterface zenix) {
 		this.zenix = zenix;
 		this.name = name;
+		this.uuid = UUID.randomUUID();
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public class Console implements ZenixUserInterface {
 
 	@Override
 	public UUID getUniqueId() {
-		return null;
+		return uuid;
 	}
 
 	@Override
@@ -519,6 +525,17 @@ public class Console implements ZenixUserInterface {
 	public OfflineZenixUser toOfflineUser(OfflinePlayer player) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int getPlayerKills() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int compareTo(ZenixUserInterface zui) {
+		return zui.getUniqueId().compareTo(getUniqueId());
 	}
 	
 }

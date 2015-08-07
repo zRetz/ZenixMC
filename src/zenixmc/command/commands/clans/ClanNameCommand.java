@@ -48,7 +48,8 @@ public class ClanNameCommand extends AbstractClanCommand {
 			OrganizationPlayerInterface orgplayer = sender.zui.getOrganizationPlayer();
 			if (orgplayer.getClan() != null) {
 				Clan c = orgplayer.getClan();
-				orgManager.setClanName(c, args[0]);
+				orgManager.setClanName(c, sender.zui, args[0]);
+				return true;
 			}else {
 				sender.zui.sendMessage(StringFormatter.format("Not a valid clan.", MessageOccasion.ERROR, zenix));
 				return false;
@@ -57,10 +58,11 @@ public class ClanNameCommand extends AbstractClanCommand {
 			if (orgManager.clanNameUsed(args[0])) {
 				Clan c = orgManager.getClan(args[0], false);
 				if (!(orgManager.clanNameUsed(args[1]))) {
-					orgManager.setClanName(c, args[1]);
+					orgManager.setClanName(c, sender.zui, args[1]);
+					return true;
 				}else {
 					sender.zui.sendMessage(StringFormatter.format("Clan name already in use.", MessageOccasion.ERROR, zenix));
-					return false;
+					return true;
 				}
 			}else {
 				sender.zui.sendMessage(StringFormatter.format("Not a valid clan.", MessageOccasion.ERROR, zenix));

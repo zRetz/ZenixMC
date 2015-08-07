@@ -33,6 +33,7 @@ import zenixmc.command.commands.essentials.WarningIncrementCommand;
 import zenixmc.event.EventDispatcher;
 import zenixmc.organization.OrganizationListener;
 import zenixmc.organization.OrganizationManager;
+import zenixmc.organization.OrganizationPlayerListener;
 import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
 import zenixmc.persistance.OrganizationRepository;
@@ -119,7 +120,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     /**
      * The Organization Listener.
      */
-    OrganizationListener orgListener = new OrganizationListener(this, zenixUserManager, orgManager, eventDispatcher);
+    OrganizationListener orgListener = new OrganizationPlayerListener(this, zenixUserManager, orgManager, eventDispatcher);
     
     @Override
     public void onEnable() {

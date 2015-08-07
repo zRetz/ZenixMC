@@ -62,7 +62,7 @@ public class Members implements Serializable {
 	 * @return The leader of the members.
 	 */
 	public OrganizationPlayerInterface getLeader() {
-		return manager.isOnline(leader) ? manager.getZenixUser(leader).getOrganizationPlayer() : manager.getOfflineZenixUser(leader).getOrganizationPlayer();
+		return manager.getRegardlessZenixUser(leader).getOrganizationPlayer();
 	}
 	
 	/**
@@ -121,16 +121,16 @@ public class Members implements Serializable {
 	 * @return <code>true</code> If the player is a member.
 	 */
 	public boolean isMember(OrganizationPlayerInterface player) {
-		return members.contains(player.getZenixUser().getUniqueId());
+		return isMember(player.getZenixUser().getUniqueId());
 	}
 	
 	/**
 	 * @param uuid
-	 * 		The uuid to check.
-	 * @return <code>true</code> If the uuid is not in the members map.
+	 * 		The unique identifier to check.
+	 * @return <code>true</code> If the unique identifier is in members.
 	 */
 	public boolean isMember(UUID uuid) {
-		return members.contains(uuid);
+		return members.contains(uuid) || leader.compareTo(uuid) == 0;
 	}
 	
 	/**
@@ -185,8 +185,13 @@ public class Members implements Serializable {
 		
 		StringBuilder result = new StringBuilder();
 		
-		for (OrganizationPlayerInterface o : getOnlineMembers()) {
+		List<OrganizationPlayerInterface> ons = getOnlineMembers();
+		
+		for (OrganizationPlayerInterface o : ons) {
 			result.append(o.getZenixUser().getName());
+			if (ons.indexOf(o) != ons.size()-1) {
+				result.append(", ");
+			}
 		}
 		
 		return result.toString();
@@ -196,11 +201,20 @@ public class Members implements Serializable {
 		
 		StringBuilder result = new StringBuilder();
 		
-		for (OrganizationPlayerInterface o : getOfflineMembers()) {
+		List<OrganizationPlayerInterface> ofs = getOfflineMembers();
+		
+		for (OrganizationPlayerInterface o : ofs) {
 			result.append(o.getZenixUser().getName() + ", ");
+			if (ofs.indexOf(o) != ofs.size()-1) {
+				result.append(", ");
+			}
 		}
 		
 		return result.toString();
+	}
+	
+	public int size() {
+		return members.size() + 1;
 	}
 	
 	@Override

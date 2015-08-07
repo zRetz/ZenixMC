@@ -6,6 +6,7 @@
 package zenixmc.user;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ import zenixmc.user.objects.Warning;
  * A user internally used by this plugin.
  * @author james
  */
-public interface ZenixUserInterface extends Serializable {
+public interface ZenixUserInterface extends Serializable, Comparable<ZenixUserInterface> {
     
 	/**
 	 * Sets the users zenixmc object.
@@ -176,6 +177,11 @@ public interface ZenixUserInterface extends Serializable {
      * @return The players experience points needed for next level.
      */
     float getExp();
+    
+    /**
+     * @return The amount of times this user has killed other users.
+     */
+    int getPlayerKills();
     
     /**
      * Teleports player to location. <b>NOTE:</b>Don't use this method.

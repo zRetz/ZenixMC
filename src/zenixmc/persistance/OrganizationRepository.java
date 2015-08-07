@@ -158,6 +158,17 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	}
 	
 	@Override
+	public void renameClan(Clan clan, String oName, String nName) {
+		
+		final File f = getClanFile(oName);
+		
+		f.renameTo(getClanFile(nName));
+		
+		clan.setName(nName);
+		save(clan);
+	}
+	
+	@Override
 	public void delete(Object ob) {
 		if (ob instanceof Organization) {
 			delete(ob);
@@ -201,7 +212,6 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 		
 		for (File f : files) {
 			result.add(f.getName().substring(0, f.getName().length()-4));
-			System.out.println("file: " + f.getName().substring(0, f.getName().length()-4));
 		}
 		
 		return result;

@@ -61,6 +61,13 @@ public interface Organization extends Serializable {
 	OrganizationPlayerInterface getLeader();
 	
 	/**
+	 * @param player
+	 * 		The player to check.
+	 * @return <code>true</code> If the player is the leader of the organization.
+	 */
+	boolean isLeader(OrganizationPlayerInterface player);
+	
+	/**
 	 * Sends a message to the specified members
 	 * @param members
 	 * 		The members that should be sent this message.
@@ -122,6 +129,28 @@ public interface Organization extends Serializable {
 	Members getMembers();
 	
 	/**
+	 * @return An array of all online members.
+	 */
+	OrganizationPlayerInterface[] onlineArray();
+	
+	/**
+	 * @return An array of all offline members.
+	 */
+	OrganizationPlayerInterface[] offlineArray();
+	
+	/**
+	 * Sets whether users need an invitation or not to join the clan.
+	 * @param set
+	 * 		The value to set.
+	 */
+	void setInvite(boolean set);
+	
+	/**
+	 * @return <code>true</code> If users need an invitation to join the clan.
+	 */
+	boolean needInvite();
+	
+	/**
 	 * Invites a player to the organization. 
 	 * @param player
 	 * 		The player to invite.
@@ -134,7 +163,7 @@ public interface Organization extends Serializable {
 	 * @param player
 	 * 		The player who has been invited.
 	 */
-	void completeInvite(OrganizationPlayerInterface player);
+	boolean completeInvite(OrganizationPlayerInterface player);
 	
 	/**
 	 * Disbands the organization.

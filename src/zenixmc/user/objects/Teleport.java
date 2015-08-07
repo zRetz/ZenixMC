@@ -6,8 +6,11 @@
 package zenixmc.user.objects;
 
 import org.bukkit.Location;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.event.EventDispatcher;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.utils.MinecraftUtils;
 import zenixmc.utils.StringFormatter;
@@ -18,7 +21,11 @@ import zenixmc.utils.StringFormatter.MessageOccasion;
  * @author james
  */
 public class Teleport {
-    
+    /**
+     * EventDispatcher to fire teleport event.
+     */
+	private final EventDispatcher eventDispatcher;
+	
 	/**
 	 * The plugin.
 	 */
@@ -31,18 +38,22 @@ public class Teleport {
     
     /**
      * Instantiate.
+     * @param eventDispatcher
+     * 		The eventDispatcher to fire teleport event.
      * @param zui
      * 		The parent of the teleportation object.
      * @param zenix
      * 		The plugin.
      */
-    public Teleport(ZenixUserInterface zui, ZenixMCInterface zenix) {
+    public Teleport(EventDispatcher eventDispatcher, ZenixUserInterface zui, ZenixMCInterface zenix) {
+    	this.eventDispatcher = eventDispatcher;
     	this.zui = zui;
     	this.zenix = zenix;
     }
     
     public boolean teleportToUser(ZenixUserInterface target, boolean timed, boolean stay, long time) {
-    	return teleportToLocation(zui, target.getLocation(), timed, stay, time);
+    	target.sendMessage(StringFormatter.format(StringFormatter.format("<zenixUser> is teleporting to you.", zui), MessageOccasion.ESSENTIAL, zenix));
+    	return teleportToLocation(target, target.getLocation(), timed, stay, time);
     }
     
     public boolean teleportToLocation(ZenixUserInterface teleportee, Location target, boolean timed, boolean stay, long time) {
@@ -51,18 +62,23 @@ public class Teleport {
     		return false;
     	}
     	
-    	Location primary = (Location) target.clone();
+    	Location primary = target.clone();
     	
     	if (!(MinecraftUtils.isSafeLocation(primary))) {
     		primary = MinecraftUtils.getSafeLocation(primary);
     	}
+    	
+    	teleportee.setLastLocation(teleportee.getLocation());
+    	
+    	PlayerTeleportEvent e = new PlayerTeleportEvent(teleportee.getPlayer(), teleportee.getLastLocation(), target, TeleportCause.PLUGIN);
+    	eventDispatcher.callEvent(e);
     	
     	if (timed) {
     		new TimedTeleport(zenix, zui, teleportee, target, time, stay);
     		teleportee.sendMessage(StringFormatter.format("Teleporting in... " + time / 1000 + " seconds.", MessageOccasion.ESSENTIAL, zenix));
     		return true;
     	}
-    
+    	
     	return zui.teleport(primary);
     }
     

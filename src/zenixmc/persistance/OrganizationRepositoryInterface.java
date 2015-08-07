@@ -50,6 +50,17 @@ public interface OrganizationRepositoryInterface extends RepositoryInterface {
     void save(Clan clan);
     
     /**
+     * Renames a clan.
+     * @param clan
+     * 		The clan to rename.
+     * @param oName
+     * 		The old clan name.
+     * @param nName
+     * 		The new clan name.
+     */
+    void renameClan(Clan clan, String oName, String nName);
+    
+    /**
      * Deletes a organization.
      * @param organization
      * 		The organization to delete.

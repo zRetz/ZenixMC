@@ -11,20 +11,72 @@ import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.bending.BendingPlayerInterface;
+import zenixmc.organization.OrganizationPlayerInterface;
+import zenixmc.organization.clans.Clan;
+import zenixmc.user.ZenixUserInterface;
 
 /**
  * String formatting utility.
  *
  */
 public class StringFormatter {
-    
+	
+	private static final Pattern string = Pattern.compile("<string>");
+	private static final Pattern zenixuser = Pattern.compile("<zenixUser>");
+	private static final Pattern bendingplayer = Pattern.compile("<bendingPlayer>");
+	private static final Pattern orgplayer = Pattern.compile("<orgPlayer>");
+	private static final Pattern clan = Pattern.compile("<clan>");
+	
 	public enum MessageOccasion {
 		ERROR, ESSENTIAL, BENDING, CLAN, HANDLED;
+	}
+	
+	public static String format(String msg, Object... obs) {
+		
+		String result = msg;
+		
+		for (int i = 0; i < obs.length; i++) {
+			if (obs[i] instanceof String) {
+				Matcher st = string.matcher(result);
+				if (st.find()) {
+					result = st.replaceFirst((String) obs[i]);
+				}
+			}
+			if (obs[i] instanceof ZenixUserInterface) {
+				Matcher zu = zenixuser.matcher(result);
+				if (zu.find()) {
+					result = zu.replaceFirst(((ZenixUserInterface) obs[i]).getName());
+				}
+			}
+			if (obs[i] instanceof BendingPlayerInterface) {
+				Matcher bp = bendingplayer.matcher(result);
+				if (bp.find()) {
+					result = bp.replaceFirst(((BendingPlayerInterface) obs[i]).toString());
+				}
+			}
+			if (obs[i] instanceof OrganizationPlayerInterface) {
+				Matcher op = orgplayer.matcher(result);
+				if (op.find()) {
+					result = op.replaceFirst(((OrganizationPlayerInterface) obs[i]).toString());
+				}
+			}
+			if (obs[i] instanceof Clan) {
+				Matcher c = clan.matcher(result);
+				if (c.find()) {
+					result = c.replaceFirst(((Clan) obs[i]).toString());
+				}
+			}
+		}
+		
+		return result;
 	}
 	
 	public static String format(String msg, MessageOccasion occasion, ZenixMCInterface inst) {

@@ -46,7 +46,7 @@ public class ClanInviteCommand extends AbstractClanCommand {
 		switch (args.length) {
 		case 1:
 			
-			if (sender.zui.getOrganizationPlayer().hasClan()) {
+			if (!(sender.zui.getOrganizationPlayer().hasClan())) {
 				sender.zui.sendMessage(StringFormatter.format("Can't find clan to invite to.", MessageOccasion.ERROR, zenix));
 				return true;
 			}
@@ -56,8 +56,14 @@ public class ClanInviteCommand extends AbstractClanCommand {
 			if (manager.isZenixUser(args[0])) {
 				if (manager.isOnline(args[0])) {
 					ZenixUser t = manager.getZenixUser(args[0]);
-					if (c.invite(t.getOrganizationPlayer())) {
-						sender.zui.sendMessage(StringFormatter.format(t.getName() + " has already been invited.", MessageOccasion.CLAN, zenix));
+					
+					if (c.isMember(t.getOrganizationPlayer())) {
+						sender.zui.sendMessage(StringFormatter.format(StringFormatter.format("<zenixUser> is already apart of this clan.", t), MessageOccasion.CLAN, zenix));
+						return true;
+					}
+					
+					if (!(orgManager.inviteToClan(c, t.getOrganizationPlayer(), sender.zui))) {
+						sender.zui.sendMessage(StringFormatter.format(StringFormatter.format("<zenixUser> has already been invited.", t), MessageOccasion.CLAN, zenix));
 					}
 				}else {
 					sender.zui.sendMessage(StringFormatter.format("User not online.", MessageOccasion.ERROR, zenix));

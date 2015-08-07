@@ -104,7 +104,7 @@ public class MainCommandExecuter implements Listener {
 	                final CommandInterface Command = command == null ? mainCommands
 	                        .get(i) : command.getSubCommands().get(i);
 	                if (Command != null) {
-		                sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "-- !" + command.getName() + " " + Command.getName() + " "
+		                sender.zui.sendMessage(zenix.getSettings().getNotificationColor() + "-- !" + (command == null ? "" : command.getName() + " ") + Command.getName() + " "
 		                        + Command.getFormat() + " -- "
 		                        + Command.getDescription());
 	                }

@@ -51,8 +51,6 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
-		System.out.println(JavaUtil.arrayToString(args));
-		
 		switch (args.length) {
 		case 1:
 			if (manager.isZenixUser(args[0])) {

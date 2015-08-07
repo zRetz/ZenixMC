@@ -101,7 +101,7 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 		zui = SeDe.deserialize(f, ZenixUser.class);
 
 		zui.setPlayer(zenix.getOfflinePlayer(uuid).isOnline() ? zenix.getPlayer(uuid) : null);
-		zui.setTeleport(new Teleport(zui, zenix));
+		zui.setTeleport(new Teleport(eventDispatcher, zui, zenix));
 		zui.setZenixMC(zenix);
 		zui.setEventDispatcher(eventDispatcher);
 		zui.handleSerialize();

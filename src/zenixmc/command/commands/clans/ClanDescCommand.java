@@ -54,8 +54,8 @@ public class ClanDescCommand extends AbstractClanCommand {
 			
 			String[] nargs = JavaUtil.removeElementsFromArray(args, String.class, 0);
 			
-			if (nargs.length < zenix.getSettings().getMaxClanDescLength()) {
-				orgManager.setClanDescription(c, nargs);
+			if (nargs.length < zenix.getSettings().maxClanDescLength()) {
+				orgManager.setClanDescription(c, sender.zui, nargs);
 				return true;
 			}else {
 				sender.zui.sendMessage(StringFormatter.format("Description is too big.", MessageOccasion.ERROR, zenix));
@@ -68,8 +68,8 @@ public class ClanDescCommand extends AbstractClanCommand {
 		if (orgPlayer.getClan() != null) {
 			Clan c = orgPlayer.getClan();
 			
-			if (args.length < zenix.getSettings().getMaxClanDescLength()) {
-				orgManager.setClanDescription(c, args);
+			if (args.length < zenix.getSettings().maxClanDescLength()) {
+				orgManager.setClanDescription(c, sender.zui, args);
 				return true;
 			}else {
 				sender.zui.sendMessage(StringFormatter.format("Description is too big.", MessageOccasion.ERROR, zenix));

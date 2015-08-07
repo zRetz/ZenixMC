@@ -52,12 +52,18 @@ public class Settings implements SettingsInterface {
     	config.addDefault("materialBlackList", Arrays.asList("TNT"));
     	config.addDefault("commandBlackList", Arrays.asList("hello"));
     	config.addDefault("allowSilentJoinQuit", true);
-    	config.addDefault("quitMessage", "Zenix wishes you farewell, ");
-    	config.addDefault("joinMessage", "Zenix greets you, ");
-    	config.addDefault("kickMessage", "Zenix kicked you.");
-    	config.addDefault("banMessage", "Zenix banned you.");
-    	config.addDefault("defaultClanDesc", "Default Clan Description ;3");
+    	config.addDefault("quitMessage", "Zenix wishes <zenixUser> farewell.");
+    	config.addDefault("joinMessage", "Zenix greets <zenixUser>.");
+    	config.addDefault("kickMessage", "Zenix kicked <zenixUser>.");
+    	config.addDefault("banMessage", "Zenix banned <zenixUser>.");
+    	config.addDefault("clanDescMessage", "Default Clan Description ;3");
     	config.addDefault("maxClanDescLength", 21);
+    	config.addDefault("clanInviteMessage", "<orgPlayer> has been invited to <clan> by <zenixUser>.");
+    	config.addDefault("clanReDescMessage", "<clan>'s description has been changed from <string> to <string> by.");
+    	config.addDefault("clanReNameMessage", "<clan>'s name has been changed from <string> to <string>.");
+    	config.addDefault("clanJoinMessage", "<orgPlayer> has joined <clan>.");
+    	config.addDefault("clanLeaveMessage", "<orgPlayer> has willingly left <clan>.");
+    	config.addDefault("clanKickMessage", "<orgPlayer> has been forcefully kicked from <clan>.");
     	
     	config.options().copyDefaults(true);
 		
@@ -151,33 +157,64 @@ public class Settings implements SettingsInterface {
 	}
 
 	@Override
-	public String getJoinMessage() {
+	public String joinMessage() {
 		return config.getString("joinMessage");
 	}
 
 	@Override
-	public String getQuitMessage() {
+	public String quitMessage() {
 		return config.getString("quitMessage");
 	}
 
 	@Override
-	public String getBanMessage() {
+	public String banMessage() {
 		return config.getString("banMessage");
 	}
 
 	@Override
-	public String getKickMessage() {
+	public String kickMessage() {
 		return config.getString("kickMessage");
 	}
 	
 	@Override
-	public String getDefaultClanDesc() {
-		return config.getString("defaultClanDesc");
+	public String clanDescMessage() {
+		return config.getString("clanDescMessage");
 	}
 	
 	@Override
-	public int getMaxClanDescLength() {
+	public int maxClanDescLength() {
 		return config.getInt("maxClanDescLength");
 	}
 
+	@Override
+	public String clanInviteMessage() {
+		return config.getString("clanInviteMessage");
+	}
+
+	@Override
+	public String clanReNameMessage() {
+		return config.getString("clanReNameMessage");
+	}
+
+	@Override
+	public String clanReDescMessage() {
+		return config.getString("clanReDescMessage");
+	}
+
+	@Override
+	public String clanJoinMessage() {
+		return config.getString("clanJoinMessage");
+	}
+
+	@Override
+	public String clanLeaveMessage() {
+		return config.getString("clanLeaveMessage");
+	}
+
+	@Override
+	public String clanKickMessage() {
+		return config.getString("clanKickMessage");
+	}
+
 }
+

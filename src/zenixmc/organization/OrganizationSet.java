@@ -24,9 +24,12 @@ public class OrganizationSet extends InterfaceSet<Organization> {
 	 * @param c
 	 * 		The clan to set.
 	 */
-	public void setClan(Clan c) {		
+	public void setClan(Clan c) {
 		if (hasClan()) {
 			this.remove(getClan());
+		}
+		if (c == null) {
+			return;
 		}
 		this.add(c);
 	}

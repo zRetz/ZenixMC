@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	/**
 	 * The pending invites of organizationPlayer.
 	 */
-	private transient Set<String> invites;
+	private Set<String> invites = new HashSet<>();
 
 	/**
 	 * The maximum amount of influence.
@@ -106,7 +107,6 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 
 	@Override
 	public void setClan(Clan clan) {
-		organizations.remove(organizations.getClan());
 		organizations.setClan(clan);
 	}
 
@@ -138,6 +138,11 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	public boolean hasInviteFor(String clanName) {
 		return invites.contains(clanName);
 	}
+	
+	@Override
+	public String toString() {
+		return this.getZenixUser().getName();
+	}
 
 	/**
 	 * Serialize this instance.
@@ -148,9 +153,11 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	 *             Thrown if exception occurs during serialization.
 	 */
 	private void writeObject(final ObjectOutputStream out) throws IOException {
+		out.writeObject(invites);
 		out.writeInt(maxInfluence);
 		out.writeInt(influence);
 		Map<String, Class<?>> orgs = organizations.getOrgs();
+		System.out.println(orgs);
 		out.writeObject(orgs);
 	}
 
@@ -165,6 +172,7 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	 *             Thrown if expected class is not found.
 	 */
 	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+		invites = (Set<String>) in.readObject();
 		maxInfluence = in.readInt();
 		influence = in.readInt();
 		try {
@@ -172,6 +180,7 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 			f.setAccessible(true);
 			CachedOrganizationRepository cor = (CachedOrganizationRepository) f.get(ZenixMC.instance);
 			organizations = cor.getOrganizations((Map<String, Class<?>>) in.readObject());
+			System.out.println(organizations);
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}

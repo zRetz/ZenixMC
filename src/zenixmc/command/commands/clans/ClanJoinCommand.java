@@ -8,20 +8,20 @@ import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.StringFormatter;
 import zenixmc.utils.StringFormatter.MessageOccasion;
 
-public class ClanAboutCommand extends AbstractClanCommand {
+public class ClanJoinCommand extends AbstractClanCommand {
 
-	public ClanAboutCommand(ZenixMCInterface zenix, ZenixUserManager manager, OrganizationManager orgManager) {
+	public ClanJoinCommand(ZenixMCInterface zenix, ZenixUserManager manager, OrganizationManager orgManager) {
 		super(zenix, manager, orgManager);
 	}
 
 	@Override
 	public String getName() {
-		return "about";
+		return "join";
 	}
 
 	@Override
 	public String[] getAliases() {
-		return new String[]{"a"};
+		return new String[]{"j"};
 	}
 
 	@Override
@@ -31,12 +31,12 @@ public class ClanAboutCommand extends AbstractClanCommand {
 
 	@Override
 	public String getFormat() {
-		return "[clanname] || [username]";
+		return "[clanname] || [username] [clanname]";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Returns information about a clan.";
+		return "Join a clan.";
 	}
 
 	@Override
@@ -50,14 +50,13 @@ public class ClanAboutCommand extends AbstractClanCommand {
 		if (args.length == 1) {
 			if (orgManager.getClanFromReference(args[0]) != null) {
 				Clan c = orgManager.getClanFromReference(args[0]);
-				for (int i = 0; i < c.about().length; i++) {
-					sender.zui.sendMessage(c.about()[i]);
+				if (!(orgManager.joinClan(c, sender.zui.getOrganizationPlayer()))) {
+					sender.zui.sendMessage(StringFormatter.format("Failed to join that clan.", MessageOccasion.CLAN, zenix));
 				}
-				return true;
 			}else {
-				sender.zui.sendMessage(StringFormatter.format("Can't reference anything from arguments.", MessageOccasion.ERROR, zenix));
-				return true;
-			}	
+				sender.zui.sendMessage(StringFormatter.format("Not valid clan.", MessageOccasion.ERROR, zenix));
+			}
+			return true;
 		}else {
 			sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));
 			return false;

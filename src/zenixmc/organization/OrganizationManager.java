@@ -2,12 +2,19 @@ package zenixmc.organization;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.event.EventDispatcher;
-import zenixmc.event.organization.clan.ClanUpdateEvent;
+import zenixmc.event.organization.clan.ClanInviteEvent;
+import zenixmc.event.organization.clan.ClanJoinEvent;
+import zenixmc.event.organization.clan.ClanKickEvent;
+import zenixmc.event.organization.clan.ClanLeaveEvent;
+import zenixmc.event.organization.clan.ClanReDescEvent;
+import zenixmc.event.organization.clan.ClanReNameEvent;
 import zenixmc.organization.clans.Clan;
 import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.JavaUtil;
+import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 /**
  * Class to handle organization events, etc.
@@ -140,19 +147,140 @@ public class OrganizationManager {
 		repository.save(clan);
 	}
 	
-	public String setClanName(Clan clan, String name) {
+	public String setClanName(Clan clan, ZenixUserInterface setter, String name) {
 		
-		clan.setName(name);
-		eventDispatcher.callEvent(new ClanUpdateEvent(clan));
+		String newName = name;
+		String oldName = clan.getName();
+		
+		ClanReNameEvent e = new ClanReNameEvent(clan, setter, newName, oldName, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanReDescMessage(), clan, oldName, newName), MessageOccasion.CLAN, zenix));
+		eventDispatcher.callEvent(e);
+		
+		if (e.isCancelled()) {
+			return null;
+		}
+		
+		Clan c = e.getClan();
+		
+		repository.renameClan(c, e.getOldName(), e.getNewName());
+		
+		c.sendMessage(e.getMessage(), c.getMembers().getOnlineMembers().toArray(new OrganizationPlayerInterface[c.getMembers().getOnlineMembers().size()]));
 		
 		return name;
 	}
 	
-	public String setClanDescription(Clan clan, String[] desc) {
+	public String setClanDescription(Clan clan, ZenixUserInterface setter, String[] desc) {
 		
-		clan.setDescription(desc);
-		eventDispatcher.callEvent(new ClanUpdateEvent(clan));
+		String[] newDesc = desc;
+		String[] oldDesc = clan.getDescription();
+		
+		ClanReDescEvent e = new ClanReDescEvent(clan, setter, newDesc, oldDesc, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanReDescMessage(), clan, JavaUtil.arrayToString(oldDesc), JavaUtil.arrayToString(newDesc)), MessageOccasion.CLAN, zenix));
+		eventDispatcher.callEvent(e);
+		
+		if (e.isCancelled()) {
+			return null;
+		}
+		
+		Clan c = e.getClan();
+		
+		c.setDescription(e.getNewDesc());
+		
+		c.sendMessage(e.getMessage(), c.onlineArray());
 		
 		return JavaUtil.arrayToString(desc);
 	}
+	
+	public boolean inviteToClan(Clan clan, OrganizationPlayerInterface player, ZenixUserInterface inviter) {
+		
+		ClanInviteEvent e = new ClanInviteEvent(clan, player, inviter, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanInviteMessage(), player, clan, inviter), MessageOccasion.CLAN, zenix));
+		
+		e.setCancelled(!clan.invite(player));
+		
+		eventDispatcher.callEvent(e);
+		
+		if (e.isCancelled()) {
+			return false;
+		}
+		
+		Clan c = e.getClan();
+		
+		c.sendMessage(e.getMessage(), c.onlineArray());
+		e.getInvited().getZenixUser().sendMessage(StringFormatter.format(StringFormatter.format(StringFormatter.format("You have been invited to <clan> by <zenixUser>", c, e.getInviter()), MessageOccasion.CLAN, zenix)));
+		
+		return true;
+	}
+
+	public boolean joinClan(Clan clan, OrganizationPlayerInterface joining) {
+		
+		ClanJoinEvent e = new ClanJoinEvent(clan, joining, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanJoinMessage(), joining, clan), MessageOccasion.CLAN, zenix));
+		
+		if (clan.needInvite()) {
+			e.setCancelled(!joining.hasInviteFor(clan.getName()));
+		}
+		
+		eventDispatcher.callEvent(e);
+		
+		if (e.isCancelled()) {
+			return false;
+		}
+		
+		Clan c = e.getClan();
+		OrganizationPlayerInterface join = e.getJoining();
+		
+		c.sendMessage(e.getMessage(), c.onlineArray());
+		join.getZenixUser().sendMessage(StringFormatter.format(StringFormatter.format("You have joined <clan>.", c), MessageOccasion.CLAN, zenix));
+		
+		if (c.needInvite()) {
+			return c.completeInvite(join);
+		}else {
+			c.addMember(join);
+			return true;
+		}
+	}
+	
+	public boolean leaveClan(OrganizationPlayerInterface leaving) {
+		
+		if (!(leaving.hasClan())) {
+			return false;
+		}
+		
+		Clan c = leaving.getClan();
+		
+		ClanLeaveEvent e = new ClanLeaveEvent(c, leaving, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanLeaveMessage(), leaving, c), MessageOccasion.CLAN, zenix));
+		
+		eventDispatcher.callEvent(e);
+		
+		if (e.isCancelled()) {
+			return false;
+		}
+		
+		OrganizationPlayerInterface leave = e.getLeaving();
+		
+		c.removeMember(leave);
+		c.sendMessage(e.getMessage(), c.onlineArray());
+		leave.getZenixUser().sendMessage(StringFormatter.format(StringFormatter.format("You have left <clan>.", c), MessageOccasion.CLAN, zenix));
+		
+		return true;
+	}
+	
+	public boolean kickFromClan(Clan clan, OrganizationPlayerInterface kicked, ZenixUserInterface kicking) {
+		
+		if (!(clan.isMember(kicked))) {
+			return false;
+		}
+		
+		ClanKickEvent e = new ClanKickEvent(clan, kicked, kicking, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanLeaveMessage(), kicked, clan), MessageOccasion.CLAN, zenix));
+		
+		eventDispatcher.callEvent(e);
+		
+		if (e.isCancelled()) {
+			return false;
+		}
+		
+		Clan c = e.getClan();
+		
+		c.removeMember(kicked);
+		c.sendMessage(e.getMessage(), c.onlineArray());
+		return true;
+	}
+	
 }

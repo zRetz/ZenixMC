@@ -509,4 +509,14 @@ public class OfflineZenixUser implements ZenixUserInterface {
 	public OfflineZenixUser toOfflineUser(OfflinePlayer player) {
 		return this;
 	}
+
+	@Override
+	public int getPlayerKills() {
+		return 0;
+	}
+
+	@Override
+	public int compareTo(ZenixUserInterface zui) {
+		return zui.getUniqueId().compareTo(this.getUniqueId());
+	}
 }

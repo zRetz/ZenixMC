@@ -61,10 +61,6 @@ public class InterfaceSet<E> implements Set<E> {
 			return false;
 		}
 		
-		if (!(e.getClass().isAssignableFrom(this.getInterfaceClass()))) {
-			return false;
-		}
-		
 		implementationsAdded.add(e.getClass());
 		return values.add(e);
 	}
@@ -74,9 +70,6 @@ public class InterfaceSet<E> implements Set<E> {
 		
 		for (Object e : c) {
 			if (implementationsAdded.contains(e.getClass())) {
-				c.remove(e);
-			}
-			if (!(e.getClass().isAssignableFrom(this.getInterfaceClass()))) {
 				c.remove(e);
 			}
 		}

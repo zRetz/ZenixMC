@@ -44,7 +44,7 @@ public class ClanCreateCommand extends AbstractClanCommand {
 		
 		if (args.length == 1) {
 			if (!(orgManager.clanNameUsed(args[0]))) {
-				if (sender.zui.getOrganizationPlayer().hasClan()) {
+				if (!(sender.zui.getOrganizationPlayer().hasClan())) {
 					Clan clan = orgManager.createClan(sender.zui.getOrganizationPlayer(), args[0]);
 					sender.zui.sendMessage(StringFormatter.format("You have created a clan called " + clan.getName(), MessageOccasion.CLAN, zenix));
 					return true;

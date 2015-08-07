@@ -1,6 +1,7 @@
 package zenixmc.event.organization.clan;
 
 import zenixmc.event.organization.OrganizationEvent;
+import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.organization.clans.Clan;
 
 public abstract class ClanEvent extends OrganizationEvent {
@@ -33,7 +34,7 @@ public abstract class ClanEvent extends OrganizationEvent {
      * Changes the clan this event is about.
      *
      * @param clan
-     *            The clan.
+     *     	The clan.
      */
     public void setClan(Clan clan) {
         this.clan = clan;

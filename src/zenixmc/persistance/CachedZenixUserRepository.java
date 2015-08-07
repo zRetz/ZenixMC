@@ -24,6 +24,7 @@ import zenixmc.user.OfflineZenixUser;
 import zenixmc.user.ZenixUser;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.utils.ExceptionUtil;
+import zenixmc.utils.StringFormatter;
 
 /**
  * Class that handles saving and loading users when joining or leaving.
@@ -210,8 +211,9 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
     		putonuser(uuid, ozui.toOnlineUser(player));
     	}
     	
-    	getZenixUser(uuid);
-        e.setJoinMessage(zenix.getSettings().getNotificationColor() + zenix.getSettings().getJoinMessage() + e.getPlayer().getName() + ".");
+    	ZenixUser zu = getZenixUser(uuid);
+    	System.out.println(zu.getName());
+        e.setJoinMessage(zenix.getSettings().getNotificationColor() + StringFormatter.format(zenix.getSettings().joinMessage(), zu));
     }
     
     /**
@@ -232,7 +234,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
             putofuser(uuid, zui.toOfflineUser(zenix.getOfflinePlayer(uuid)));
         }
         
-        e.setQuitMessage(zenix.getSettings().getNotificationColor() + zenix.getSettings().getQuitMessage() + e.getPlayer().getName() + ".");
+        e.setQuitMessage(zenix.getSettings().getNotificationColor() + StringFormatter.format(zenix.getSettings().quitMessage(), zui));
     }
     
     public boolean isOnline(String name) {

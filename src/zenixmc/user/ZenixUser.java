@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
@@ -199,7 +200,7 @@ public class ZenixUser implements ZenixUserInterface {
      */
     public ZenixUser(Player player, ZenixMCInterface zenix, EventDispatcher eventDispatcher) {
     	this.zenix = zenix;
-    	this.teleport = new Teleport(this, this.zenix);
+    	this.teleport = new Teleport(eventDispatcher, this, this.zenix);
     	this.eventDispatcher = eventDispatcher;
     	this.warning = new Warning(this, this.eventDispatcher);
         this.player = player;
@@ -338,7 +339,7 @@ public class ZenixUser implements ZenixUserInterface {
         String msg = reason;
         
         if (msg == null || msg.isEmpty()) {
-            msg = zenix.getSettings().getKickMessage();
+            msg = zenix.getSettings().kickMessage();
         }
         
         player.kickPlayer(msg);
@@ -372,6 +373,11 @@ public class ZenixUser implements ZenixUserInterface {
         }
         
         return player.getExp();
+    }
+    
+    @Override
+    public int getPlayerKills() {
+    	return player.getStatistic(Statistic.PLAYER_KILLS);
     }
     
     @Override
@@ -857,6 +863,11 @@ public class ZenixUser implements ZenixUserInterface {
 	@Override
 	public OfflineZenixUser toOfflineUser(OfflinePlayer player) {
 		return new OfflineZenixUser(player, this);
+	}
+	
+	@Override
+	public int compareTo(ZenixUserInterface zui) {
+		return zui.getUniqueId().compareTo(this.getUniqueId());
 	}
 	
 	/**

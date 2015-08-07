@@ -126,4 +126,8 @@ public class BendingPlayer implements BendingPlayerInterface {
         abilityData.put(ability.getName(), data);
     }
 
+    @Override
+    public String toString() {
+    	return this.getZenixUser().getName();
+    }
 }

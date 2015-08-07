@@ -100,30 +100,60 @@ public interface SettingsInterface {
     /**
      * @return The message displayed when joining.
      */
-    String getJoinMessage();
+    String joinMessage();
     
     /**
      * @return The message displayed when leaving.
      */
-    String getQuitMessage();
+    String quitMessage();
     
     /**
-     * @return The default ban message.
+     * @return The ban message.
      */
-    String getBanMessage();
+    String banMessage();
     
     /**
-     * @return The default kick message.
+     * @return The kick message.
      */
-    String getKickMessage();
+    String kickMessage();
    
     /**
-     * @return The default clan description.
+     * @return The clan description.
      */
-    String getDefaultClanDesc();
+    String clanDescMessage();
     
     /**
      * @return The max clan description length.
      */
-    int getMaxClanDescLength();
+    int maxClanDescLength();
+    
+    /**
+     * @return The clan invite message.
+     */
+    String clanInviteMessage();
+    
+    /**
+     * @return The message when a clans description is set.
+     */
+    String clanReNameMessage();
+    
+    /**
+     * @return The message when a clans description is set.
+     */
+    String clanReDescMessage();
+    
+    /**
+     * @return The message when a user joins a clan.
+     */
+    String clanJoinMessage();
+    
+    /**
+     * @return The message when a user willingly leaves a clan.
+     */
+    String clanLeaveMessage();
+    
+    /**
+     * @return The message when a user is kicked from a clan.
+     */
+    String clanKickMessage();
 }

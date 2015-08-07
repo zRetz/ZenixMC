@@ -38,6 +38,7 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	public void open(String openMessage) {
 		parentRepository.open(openMessage);
 		for (String s : fileNames()) {
+			System.out.println(s);
         	getClan(null, s, false);
         }
 	}
@@ -96,6 +97,11 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	@Override
 	public void save(Clan clan) {
 		parentRepository.save(clan);
+	}
+	
+	@Override
+	public void renameClan(Clan clan, String oName, String nName) {
+		parentRepository.renameClan(clan, oName, nName);
 	}
 	
 	@Override
