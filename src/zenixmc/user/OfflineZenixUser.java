@@ -88,6 +88,11 @@ public class OfflineZenixUser implements ZenixUserInterface {
 	public Location getLocation() {
 		return user.getLocation();
 	}
+	
+	@Override
+	public Location getEyeLocation() {
+		return user.getEyeLocation();
+	}
 
 	@Override
 	public World getWorld() {

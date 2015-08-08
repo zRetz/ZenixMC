@@ -31,14 +31,9 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	private Set<String> invites = new HashSet<>();
 
 	/**
-	 * The maximum amount of influence.
+	 * Influence values.
 	 */
-	private int maxInfluence = 10;
-
-	/**
-	 * The amount of influence.
-	 */
-	private int influence = maxInfluence;
+	private Influence influence = new Influence(10, 10);
 
 	/**
 	 * The users organizations.
@@ -67,32 +62,22 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 
 	@Override
 	public void setInfluence(int value) {
-
-		if (value > getMaxInfluence()) {
-			return;
-		}
-
-		influence = value;
+		influence.setInfluence(value);
 	}
 
 	@Override
 	public int getInfluence() {
-		return influence;
+		return influence.getInfluence();
 	}
 
 	@Override
 	public void setMaxInfluence(int value) {
-
-		if (value < getInfluence()) {
-			setInfluence(value);
-		}
-
-		maxInfluence = value;
+		influence.setMaxInfluence(value);
 	}
 
 	@Override
 	public int getMaxInfluence() {
-		return maxInfluence;
+		return influence.getMaxInfluence();
 	}
 
 	@Override
@@ -154,10 +139,8 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	 */
 	private void writeObject(final ObjectOutputStream out) throws IOException {
 		out.writeObject(invites);
-		out.writeInt(maxInfluence);
-		out.writeInt(influence);
+		out.writeObject(influence);
 		Map<String, Class<?>> orgs = organizations.getOrgs();
-		System.out.println(orgs);
 		out.writeObject(orgs);
 	}
 
@@ -173,8 +156,7 @@ public class OrganizationPlayer implements OrganizationPlayerInterface {
 	 */
 	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
 		invites = (Set<String>) in.readObject();
-		maxInfluence = in.readInt();
-		influence = in.readInt();
+		influence = (Influence) in.readObject();
 		try {
 			Field f = ZenixMC.instance.getClass().getDeclaredField("cachedOrganizationRepository");
 			f.setAccessible(true);

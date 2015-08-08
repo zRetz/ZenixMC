@@ -1,4 +1,4 @@
-package zenixmc.block;
+package zenixmc.io;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

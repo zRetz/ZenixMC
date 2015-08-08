@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -125,6 +126,21 @@ public final class MinecraftUtils {
 		}
 		
 		return result;
+	}
+	
+	public static boolean isSolid(Block b) {
+		return b.getType().isSolid();
+	}
+	
+	public static Block getHighestBlockAt(Chunk chunk, int x, int z) {
+		
+		Block b = chunk.getBlock(x, 256, z);
+		
+		while (!(isSolid(b))) {
+			b = chunk.getBlock(x, b.getY() - 1, z);
+		}
+		
+		return b;
 	}
 	
 }

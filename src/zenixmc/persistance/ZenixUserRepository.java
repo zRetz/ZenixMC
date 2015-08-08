@@ -7,6 +7,7 @@ package zenixmc.persistance;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -181,7 +182,6 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 		
 		for (File f : files) {
 			result.add(f.getName().substring(0, f.getName().length()-4));
-			System.out.println("file: " + f.getName().substring(0, f.getName().length()-4));
 		}
 		
 		return result;
@@ -197,6 +197,11 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 			}
 			
 		});
+	}
+
+	@Override
+	public Collection<ZenixUser> getOnlineUsers() {
+		throw new UnsupportedOperationException("This is not a cache class.");
 	}
 	
 }

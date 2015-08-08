@@ -81,7 +81,6 @@ public class MainCommandExecuter implements Listener {
      *    	The command to get the help text for, null when main text.
      */
     public void showHelp(ZenixCommandSender sender, int page, AbstractMainCommand command) {
-	        final String[] help = command == null ? null : command.getHelp();
 	
 	        sender.zui.sendMessage(zenix.getSettings().getMatchingNotificationColor() + "---- "
 	                + (command == null ? "Zenix" : command.getTitle())
@@ -90,17 +89,12 @@ public class MainCommandExecuter implements Listener {
 	                + " ("
 	                + page
 	                + "/"
-	                + ((command == null ? mainCommands.size() : (help == null ? 0
-	                        : help.length)) / commandsPerPage) + ") ------");
+	                + ((command == null ? mainCommands.size() : command.getSubCommands().size()) / commandsPerPage) + ") ------");
 	
 	        final int offset = page * commandsPerPage;
 	
 	        for (int i = offset; i < offset + commandsPerPage; i++) {
-	            if (command != null && help != null) {
-	                if (i >= 0 && i < help.length) {
-	                    sender.zui.sendMessage(help[i]);
-	                }
-	            } else if (i >= 0 && i < (command == null ? mainCommands.size() : command.getSubCommands().size())) {
+	        	if (i >= 0 && i < (command == null ? mainCommands.size() : command.getSubCommands().size())) {
 	                final CommandInterface Command = command == null ? mainCommands
 	                        .get(i) : command.getSubCommands().get(i);
 	                if (Command != null) {
@@ -108,8 +102,19 @@ public class MainCommandExecuter implements Listener {
 		                        + Command.getFormat() + " -- "
 		                        + Command.getDescription());
 	                }
-	            }
+	        	}
 	        }
+    }
+    
+    public AbstractMainCommand getMainCommand(String name) {
+    	if (isMainCommand(name)) {
+    		for (AbstractMainCommand c : mainCommands) {
+    			if (c.getName().equals(name)) {
+    				return c;
+    			}
+    		}
+    	}
+    	return null;
     }
     
     /**

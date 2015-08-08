@@ -51,7 +51,7 @@ public class ClanJoinCommand extends AbstractClanCommand {
 			if (orgManager.getClanFromReference(args[0]) != null) {
 				Clan c = orgManager.getClanFromReference(args[0]);
 				if (!(orgManager.joinClan(c, sender.zui.getOrganizationPlayer()))) {
-					sender.zui.sendMessage(StringFormatter.format("Failed to join that clan.", MessageOccasion.CLAN, zenix));
+					sender.zui.sendMessage(StringFormatter.format("Failed to join that clan.", MessageOccasion.ERROR, zenix));
 				}
 			}else {
 				sender.zui.sendMessage(StringFormatter.format("Not valid clan.", MessageOccasion.ERROR, zenix));

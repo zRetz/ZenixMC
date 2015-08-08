@@ -5,6 +5,7 @@
  */
 package zenixmc.persistance;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
@@ -83,6 +84,11 @@ public interface ZenixUserRepositoryInterface extends RepositoryInterface {
      * @return The user.
      */
     ZenixUserInterface getRegardlessZenixUser(UUID uuid);
+    
+    /**
+     * @return A collection of online users.
+     */
+    Collection<ZenixUser> getOnlineUsers();
     
     /**
      * Save a user.

@@ -80,6 +80,11 @@ public class Console implements ZenixUserInterface {
 	public Location getLocation() {
 		return null;
 	}
+	
+	@Override
+	public Location getEyeLocation() {
+		return null;
+	}
 
 	@Override
 	public World getWorld() {

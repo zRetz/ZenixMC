@@ -87,6 +87,11 @@ public interface ZenixUserInterface extends Serializable, Comparable<ZenixUserIn
     Location getLocation();
     
     /**
+     * @return The players eye location.
+     */
+    Location getEyeLocation();
+    
+    /**
      * @return The players world.
      */
     World getWorld();

@@ -27,6 +27,7 @@ import zenixmc.command.commands.clans.ClanMainCommand;
 import zenixmc.command.commands.essentials.FeedCommand;
 import zenixmc.command.commands.essentials.HealCommand;
 import zenixmc.command.commands.essentials.HelloCommand;
+import zenixmc.command.commands.essentials.HelpCommand;
 import zenixmc.command.commands.essentials.TeleportCommand;
 import zenixmc.command.commands.essentials.WarningDecrementCommand;
 import zenixmc.command.commands.essentials.WarningIncrementCommand;
@@ -34,15 +35,17 @@ import zenixmc.event.EventDispatcher;
 import zenixmc.organization.OrganizationListener;
 import zenixmc.organization.OrganizationManager;
 import zenixmc.organization.OrganizationPlayerListener;
+import zenixmc.organization.clans.TerritoryManager;
 import zenixmc.persistance.CachedOrganizationRepository;
+import zenixmc.persistance.CachedTerritoryRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
 import zenixmc.persistance.OrganizationRepository;
+import zenixmc.persistance.TerritoryRepository;
 import zenixmc.persistance.ZenixUserRepository;
 import zenixmc.user.Console;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserListener;
 import zenixmc.user.ZenixUserManager;
-import zenixmc.utils.ExceptionUtil;
 
 /**
  *
@@ -65,12 +68,27 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
 	/**
 	 * Plugin Settings.
 	 */
-    SettingsInterface settings = new Settings(this ,this.getConfig());
+    SettingsInterface settings = new Settings(this, this.getConfig());
     
     /**
      * The EventDispatcher.
      */
     EventDispatcher eventDispatcher = new EventDispatcher(this);
+    
+    /**
+     * Persistence of territory to disk.
+     */
+    TerritoryRepository terRepository = new TerritoryRepository(this.getLogger(), new File(this.getDataFolder(), "territory"), this);
+    
+    /**
+     * Loading/Saving on Enable/Disable.
+     */
+    CachedTerritoryRepository cachedTerRepository = new CachedTerritoryRepository(this.getLogger(), terRepository, this);
+    
+    /**
+     * Territory Manager.
+     */
+    TerritoryManager terManager = new TerritoryManager(this, eventDispatcher, cachedTerRepository);
     
     /**
      * The servers console.
@@ -95,7 +113,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     /**
      * Persistence of organization data to disk.
      */
-    OrganizationRepository organizationRepository = new OrganizationRepository(this.getLogger(), new File(this.getDataFolder(), "organization"), zenixUserManager, this);
+    OrganizationRepository organizationRepository = new OrganizationRepository(this.getLogger(), new File(this.getDataFolder(), "organization"), zenixUserManager, terManager, this);
     
     /**
      * Loading/Saving on Enable/Disable.
@@ -105,7 +123,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     /**
      * Organization Manager.
      */
-    OrganizationManager orgManager = new OrganizationManager(this, cachedOrganizationRepository, zenixUserManager, eventDispatcher);
+    OrganizationManager orgManager = new OrganizationManager(this, cachedOrganizationRepository, zenixUserManager, terManager, eventDispatcher);
     
     /**
      * Main command.
@@ -127,6 +145,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     	instance = this;
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
         
+        terManager.setOrganizationManager(orgManager);
         organizationRepository.setOrganizationManager(orgManager);
         
         cachedOrganizationRepository.open("Organization Repository has opened.");
@@ -134,6 +153,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         
         //Essentials Commands
         mainCommandExecuter.addMainCommand(new HelloCommand(this, zenixUserManager, mainCommandExecuter));
+        mainCommandExecuter.addMainCommand(new HelpCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new HealCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new FeedCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new TeleportCommand(this, zenixUserManager, mainCommandExecuter));
@@ -218,7 +238,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     public int broadcastMessage(ZenixUserInterface sender, String node, String message) {
         
         if (sender == null) {
-            sender = (ZenixUserInterface) getServer().getConsoleSender();
+            sender = console;
         }
         
         Collection<Player> players = getOnlinePlayers();
@@ -238,6 +258,25 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         
         return seen.size();
     }
+    
+    @Override
+	public int message(String node, String message, ZenixUserInterface... receivers) {
+		
+        List<ZenixUserInterface> seen = new ArrayList<>();
+        
+        for (ZenixUserInterface user : receivers) {
+            
+            if (node != null) {
+                if (!(user.isAuthorised(node))) {
+                    continue;
+                }
+            }
+            user.sendMessage(message);
+            seen.add(user);
+        }
+        
+        return seen.size();
+	}
 
     @Override
     public BukkitTask runTaskAsynchronously(Runnable task) {
@@ -288,7 +327,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     public World getWorld(String name) throws NullPointerException {
         
         if (name == null || name.isEmpty()) {
-            throw ExceptionUtil.nullPointerException("name cannot be null");
+            return null;
         }
         
         World result = null;

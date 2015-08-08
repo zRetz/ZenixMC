@@ -45,9 +45,13 @@ public class ClanNameCommand extends AbstractClanCommand {
 		
 		switch (args.length) {
 		case 1:
+			
 			OrganizationPlayerInterface orgplayer = sender.zui.getOrganizationPlayer();
-			if (orgplayer.getClan() != null) {
+			
+			if (orgplayer.hasClan()) {
+				
 				Clan c = orgplayer.getClan();
+				
 				orgManager.setClanName(c, sender.zui, args[0]);
 				return true;
 			}else {
@@ -55,9 +59,13 @@ public class ClanNameCommand extends AbstractClanCommand {
 				return false;
 			}
 		case 2:
+			
 			if (orgManager.clanNameUsed(args[0])) {
+				
 				Clan c = orgManager.getClan(args[0], false);
+				
 				if (!(orgManager.clanNameUsed(args[1]))) {
+					
 					orgManager.setClanName(c, sender.zui, args[1]);
 					return true;
 				}else {

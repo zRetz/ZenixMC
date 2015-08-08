@@ -21,22 +21,6 @@ public class ExceptionUtil {
      */
     private static final Logger log = Logger.getLogger("ZenixMC");
     
-    public static IllegalArgumentException illegalArgumentException(String msg) {
-        return new IllegalArgumentException(msg);
-    }
-    
-    public static NullPointerException nullPointerException(String msg) {
-        return new NullPointerException(msg);
-    }
-    
-    public static IndexOutOfBoundsException indexOutOfBoundsException(String msg) {
-        return new IndexOutOfBoundsException(msg);
-    }
-    
-    public static NotEvenException notEvenException(String msg) {
-        return new NotEvenException(msg);
-    }
-    
     public static boolean exists(String obName, Class<?> clazz, Object ob) {
         
         if (ob == null) {

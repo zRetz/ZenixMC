@@ -6,10 +6,13 @@
 package zenixmc.organization;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.organization.clans.Territory;
+import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
 
 /**
@@ -68,13 +71,6 @@ public interface Organization extends Serializable {
 	boolean isLeader(OrganizationPlayerInterface player);
 	
 	/**
-	 * Sends a message to the specified members
-	 * @param members
-	 * 		The members that should be sent this message.
-	 */
-	void sendMessage(String message, OrganizationPlayerInterface... members);
-	
-	/**
 	 * Adds a member to the organization.
 	 * @param player
 	 * 		The player to add.
@@ -131,12 +127,17 @@ public interface Organization extends Serializable {
 	/**
 	 * @return An array of all online members.
 	 */
-	OrganizationPlayerInterface[] onlineArray();
+	ZenixUserInterface[] onlineArray();
 	
 	/**
 	 * @return An array of all offline members.
 	 */
-	OrganizationPlayerInterface[] offlineArray();
+	ZenixUserInterface[] offlineArray();
+	
+	/**
+	 * @return An array of all banned users.
+	 */
+	ZenixUserInterface[] bannedArray();
 	
 	/**
 	 * Sets whether users need an invitation or not to join the clan.
@@ -185,20 +186,85 @@ public interface Organization extends Serializable {
 	void setZenixUserManager(ZenixUserManager value);
 	
 	/**
-	 * Sets the organizations organization manager.
-	 * @param value
-	 * 		The value to set.
-	 */
-	void setOrganizationManager(OrganizationManager value);
-	
-	/**
 	 * @return The names of all members.
 	 */
 	Set<String> nameSet();
 	
 	/**
+	 * Sets whether the organization is displayed as disbanded or not.
+	 * @param set
+	 * 		The value to set.
+	 */
+	void setDisbanded(boolean set);
+	
+	/**
 	 * @return <code>true</code> If the organization has beend disbanded.
 	 */
 	boolean isDisbanded();
-
+	
+	/**
+	 * Ban player from the organization.
+	 * @param player
+	 * 		The player to ban.
+	 */
+	void ban(OrganizationPlayerInterface player);
+	
+	/**
+	 * Pardons a player from the banlist.
+	 * @param player
+	 * 		The player to pardon.
+	 */
+	void pardon(OrganizationPlayerInterface player);
+	
+	/**
+	 * @param uuid
+	 * 		The unique identifier of the banned player.
+	 * @return The banned player.
+	 */
+	OrganizationPlayerInterface getBanned(UUID uuid);
+	
+	/**
+	 * @return All the banned users.
+	 */
+	List<OrganizationPlayerInterface> getBannedUsers();
+	
+	/**
+	 * @return A string representation of all banned users.
+	 */
+	String bannedUsers();
+	
+	/**
+	 * @param player
+	 * 		The player to check.
+	 * @return <code>true</code> If the player is banned from the organization.
+	 */
+	boolean isBanned(OrganizationPlayerInterface player);
+	
+	/**
+	 * @param uuid
+	 * 		The unique identifier to check.
+	 * @return <code>true</code> If the player that the unique identifier correlates to, is banned.
+	 */
+	boolean isBanned(UUID uuid);
+	
+	/**
+	 * Claims specified territory.
+	 * @param territory
+	 * 		The territory to claim.
+	 */
+	void claim(Territory territory);
+	
+	/**
+	 * Unclaims specified territory.
+	 * @param territory
+	 * 		The territory to unclaim.
+	 */
+	void unClaim(Territory territory);
+	
+	/**
+	 * @param land
+	 * 		The land to check.
+	 * @return <code>true</code> If the organization owns the land.
+	 */
+	boolean ownsTerritory(Territory land);
 }

@@ -48,7 +48,7 @@ public class ClanLeaveCommand extends AbstractClanCommand {
 		}
 		
 		if (!(orgManager.leaveClan(sender.zui.getOrganizationPlayer()))) {
-			sender.zui.sendMessage(StringFormatter.format("Failed to leave clan.", MessageOccasion.CLAN, zenix));
+			sender.zui.sendMessage(StringFormatter.format("Failed to leave clan.", MessageOccasion.ERROR, zenix));
 		}
 		return true;
 	}

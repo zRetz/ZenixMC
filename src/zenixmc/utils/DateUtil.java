@@ -115,7 +115,7 @@ public class DateUtil {
     public static long formatDuration(String format, long duration) {
     	
     	if (!(DateUtil.isFormat(format))) {
-			throw ExceptionUtil.illegalArgumentException("format is not correct.");
+			return 0;
 		}
     	
     	long result = 0;

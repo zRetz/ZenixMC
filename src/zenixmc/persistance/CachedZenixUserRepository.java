@@ -6,6 +6,7 @@
 package zenixmc.persistance;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,7 @@ import zenixmc.user.ZenixUser;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.utils.ExceptionUtil;
 import zenixmc.utils.StringFormatter;
+import zenixmc.utils.StringFormatter.MessageOccasion;
 
 /**
  * Class that handles saving and loading users when joining or leaving.
@@ -112,10 +114,8 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
             if (key instanceof UUID) {
                 return getZenixUser((UUID) key);
             }
-            throw ExceptionUtil.illegalArgumentException("key is not valid type");
-        }else {
-            throw ExceptionUtil.nullPointerException("key cannot be null");
         }
+        return null;
     }
 
     @Override
@@ -213,7 +213,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
     	
     	ZenixUser zu = getZenixUser(uuid);
     	System.out.println(zu.getName());
-        e.setJoinMessage(zenix.getSettings().getNotificationColor() + StringFormatter.format(zenix.getSettings().joinMessage(), zu));
+        e.setJoinMessage(StringFormatter.format(StringFormatter.format(zenix.getSettings().joinMessage(), zu), MessageOccasion.ZENIX, zenix));
     }
     
     /**
@@ -234,7 +234,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
             putofuser(uuid, zui.toOfflineUser(zenix.getOfflinePlayer(uuid)));
         }
         
-        e.setQuitMessage(zenix.getSettings().getNotificationColor() + StringFormatter.format(zenix.getSettings().quitMessage(), zui));
+        e.setQuitMessage(StringFormatter.format(StringFormatter.format(zenix.getSettings().quitMessage(), zui), MessageOccasion.ZENIX, zenix));
     }
     
     public boolean isOnline(String name) {
@@ -278,7 +278,7 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
 			return null;
 		}
 		
-		Player player = zenix.getPlayer(name);
+		OfflinePlayer player = zenix.getOfflinePlayer(name);
 		
 		return getRegardlessZenixUser(player.getUniqueId());
 	}
@@ -297,5 +297,10 @@ public class CachedZenixUserRepository implements ZenixUserRepositoryInterface, 
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public Collection<ZenixUser> getOnlineUsers() {
+		return onlineusers.values();
 	}
 }

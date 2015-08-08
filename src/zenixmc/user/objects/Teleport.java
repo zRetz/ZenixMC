@@ -53,7 +53,7 @@ public class Teleport {
     
     public boolean teleportToUser(ZenixUserInterface target, boolean timed, boolean stay, long time) {
     	target.sendMessage(StringFormatter.format(StringFormatter.format("<zenixUser> is teleporting to you.", zui), MessageOccasion.ESSENTIAL, zenix));
-    	return teleportToLocation(target, target.getLocation(), timed, stay, time);
+    	return teleportToLocation(zui, target.getLocation(), timed, stay, time);
     }
     
     public boolean teleportToLocation(ZenixUserInterface teleportee, Location target, boolean timed, boolean stay, long time) {

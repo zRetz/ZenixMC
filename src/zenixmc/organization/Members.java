@@ -83,7 +83,7 @@ public class Members implements Serializable {
 	 */
 	public void removeMember(OrganizationPlayerInterface player) {
 		if (isMember(player)) {
-			members.remove(player);
+			members.remove(player.getZenixUser().getUniqueId());
 		}
 	}
 	
@@ -204,7 +204,7 @@ public class Members implements Serializable {
 		List<OrganizationPlayerInterface> ofs = getOfflineMembers();
 		
 		for (OrganizationPlayerInterface o : ofs) {
-			result.append(o.getZenixUser().getName() + ", ");
+			result.append(o.getZenixUser().getName());
 			if (ofs.indexOf(o) != ofs.size()-1) {
 				result.append(", ");
 			}

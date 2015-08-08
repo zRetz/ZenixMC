@@ -21,6 +21,10 @@ public class ClanMainCommand extends AbstractMainCommand {
 		this.addSubCommand(new ClanJoinCommand(zenix, manager, orgManager));
 		this.addSubCommand(new ClanLeaveCommand(zenix, manager, orgManager));
 		this.addSubCommand(new ClanKickCommand(zenix, manager, orgManager));
+		this.addSubCommand(new ClanDisbandCommand(zenix, manager, orgManager));
+		this.addSubCommand(new ClanBanCommand(zenix, manager, orgManager));
+		this.addSubCommand(new ClanPardonCommand(zenix, manager, orgManager));
+		this.addSubCommand(new ClanNeedInviteCommand(zenix, manager, orgManager));
 	}
 
 	@Override

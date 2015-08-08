@@ -133,27 +133,102 @@ public interface SettingsInterface {
     String clanInviteMessage();
     
     /**
-     * @return The message when a clans description is set.
+     * @return The message displayed when a clans description is set.
      */
     String clanReNameMessage();
     
     /**
-     * @return The message when a clans description is set.
+     * @return The message displayed when a clans description is set.
      */
     String clanReDescMessage();
     
     /**
-     * @return The message when a user joins a clan.
+     * @return The message displayed when a user joins a clan.
      */
     String clanJoinMessage();
     
     /**
-     * @return The message when a user willingly leaves a clan.
+     * @return The message displayed when a user willingly leaves a clan.
      */
     String clanLeaveMessage();
     
     /**
-     * @return The message when a user is kicked from a clan.
+     * @return The message displayed when a user is kicked from a clan.
      */
     String clanKickMessage();
+    
+    /**
+     * @return The message displayed when a clan is disbanded.
+     */
+    String clanDisbandMessage();
+    
+    /**
+     * @return The message displayed when a player is banned from a clan.
+     */
+    String clanBanMessage();
+    
+    /**
+     * @return The message displayed when a player is pardoned from a clans banlist.
+     */
+    String clanPardonMessage();
+    
+    /**
+     * @return The message displayed when a clan claims land.
+     */
+    String clanClaimMessage();
+  
+    /**
+     * @return The message displayed when a clans land is overclaimed.
+     */
+    String clanOverClaimedMessage();
+    
+    /**
+     * @return The message displayed when a clan unclaims land.
+     */
+    String clanUnClaimMessage();
+    
+    /**
+     * @return The message displayed when a clan declares war.
+     */
+    String clanDeclareWarMessage();
+    
+    /**
+     * @return The message displayed when a clan declares neutrality.
+     */
+    String clanDeclareNeutralMessage();
+    
+    /**
+     * @return The message displayed when a clan is informed of requested neutrality.
+     */
+    String clanInformedNeutralMessage();
+    
+    /**
+     * @return The message displayed when a clan wishes to have neutrality.
+     */
+    String clanWishNeutralMessage();
+    
+    /**
+     * @return The message displayed when an alliance is formed.
+     */
+    String clanDeclareAllyMessage();
+    
+    /**
+     * @return The message displayed when a clan is informed of an requested alliance.
+     */
+    String clanInformedAllyMessage();
+    
+    /**
+     * @return The message displayed when a clan wishes to form an alliance.
+     */
+    String clanWishAllyMessage();
+    
+    /**
+     * @return The message displayed when a clans needInvite value is set <code>true</code>.
+     */
+    String clanNeedInviteTrueMessage();
+    
+    /**
+     * @return The message displayed when a clans needInvite value is set <code>true</code>.
+     */
+    String clanNeedInviteFalseMessage();
 }

@@ -1,7 +1,5 @@
 package zenixmc.command.commands.essentials;
 
-import java.util.List;
-
 import zenixmc.ZenixMCInterface;
 import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;

@@ -100,9 +100,21 @@ public interface ZenixMCInterface extends Plugin {
      *      The permissions node required to receive broadcast.
      * @param message
      *      The message being broadcasted.
-     * @return The amount of players of who received the broadcast.
+     * @return The amount of players who received the broadcast.
      */
     int broadcastMessage(ZenixUserInterface sender, String node, String message);
+    
+    /**
+     * Sends a message to all users specified.
+     * @param node
+     * 		The permissions node required to receive message.
+     * @param message
+     * 		The message to be sent.
+     * @param receivers
+     * 		The users recieving the message.
+     * @return The amount of players who recieved the message.
+     */
+    int message(String node, String message, ZenixUserInterface... receivers);
     
     /**
      * Wrapper for main server thread.

@@ -22,9 +22,9 @@ import org.bukkit.inventory.PlayerInventory;
 import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayer;
 import zenixmc.bending.BendingPlayerInterface;
-import zenixmc.block.SerializableLocation;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.event.EventDispatcher;
+import zenixmc.io.SerializableLocation;
 import zenixmc.organization.OrganizationPlayer;
 import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.user.objects.Home;
@@ -251,7 +251,22 @@ public class ZenixUser implements ZenixUserInterface {
     
     @Override
     public Location getLocation() {
+    	
+    	if (player == null) {
+    		return getLastLocation();
+    	}
+    	
         return player.getLocation();
+    }
+    
+    @Override
+    public Location getEyeLocation() {
+    	
+    	if (player == null) {
+    		return getLastLocation().add(0, 1, 0);
+    	}
+    	
+        return player.getEyeLocation();
     }
     
     @Override

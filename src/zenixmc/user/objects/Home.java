@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 import org.bukkit.Location;
 
-import zenixmc.block.SerializableLocation;
+import zenixmc.io.SerializableLocation;
 import zenixmc.user.ZenixUserInterface;
 
 /**
@@ -22,6 +22,11 @@ import zenixmc.user.ZenixUserInterface;
 public class Home implements Serializable {
     
     /**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = -1109205647337243688L;
+
+	/**
      * The owner of the home.
      */
     private transient ZenixUserInterface zui;
@@ -52,7 +57,7 @@ public class Home implements Serializable {
      * Teleports the user to this home.
      */
     public void goTo() {
-        
+        this.zui.getTeleport().teleportToLocation(zui, location, false, true, 0);
     }
     
     /**

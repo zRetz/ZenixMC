@@ -52,8 +52,8 @@ public class Settings implements SettingsInterface {
     	config.addDefault("materialBlackList", Arrays.asList("TNT"));
     	config.addDefault("commandBlackList", Arrays.asList("hello"));
     	config.addDefault("allowSilentJoinQuit", true);
-    	config.addDefault("quitMessage", "Zenix wishes <zenixUser> farewell.");
-    	config.addDefault("joinMessage", "Zenix greets <zenixUser>.");
+    	config.addDefault("quitMessage", "We wish <zenixUser> farewell.");
+    	config.addDefault("joinMessage", "We greet <zenixUser>.");
     	config.addDefault("kickMessage", "Zenix kicked <zenixUser>.");
     	config.addDefault("banMessage", "Zenix banned <zenixUser>.");
     	config.addDefault("clanDescMessage", "Default Clan Description ;3");
@@ -63,7 +63,22 @@ public class Settings implements SettingsInterface {
     	config.addDefault("clanReNameMessage", "<clan>'s name has been changed from <string> to <string>.");
     	config.addDefault("clanJoinMessage", "<orgPlayer> has joined <clan>.");
     	config.addDefault("clanLeaveMessage", "<orgPlayer> has willingly left <clan>.");
-    	config.addDefault("clanKickMessage", "<orgPlayer> has been forcefully kicked from <clan>.");
+    	config.addDefault("clanKickMessage", "<orgPlayer> has been forcefully kicked from <clan> by <zenixUser>.");
+    	config.addDefault("clanDisbandMessage", "<clan> has been disbanded by <zenixUser>.");
+    	config.addDefault("clanBanMessage", "<orgPlayer> has been banned from <clan> by <zenixUser>.");
+    	config.addDefault("clanPardonMessage", "<orgPlayer> has been pardoned from <clan>'s banlist by <zenixUser>.");
+    	config.addDefault("clanClaimMessage", "<clan> has claimed Chunk X: <integer> Chunk Z: <integer>");
+    	config.addDefault("clanOverClaimedMessage", "<clan>'s land has been overclaimed by <clan> at Chunk X: <integer> Chunk Z: <integer>");
+    	config.addDefault("clanUnClaimMessage", "<clan> has unclaimed Chunk X: <integer> Chunk Z: <integer>");
+    	config.addDefault("clanDeclareWarMessage", "<clan> has declared war on <clan>.");
+    	config.addDefault("clanDeclareNeutralMessage", "<clan> and <clan> have declared neutrality.");
+    	config.addDefault("clanInformedNeutralMessage", "Your clan has informed <clan> of your request for neutrality.");
+    	config.addDefault("clanWishNeutralMessage", "<clan> wishes to declare neutrality with your clan.");
+    	config.addDefault("clanDeclareAllyMessage", "<clan> and <clan> have formed an alliance");
+    	config.addDefault("clanInformedAllyMessage", "Your clan has informed <clan> of your request for an alliance.");
+    	config.addDefault("clanWishAllyMessage", "<clan> wishes to form an alliance with your clan.");
+    	config.addDefault("clanNeedInviteTrueMessage", "Invitations are now required to join <clan>. Courtesy: <zenixUser>");
+    	config.addDefault("clanNeedInviteFalseMessage", "Invitations are no longer required to join <clan>. Courtesy: <zenixUser>");
     	
     	config.options().copyDefaults(true);
 		
@@ -216,5 +231,81 @@ public class Settings implements SettingsInterface {
 		return config.getString("clanKickMessage");
 	}
 
+	@Override
+	public String clanDisbandMessage() {
+		return config.getString("clanDisbandMessage");
+	}
+
+	@Override
+	public String clanBanMessage() {
+		return config.getString("clanBanMessage");
+	}
+
+	@Override
+	public String clanPardonMessage() {
+		return config.getString("clanPardonMessage");
+	}
+
+	@Override
+	public String clanClaimMessage() {
+		return config.getString("clanClaimMessage");
+	}
+
+	@Override
+	public String clanOverClaimedMessage() {
+		return config.getString("clanOverClaimMessage");
+	}
+
+	@Override
+	public String clanUnClaimMessage() {
+		return config.getString("clanUnClaimMessage");
+	}
+
+	@Override
+	public String clanDeclareWarMessage() {
+		return config.getString("clanDeclareWarMessage");
+	}
+
+	@Override
+	public String clanDeclareNeutralMessage() {
+		return config.getString("clanDeclareNeutralMessage");
+	}
+
+	@Override
+	public String clanInformedNeutralMessage() {
+		return config.getString("clanInformedNeutralMessage");
+	}
+
+	@Override
+	public String clanWishNeutralMessage() {
+		return config.getString("clanWishNeutralMessage");
+	}
+
+	@Override
+	public String clanDeclareAllyMessage() {
+		return config.getString("clanDeclareAllyMessage");
+	}
+
+	@Override
+	public String clanInformedAllyMessage() {
+		return config.getString("clanInformedAllyMessage");
+	}
+
+	@Override
+	public String clanWishAllyMessage() {
+		return config.getString("clanWishAllyMessage");
+	}
+
+	@Override
+	public String clanNeedInviteTrueMessage() {
+		return config.getString("clanNeedInviteTrueMessage");
+	}
+
+	@Override
+	public String clanNeedInviteFalseMessage() {
+		return config.getString("clanNeedInviteFalseMessage");
+	}
+
 }
+
 

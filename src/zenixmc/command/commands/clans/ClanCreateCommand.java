@@ -49,7 +49,7 @@ public class ClanCreateCommand extends AbstractClanCommand {
 					sender.zui.sendMessage(StringFormatter.format("You have created a clan called " + clan.getName(), MessageOccasion.CLAN, zenix));
 					return true;
 				}else {
-					sender.zui.sendMessage(StringFormatter.format("You are already apart of a clan. Leave that one before creating another.", MessageOccasion.CLAN, zenix));
+					sender.zui.sendMessage(StringFormatter.format("You are already apart of a clan. Leave that one before creating another.", MessageOccasion.ERROR, zenix));
 					return true;
 				}
 			}else {

@@ -15,6 +15,7 @@ import zenixmc.organization.OrganizationManager;
 import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.organization.OrganizationSet;
 import zenixmc.organization.clans.Clan;
+import zenixmc.organization.clans.TerritoryManager;
 import zenixmc.user.ZenixUserManager;
 
 /**
@@ -44,13 +45,18 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	private OrganizationManager orgManager;
 	
 	/**
+	 * Territory manager.
+	 */
+	private TerritoryManager territoryManager;
+	
+	/**
 	 * Instantiate.
 	 * @param logger
 	 * 		The logger to debug/log.
 	 * @param directory
 	 * 		The directory to store organizations in.
 	 */
-	public OrganizationRepository(Logger logger, File directory, ZenixUserManager manager, ZenixMCInterface zenix) {
+	public OrganizationRepository(Logger logger, File directory, ZenixUserManager manager, TerritoryManager territoryManager, ZenixMCInterface zenix) {
 		super(logger, directory);
 		this.clansDirectory = new File(directory, "clans");
 		this.manager = manager;
@@ -120,7 +126,7 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 
 		if (!(f.exists()) && create) {
 			if (leader != null) {
-				clan = new Clan(zenix, manager, leader, name);
+				clan = new Clan(zenix, manager, territoryManager, leader, name);
 				save(clan);
 				return clan;
 			}else {
@@ -132,7 +138,7 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 		clan = SeDe.deserialize(f, Clan.class);
 		clan.setZenixMC(zenix);
 		clan.setZenixUserManager(manager);
-		clan.setOrganizationManager(orgManager);
+		clan.setDisbanded(false);
 		
 		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been loaded.");
 

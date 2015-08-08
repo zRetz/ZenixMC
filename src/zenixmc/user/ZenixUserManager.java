@@ -1,5 +1,6 @@
 package zenixmc.user;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
@@ -92,6 +93,14 @@ public class ZenixUserManager {
 	 */
 	public ZenixUserInterface getRegardlessZenixUser(UUID uuid) {
 		return repository.getRegardlessZenixUser(uuid);
+	}
+	
+	/**
+	 * Wrapper for repository.
+	 * @return A collection of all online users.
+	 */
+	public Collection<ZenixUser> getOnlineUsers() {
+		return repository.getOnlineUsers();
 	}
 	
 	/**

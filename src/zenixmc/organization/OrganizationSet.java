@@ -3,8 +3,8 @@ package zenixmc.organization;
 import java.util.HashMap;
 import java.util.Map;
 
+import zenixjava.collections.InterfaceSet;
 import zenixmc.organization.clans.Clan;
-import zenixmc.utils.InterfaceSet;
 
 /**
  * A set of organizations.

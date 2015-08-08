@@ -106,18 +106,21 @@ public class CachedOrganizationRepository implements OrganizationRepositoryInter
 	
 	@Override
 	public void delete(Object ob) {
-		parentRepository.delete(ob);
+		if (ob instanceof Organization) {
+			delete((Organization) ob);
+		}
 	}
 	
 	@Override
 	public void delete(Organization organization) {
-		organizations.remove(organization);
-		parentRepository.delete(organization);
+		if (organization instanceof Clan) {
+			delete((Clan) organization);
+		}
 	}
 
 	@Override
 	public void delete(Clan clan) {
-		organizations.remove(clan);
+		organizations.remove(clan.getName());
 		parentRepository.delete(clan);
 	}
 	

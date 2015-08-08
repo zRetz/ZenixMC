@@ -29,6 +29,7 @@ import zenixmc.user.ZenixUserInterface;
  */
 public class StringFormatter {
 	
+	private static final Pattern integer = Pattern.compile("<integer>");
 	private static final Pattern string = Pattern.compile("<string>");
 	private static final Pattern zenixuser = Pattern.compile("<zenixUser>");
 	private static final Pattern bendingplayer = Pattern.compile("<bendingPlayer>");
@@ -36,7 +37,7 @@ public class StringFormatter {
 	private static final Pattern clan = Pattern.compile("<clan>");
 	
 	public enum MessageOccasion {
-		ERROR, ESSENTIAL, BENDING, CLAN, HANDLED;
+		ERROR, ESSENTIAL, BENDING, CLAN, HANDLED, ZENIX;
 	}
 	
 	public static String format(String msg, Object... obs) {
@@ -44,6 +45,12 @@ public class StringFormatter {
 		String result = msg;
 		
 		for (int i = 0; i < obs.length; i++) {
+			if (obs[i] instanceof Integer) {
+				Matcher st = integer.matcher(result);
+				if (st.find()) {
+					result = st.replaceFirst(((Integer) obs[i]).toString());
+				}
+			}
 			if (obs[i] instanceof String) {
 				Matcher st = string.matcher(result);
 				if (st.find()) {
@@ -108,7 +115,7 @@ public class StringFormatter {
 			p = inst.getSettings().getSortedColor() + "Handled";
 			msgc = inst.getSettings().getSortedColor();
 			break;
-		default:
+		case ZENIX:
 			p = inst.getSettings().getMatchingNotificationColor() + "Zenix";
 			msgc = inst.getSettings().getNotificationColor();
 			break;

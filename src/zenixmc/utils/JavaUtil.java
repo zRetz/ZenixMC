@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import zenixmc.utils.exceptions.NotEvenException;
 
 /**
@@ -34,7 +35,7 @@ public class JavaUtil {
     public static <A, B> TreeMap<A, B> arraysToTreeMap(A[] as, B[] bs) throws NotEvenException {
 
         if (as.length != bs.length) {
-            throw ExceptionUtil.notEvenException("strings and objects need to be even.");
+            throw new NotEvenException("strings and objects need to be even.");
         }
 
         TreeMap<A, B> result = new TreeMap<>();
@@ -103,7 +104,7 @@ public class JavaUtil {
                 output.put(key, value);
             }
         }else {
-            throw ExceptionUtil.indexOutOfBoundsException("index cant be bigger or smaller than input");
+            throw new IndexOutOfBoundsException("index cant be bigger or smaller than input");
         }
 
         return output;
@@ -131,7 +132,7 @@ public class JavaUtil {
             input.remove(keys.get(index));
             output.putAll(input);
         }else {
-            throw ExceptionUtil.indexOutOfBoundsException("index cant be bigger or smaller than input");
+            throw new IndexOutOfBoundsException("index cant be bigger or smaller than input");
         }
         
         return output;
@@ -261,5 +262,32 @@ public class JavaUtil {
      */
     public static <T> boolean arrayContainsElements(T[] array, T... elements) {
     	return Arrays.asList(array).containsAll(Arrays.asList(elements));
+    }
+    
+    /**
+     * @param i
+     * 		The number to check.
+     * @return <code>true</code> If the number is positive.
+     */
+    public static boolean isPositive(Number i) {
+    	return i.intValue() > 0;
+    }
+    
+    /**
+     * @param i
+     * 		The number to check.
+     * @return <code>true</code> If the number is negative.
+     */
+    public static boolean isNegative(Number i) {
+    	return i.intValue() < 0;
+    }
+    
+    /**
+     * @param s
+     * 		The string to check.
+     * @return <code>true</code> If the string can be parsed to a boolean.
+     */
+    public static boolean canBeBoolean(String s) {
+    	return s.equals("true") || s.equals("false");
     }
 }
