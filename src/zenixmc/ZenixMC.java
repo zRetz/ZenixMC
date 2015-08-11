@@ -36,6 +36,7 @@ import zenixmc.organization.OrganizationListener;
 import zenixmc.organization.OrganizationManager;
 import zenixmc.organization.OrganizationPlayerListener;
 import zenixmc.organization.clans.TerritoryManager;
+import zenixmc.organization.clans.defaults.Wild;
 import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.persistance.CachedTerritoryRepository;
 import zenixmc.persistance.CachedZenixUserRepository;
@@ -138,16 +139,18 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     /**
      * The Organization Listener.
      */
-    OrganizationListener orgListener = new OrganizationPlayerListener(this, zenixUserManager, orgManager, eventDispatcher);
+    OrganizationListener orgListener = new OrganizationPlayerListener(this, zenixUserManager, orgManager, terManager, eventDispatcher);
     
     @Override
     public void onEnable() {
     	instance = this;
+    	Wild.setUp();
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
         
         terManager.setOrganizationManager(orgManager);
         organizationRepository.setOrganizationManager(orgManager);
         
+        cachedTerRepository.open("Territory Repository has opened.");
         cachedOrganizationRepository.open("Organization Repository has opened.");
         cachedZenixUserRepository.open("Zenix User Repository has opened.");
         
@@ -161,7 +164,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         mainCommandExecuter.addMainCommand(new WarningDecrementCommand(this, zenixUserManager, mainCommandExecuter));
         
         //Clans Commands
-        mainCommandExecuter.addMainCommand(new ClanMainCommand(this, zenixUserManager, orgManager, mainCommandExecuter));
+        mainCommandExecuter.addMainCommand(new ClanMainCommand(this, zenixUserManager, orgManager, terManager, mainCommandExecuter));
         
         eventDispatcher.registerEventListener(cachedZenixUserRepository);
         eventDispatcher.registerEventListener(zenixListener);
@@ -310,7 +313,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
 
     @Override
     public Location getSpawnLocation(World world) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return world.getSpawnLocation();
     }
 
     @Override
@@ -320,21 +323,19 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
 
     @Override
     public World getWorld(int index) throws IndexOutOfBoundsException {
-        return this.getServer().getWorlds().get(0);
+        return this.getServer().getWorlds().get(index);
     }
 
     @Override
-    public World getWorld(String name) throws NullPointerException {
-        
-        if (name == null || name.isEmpty()) {
-            return null;
-        }
+    public World getWorld(String name) {
         
         World result = null;
         
-        for (World w : this.getServer().getWorlds()) {
-            if (w.getName().equals(name)) {
-                result = w;
+        List<World> worlds = this.getServer().getWorlds();
+        
+        for (int i = 0; i < worlds.size(); i++) {
+            if (worlds.get(i).getName().equals(name)) {
+                result = worlds.get(i);
             }
         }
         

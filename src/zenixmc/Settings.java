@@ -79,6 +79,7 @@ public class Settings implements SettingsInterface {
     	config.addDefault("clanWishAllyMessage", "<clan> wishes to form an alliance with your clan.");
     	config.addDefault("clanNeedInviteTrueMessage", "Invitations are now required to join <clan>. Courtesy: <zenixUser>");
     	config.addDefault("clanNeedInviteFalseMessage", "Invitations are no longer required to join <clan>. Courtesy: <zenixUser>");
+    	config.addDefault("clanEntryTerritoryMessage", "<string> - <string>");
     	
     	config.options().copyDefaults(true);
 		
@@ -253,7 +254,7 @@ public class Settings implements SettingsInterface {
 
 	@Override
 	public String clanOverClaimedMessage() {
-		return config.getString("clanOverClaimMessage");
+		return config.getString("clanOverClaimedMessage");
 	}
 
 	@Override
@@ -304,6 +305,11 @@ public class Settings implements SettingsInterface {
 	@Override
 	public String clanNeedInviteFalseMessage() {
 		return config.getString("clanNeedInviteFalseMessage");
+	}
+
+	@Override
+	public String clanEntryTerritoryMessage() {
+		return config.getString("clanEntryTerritoryMessage");
 	}
 
 }

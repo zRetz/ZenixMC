@@ -31,7 +31,7 @@ public class ClanAboutCommand extends AbstractClanCommand {
 
 	@Override
 	public String getFormat() {
-		return "[clanname] || [username]";
+		return "[no args] || [clan name] || [username]";
 	}
 
 	@Override
@@ -42,23 +42,31 @@ public class ClanAboutCommand extends AbstractClanCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
-		if (args.length < 1) {
-			sender.zui.sendMessage(StringFormatter.format("Not enough arguments.", MessageOccasion.ERROR, zenix));
-			return false;
-		}
-		
-		if (args.length == 1) {
+		switch(args.length) {
+		case 0:
+			
+			if (!(sender.zui.getOrganizationPlayer().hasClan())) {
+				sender.zui.sendMessage(StringFormatter.format("No clan specified.", MessageOccasion.ERROR, zenix));
+				return false;
+			}
+			
+			Clan c = sender.zui.getOrganizationPlayer().getClan();
+			for (int i = 0; i < c.about().length; i++) {
+				sender.zui.sendMessage(c.about()[i]);
+			}
+			return true;
+		case 1:
 			if (orgManager.getClanFromReference(args[0]) != null) {
-				Clan c = orgManager.getClanFromReference(args[0]);
-				for (int i = 0; i < c.about().length; i++) {
-					sender.zui.sendMessage(c.about()[i]);
+				Clan ca = orgManager.getClanFromReference(args[0]);
+				for (int i = 0; i < ca.about().length; i++) {
+					sender.zui.sendMessage(ca.about()[i]);
 				}
 				return true;
 			}else {
 				sender.zui.sendMessage(StringFormatter.format("Can't reference anything from arguments.", MessageOccasion.ERROR, zenix));
 				return true;
-			}	
-		}else {
+			}
+		default:
 			sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));
 			return false;
 		}

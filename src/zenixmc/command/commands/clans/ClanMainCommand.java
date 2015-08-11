@@ -6,12 +6,13 @@ import zenixmc.command.ZenixCommandSender;
 import zenixmc.command.commands.AbstractMainCommand;
 import zenixmc.command.commands.CommandInterface;
 import zenixmc.organization.OrganizationManager;
+import zenixmc.organization.clans.TerritoryManager;
 import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.JavaUtil;
 
 public class ClanMainCommand extends AbstractMainCommand {
 
-	public ClanMainCommand(ZenixMCInterface zenix, ZenixUserManager manager, OrganizationManager orgManager, MainCommandExecuter executer) {
+	public ClanMainCommand(ZenixMCInterface zenix, ZenixUserManager manager, OrganizationManager orgManager, TerritoryManager terManager, MainCommandExecuter executer) {
 		super(zenix, manager, executer);
 		this.addSubCommand(new ClanCreateCommand(zenix, manager, orgManager));
 		this.addSubCommand(new ClanAboutCommand(zenix, manager, orgManager));
@@ -25,6 +26,7 @@ public class ClanMainCommand extends AbstractMainCommand {
 		this.addSubCommand(new ClanBanCommand(zenix, manager, orgManager));
 		this.addSubCommand(new ClanPardonCommand(zenix, manager, orgManager));
 		this.addSubCommand(new ClanNeedInviteCommand(zenix, manager, orgManager));
+		this.addSubCommand(new ClanClaimCommand(zenix, manager, orgManager, terManager));
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import zenixmc.utils.exceptions.NotEvenException;
@@ -157,6 +158,20 @@ public class JavaUtil {
         
         map.put(key, value);
         return map;
+    }
+    
+    /**
+     * Replaces an element in a map with another element.
+     * @param map
+     * 		The map.
+     * @param key
+     * 		The key to remove.
+     * @param entry
+     * 		The entry to enter.
+     */
+    public static <K, V> void replaceElementInMap(Map<K, V> map, K key, Entry<K, V> entry) {
+    	map.remove(key);
+    	map.put(entry.getKey(), entry.getValue());
     }
     
     /**

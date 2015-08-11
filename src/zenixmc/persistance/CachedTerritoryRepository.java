@@ -3,6 +3,7 @@ package zenixmc.persistance;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 import org.bukkit.Chunk;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.block.chunk.ChunkWrap;
 import zenixmc.organization.Organization;
 import zenixmc.organization.clans.Territory;
 
@@ -82,9 +84,23 @@ public class CachedTerritoryRepository implements TerritoryRepositoryInterface {
 		
 		Territory result = territory.get(id);
 		
-		if (result == null && org != null && c != null) {
-			result = parentRepository.getTerritory(UUID.randomUUID().toString(), c, org);
+		if (result == null) {
+			result = parentRepository.getTerritory(id, c, org);
 			territory.put(result.getId(), result);
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public Territory getTerritory(Chunk c) {
+		
+		Territory result = null;
+		
+		for (Entry<String, Territory> entry : territory.entrySet()) {
+			if (entry.getValue().getChunk().isEqualTo(new ChunkWrap(c))) {
+				result = entry.getValue();
+			}
 		}
 		
 		return result;
@@ -95,6 +111,11 @@ public class CachedTerritoryRepository implements TerritoryRepositoryInterface {
 		return territory.get(id) != null;
 	}
 
+	@Override
+	public boolean isTerritory(Chunk c) {
+		return getTerritory(c) != null;
+	}
+	
 	@Override
 	public void save(Territory territory) {
 		parentRepository.save(territory);

@@ -26,6 +26,11 @@ public class ClanClaimEvent extends ClanEvent implements Cancellable {
 	private Territory territory;
 	
 	/**
+	 * Whether this claim was an overclaim.
+	 */
+	private boolean overclaim;
+	
+	/**
 	 * Message to display at claiming.
 	 */
 	private String message;
@@ -35,10 +40,11 @@ public class ClanClaimEvent extends ClanEvent implements Cancellable {
 	 */
 	private boolean cancelled = false;
 	
-	public ClanClaimEvent(Clan clan, OrganizationPlayerInterface claimer, Territory territory, String message) {
+	public ClanClaimEvent(Clan clan, OrganizationPlayerInterface claimer, Territory territory, boolean overclaim, String message) {
 		super(clan);
 		this.claimer = claimer;
 		this.territory = territory;
+		this.overclaim = overclaim;
 		this.message = message;
 	}
 
@@ -56,6 +62,14 @@ public class ClanClaimEvent extends ClanEvent implements Cancellable {
 
 	public void setTerritory(Territory territory) {
 		this.territory = territory;
+	}
+
+	public boolean isOverclaim() {
+		return overclaim;
+	}
+
+	public void setOverclaim(boolean overclaim) {
+		this.overclaim = overclaim;
 	}
 
 	public String getMessage() {

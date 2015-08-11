@@ -231,4 +231,10 @@ public interface SettingsInterface {
      * @return The message displayed when a clans needInvite value is set <code>true</code>.
      */
     String clanNeedInviteFalseMessage();
+    
+    /**
+     * @return The message displayed when a user walks into new territory.
+     */
+    String clanEntryTerritoryMessage();
+    
 }

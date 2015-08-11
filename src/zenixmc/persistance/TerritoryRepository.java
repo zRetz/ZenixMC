@@ -35,19 +35,29 @@ public class TerritoryRepository extends Repository implements TerritoryReposito
 	@Override
 	public Territory getTerritory(String id, Chunk c, Organization org) {
 		
-		final File f = getTerritoryFile(id.toString());
+		System.out.println(id);
+		final File f = getTerritoryFile(id);
 		
 		Territory result = null;
 		
-		if (!(f.exists()) && org != null) {
+		if (!(f.exists()) && org != null && c != null) {
 			result = new Territory(id, c, org, zenix);
+			result.handleChunk(zenix.getWorld(result.getWorld()));
 			save(result);
 			return result;
 		}
 		
 		result = SeDe.deserialize(f, Territory.class);
 		
+		result.setZenix(zenix);
+		result.handleChunk(zenix.getWorld(result.getWorld()));
+		
 		return result;
+	}
+	
+	@Override
+	public Territory getTerritory(Chunk c) {
+		throw new UnsupportedOperationException("This is not a cache class.");
 	}
 	
 	@Override
@@ -116,5 +126,9 @@ public class TerritoryRepository extends Repository implements TerritoryReposito
 	public boolean isTerritory(String id) {
 		throw new UnsupportedOperationException("This is not a cache class.");
 	}
-
+	
+	@Override
+	public boolean isTerritory(Chunk c) {
+		throw new UnsupportedOperationException("This is not a cache class.");
+	}
 }

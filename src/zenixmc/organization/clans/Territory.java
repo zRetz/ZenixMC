@@ -5,17 +5,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 import org.bukkit.Chunk;
+import org.bukkit.World;
 
 import zenixmc.ZenixMC;
 import zenixmc.ZenixMCInterface;
 import zenixmc.block.chunk.ChunkWrap;
-import zenixmc.organization.Influence;
 import zenixmc.organization.Organization;
 import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.utils.zenixjava.IntPair;
@@ -26,38 +22,43 @@ public class Territory implements Serializable {
 	 * SerialVersionUID.
 	 */
 	private static final long serialVersionUID = 4272539668713381919L;
-	
+
 	/**
 	 * The plugin.
 	 */
-	private ZenixMCInterface zenix;
-	
+	private transient ZenixMCInterface zenix;
+
 	/**
 	 * Territory Id.
 	 */
 	private String id;
-	
+
 	/**
 	 * World the territory is in.
 	 */
 	private String world;
-	
+
 	/**
 	 * The coordinates the territory is at.
 	 */
 	private IntPair coords;
 	
 	/**
+	 * World the territory is in, in bukkit representation.
+	 */
+	private transient Chunk bukkitChunk;
+
+	/**
 	 * The owner of the territory.
 	 */
 	private transient Organization parent;
-	
+
 	public Territory(String id, Chunk c, Organization parent, ZenixMCInterface zenix) {
 		this.id = id;
 		this.world = c.getWorld().getName();
 		this.coords = new IntPair(c.getX(), c.getZ());
 		this.zenix = zenix;
-		this.parent = parent;
+		setParent(parent);
 	}
 
 	public String getId() {
@@ -69,7 +70,11 @@ public class Territory implements Serializable {
 	}
 
 	public void setParent(Organization parent) {
+		if (this.parent != null) {
+			this.parent.unClaim(this);
+		}
 		this.parent = parent;
+		this.parent.claim(this);
 	}
 
 	public String getWorld() {
@@ -83,20 +88,28 @@ public class Territory implements Serializable {
 	public void setZenix(ZenixMCInterface zenix) {
 		this.zenix = zenix;
 	}
-	
+
 	public ChunkWrap getChunk() {
 		return new ChunkWrap(toChunk());
 	}
-	
+
 	public Chunk toChunk() {
-		return zenix.getWorld(world).getChunkAt(coords.getA(), coords.getB());
+		return bukkitChunk;
+	}
+
+	public boolean hasParent() {
+		return parent != null;
 	}
 	
+	public void handleChunk(World w) {
+		this.bukkitChunk = w.getChunkAt(coords.getA(), coords.getB());
+	}
+
 	@Override
 	public String toString() {
 		return "X: " + coords.getA() + "; Z: " + coords.getB() + "; ";
 	}
-	
+
 	/**
 	 * Serialize this instance.
 	 * 

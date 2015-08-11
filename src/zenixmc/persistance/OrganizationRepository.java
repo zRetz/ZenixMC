@@ -16,65 +16,69 @@ import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.organization.OrganizationSet;
 import zenixmc.organization.clans.Clan;
 import zenixmc.organization.clans.TerritoryManager;
+import zenixmc.organization.clans.defaults.Wild;
 import zenixmc.user.ZenixUserManager;
 
 /**
  * Persistence of organizations on disk.
+ * 
  * @author james
  */
 public class OrganizationRepository extends Repository implements OrganizationRepositoryInterface {
-	
+
 	/**
 	 * Directory to store clan data.
 	 */
 	private final File clansDirectory;
-	
+
 	/**
 	 * The plugin.
 	 */
 	private final ZenixMCInterface zenix;
-	
+
 	/**
 	 * User manager.
 	 */
 	private final ZenixUserManager manager;
-	
+
+	/**
+	 * Territory manager.
+	 */
+	private final TerritoryManager territoryManager;
+
 	/**
 	 * Organization manager.
 	 */
 	private OrganizationManager orgManager;
-	
-	/**
-	 * Territory manager.
-	 */
-	private TerritoryManager territoryManager;
-	
+
 	/**
 	 * Instantiate.
+	 * 
 	 * @param logger
-	 * 		The logger to debug/log.
+	 *            The logger to debug/log.
 	 * @param directory
-	 * 		The directory to store organizations in.
+	 *            The directory to store organizations in.
 	 */
-	public OrganizationRepository(Logger logger, File directory, ZenixUserManager manager, TerritoryManager territoryManager, ZenixMCInterface zenix) {
+	public OrganizationRepository(Logger logger, File directory, ZenixUserManager manager,
+			TerritoryManager territoryManager, ZenixMCInterface zenix) {
 		super(logger, directory);
 		this.clansDirectory = new File(directory, "clans");
 		this.manager = manager;
+		this.territoryManager = territoryManager;
 		this.zenix = zenix;
 	}
 
 	/**
-     * Returns the path to the file to store the specified clan in.
-     *
-     * @param name
-     *     	The name of the clan to find.
-     * @return The file of the clan.
-     */
-    protected File getClanFile(String name) {
-        return new File(this.clansDirectory, name + ".dat");
-    }
+	 * Returns the path to the file to store the specified clan in.
+	 *
+	 * @param name
+	 *            The name of the clan to find.
+	 * @return The file of the clan.
+	 */
+	protected File getClanFile(String name) {
+		return new File(this.clansDirectory, name + ".dat");
+	}
 
-	
 	@Override
 	public void open(String openMessage) {
 		super.open(openMessage);
@@ -96,16 +100,16 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 			}
 		}
 	}
-	
+
 	@Override
 	public OrganizationSet getOrganizations(Map<String, Class<?>> type) {
-		
+
 		OrganizationSet result = new OrganizationSet();
-		
+
 		for (Map.Entry<String, Class<?>> map : type.entrySet()) {
 			result.add(getOrganization(map.getKey(), map.getValue()));
 		}
-		
+
 		return result;
 	}
 
@@ -119,27 +123,29 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 
 	@Override
 	public Clan getClan(OrganizationPlayerInterface leader, String name, boolean create) {
-		
+
 		final File f = getClanFile(name);
 
 		Clan clan = null;
 
 		if (!(f.exists()) && create) {
-			if (leader != null) {
-				clan = new Clan(zenix, manager, territoryManager, leader, name);
-				save(clan);
-				return clan;
+			if (name.equals("Wild")) {
+				clan = new Wild(zenix, manager, territoryManager);
+				System.out.println("wild");
 			}else {
-				logger.log(Level.SEVERE, "New Clan with no leader!");
-				return null;
+				clan = new Clan(zenix, manager, territoryManager, leader, name);
+				System.out.println("not wild");
 			}
+			save(clan);
+			return clan;
 		}
 
 		clan = SeDe.deserialize(f, Clan.class);
 		clan.setZenixMC(zenix);
 		clan.setZenixUserManager(manager);
+		clan.setTerritoryManager(territoryManager);
 		clan.setDisbanded(false);
-		
+
 		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been loaded.");
 
 		return clan;
@@ -155,25 +161,25 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 
 	@Override
 	public void save(Clan clan) {
-		
+
 		final File f = getClanFile(clan.getName());
-		
+
 		SeDe.serialize(clan, f);
-		
+
 		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been saved.");
 	}
-	
+
 	@Override
 	public void renameClan(Clan clan, String oName, String nName) {
-		
+
 		final File f = getClanFile(oName);
-		
+
 		f.renameTo(getClanFile(nName));
-		
+
 		clan.setName(nName);
 		save(clan);
 	}
-	
+
 	@Override
 	public void delete(Object ob) {
 		if (ob instanceof Organization) {
@@ -181,7 +187,7 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 			return;
 		}
 	}
-	
+
 	@Override
 	public void delete(Organization organization) {
 		if (organization instanceof Clan) {
@@ -192,15 +198,15 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 
 	@Override
 	public void delete(Clan clan) {
-		
+
 		final File f = getClanFile(clan.getName());
-		
+
 		if (!(f.exists())) {
 			return;
 		}
-		
+
 		f.delete();
-		
+
 		logger.log(Level.INFO, "Clan: " + clan.getName() + " has been deleted.");
 	}
 
@@ -208,18 +214,18 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 	public boolean clanNameUsed(String name) {
 		throw new UnsupportedOperationException("This is not a cache class.");
 	}
-	
+
 	@Override
 	public Set<String> fileNames() {
 
 		Set<String> result = new HashSet<>();
-		
+
 		File[] files = files();
-		
+
 		for (File f : files) {
-			result.add(f.getName().substring(0, f.getName().length()-4));
+			result.add(f.getName().substring(0, f.getName().length() - 4));
 		}
-		
+
 		return result;
 	}
 
@@ -231,10 +237,10 @@ public class OrganizationRepository extends Repository implements OrganizationRe
 			public boolean accept(File path) {
 				return path.getName().endsWith(".dat");
 			}
-			
+
 		});
 	}
-	
+
 	public void setOrganizationManager(OrganizationManager value) {
 		this.orgManager = value;
 	}

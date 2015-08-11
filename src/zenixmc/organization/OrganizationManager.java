@@ -12,9 +12,11 @@ import zenixmc.event.organization.clan.ClanLeaveEvent;
 import zenixmc.event.organization.clan.ClanPardonEvent;
 import zenixmc.event.organization.clan.ClanReDescEvent;
 import zenixmc.event.organization.clan.ClanReNameEvent;
+import zenixmc.event.organization.clan.ClanUnClaimEvent;
 import zenixmc.organization.clans.Clan;
 import zenixmc.organization.clans.Territory;
 import zenixmc.organization.clans.TerritoryManager;
+import zenixmc.organization.clans.defaults.Wild;
 import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
@@ -80,6 +82,8 @@ public class OrganizationManager {
 		if (clanNameUsed(name)) {
 			return null;
 		}
+		
+		System.out.println(repository.getClan(leader, name, true));
 		
 		return repository.getClan(leader, name, true);
 	}
@@ -390,43 +394,61 @@ public class OrganizationManager {
 		saveClan(clan);
 	}
 	
-	public boolean claimTerritory(OrganizationPlayerInterface claimer, Territory territory) {
+	public boolean claimTerritory(Clan clan, OrganizationPlayerInterface claimer, Territory territory) {
 		
-		if (!(claimer.hasClan())) {
-			return false;
+		if (!(clan instanceof Wild)) {
+			
+			if (!(claimer.hasClan())) {
+				return false;
+			}
+			
+			if (!(claimer.getClan().equals(clan))) {
+				return false;
+			}
+			
+			ClanClaimEvent e = new ClanClaimEvent(clan, claimer, territory, false, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanClaimMessage(), clan, territory.getCoords().getA(), territory.getCoords().getB()), MessageOccasion.CLAN, zenix));
+			
+			eventDispatcher.callEvent(e);
+			
+			if (e.isCancelled()) {
+				return false;
+			}
+			
+			Clan c = e.getClan();
+			OrganizationPlayerInterface o = e.getClaimer();
+			Territory t = e.getTerritory();
+			
+			terManager.claimTerritory(t.getId(), c);
+			
+			zenix.message(null, e.getMessage(), c.onlineArray());
+			o.getZenixUser().sendMessage(StringFormatter.format(StringFormatter.format("You have claimed Chunk X: <integer> Chunk Z: <integer>.", t.getCoords().getA(), t.getCoords().getB()), MessageOccasion.CLAN, zenix));
+			
+			return true;
+		}else {	
+			Wild w = (Wild) clan;
+			
+			terManager.claimTerritory(territory.getId(), w);
+			zenix.broadcastMessage(null, StringFormatter.format("Wild has claimed Chunk X: <integer> Chunk Z: <integer>.", territory.getCoords().getA(), territory.getCoords().getB()));
+			
+			return true;
 		}
-		
-		Clan clan = claimer.getClan();
-		
-		ClanClaimEvent e = new ClanClaimEvent(clan, claimer, territory, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanClaimMessage(), clan, territory.getCoords().getA(), territory.getCoords().getB()), MessageOccasion.CLAN, zenix));
-		
-		eventDispatcher.callEvent(e);
-		
-		if (e.isCancelled()) {
-			return false;
-		}
-		
-		Clan c = e.getClan();
-		OrganizationPlayerInterface o = e.getClaimer();
-		Territory t = e.getTerritory();
-		
-		c.claim(t);
-		
-		zenix.message(null, e.getMessage(), c.onlineArray());
-		o.getZenixUser().sendMessage(StringFormatter.format(StringFormatter.format("You have claimed Chunk X: <integer> Chunk Z: <integer>.", t.getCoords().getA(), t.getCoords().getB()), MessageOccasion.CLAN, zenix));
-		
-		return true;
 	}
 	
-	public boolean unClaimTerritory(OrganizationPlayerInterface claimer, Territory territory) {
+	public boolean unClaimTerritory(OrganizationPlayerInterface unclaimer, Territory territory) {
 		
-		if (!(claimer.hasClan())) {
+		if (!(unclaimer.hasClan())) {
 			return false;
 		}
 		
-		Clan clan = claimer.getClan();
+		Clan clan = unclaimer.getClan();
 		
-		ClanClaimEvent e = new ClanClaimEvent(clan, claimer, territory, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanClaimMessage(), clan, territory.getCoords().getA(), territory.getCoords().getB()), MessageOccasion.CLAN, zenix));
+		ClanUnClaimEvent e = new ClanUnClaimEvent(clan, unclaimer, territory, StringFormatter.format(StringFormatter.format(zenix.getSettings().clanClaimMessage(), clan, territory.getCoords().getA(), territory.getCoords().getB()), MessageOccasion.CLAN, zenix));
+		
+		Territory preT = e.getTerritory();
+		
+		if (!(preT.hasParent()) || (!(preT.getParent().equals(e.getClan())))) {
+			e.setCancelled(true);
+		}
 		
 		eventDispatcher.callEvent(e);
 		
@@ -435,7 +457,7 @@ public class OrganizationManager {
 		}
 		
 		Clan c = e.getClan();
-		OrganizationPlayerInterface o = e.getClaimer();
+		OrganizationPlayerInterface o = e.getUnClaimer();
 		Territory t = e.getTerritory();
 		
 		c.unClaim(t);

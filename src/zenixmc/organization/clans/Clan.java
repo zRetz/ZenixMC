@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 import zenixmc.ZenixMCInterface;
 import zenixmc.organization.Influential;
 import zenixmc.organization.Members;
-import zenixmc.organization.OrganizationManager;
+import zenixmc.organization.Organization;
 import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.user.OfflineZenixUser;
 import zenixmc.user.ZenixUser;
@@ -35,52 +35,52 @@ public class Clan implements Influential {
 	/**
 	 * The plugin.
 	 */
-	private transient ZenixMCInterface zenix;
+	protected transient ZenixMCInterface zenix;
 	
 	/**
 	 * The user manager.
 	 */
-	private transient ZenixUserManager manager;
+	protected transient ZenixUserManager manager;
 	
 	/**
 	 * The territory manager.
 	 */
-	private transient TerritoryManager territoryManager;
+	protected transient TerritoryManager territoryManager;
 	
 	/**
 	 * Whether the clan has been disbanded.
 	 */
-	private transient boolean disbanded = false;
+	protected transient boolean disbanded = false;
 	
 	/**
 	 * The name of clan.
 	 */
-	private String name;
+	protected String name;
 	
 	/**
 	 * The description of the clan.
 	 */
-	private String[] desc;
+	protected String[] desc;
 	
 	/**
 	 * The clans members.
 	 */
-	private Members members;
+	protected Members members;
 	
 	/**
 	 * Clan ban list.
 	 */
-	private List<UUID> banlist = new ArrayList<>();
+	protected List<UUID> banlist = new ArrayList<>();
 	
 	/**
 	 * Clan territory Id list.
 	 */
-	private List<String> territoryIds = new ArrayList<>();
+	protected List<String> territoryIds = new ArrayList<>();
 	
 	/**
 	 * Whether users need invitations to join the clan.
 	 */
-	private boolean invite = true;
+	protected boolean invite = true;
 
 	/**
 	 * Instantiate.
@@ -96,7 +96,9 @@ public class Clan implements Influential {
 		this.name = name;
 		this.desc = zenix.getSettings().clanDescMessage().length() < zenix.getSettings().maxClanDescLength() ? new String[]{zenix.getSettings().clanDescMessage()} : new String[]{"Default Clan Description ;3"};
 		this.members = new Members(leader, this.manager);
-		leader.setClan(this);
+		if (leader != null) {
+			leader.setClan(this);
+		}
 	}
 
 	@Override
@@ -125,16 +127,17 @@ public class Clan implements Influential {
 		ChatColor p = zenix.getSettings().getClanColor();
 		ChatColor s = zenix.getSettings().getMatchingClanColor();
 		
-		String[] about = new String[8];
+		String[] about = new String[9];
 		
 		String l1 = s + "=====" + p + "Clan About" + s + "======";
 		String l2 = s + "+" + p + "Name: " + s + getName();
 		String l3 = s + "+" + p + "Influence: " + s + calcTotalInfluence() + p + "/" + s + calcTotalMaxInfluence();
-		String l4 = s + "+" + p + "Description: " + s + JavaUtil.arrayToString(getDescription());
-		String l5 = s + "+" + p + "Need Invitation: " + s + needInvite();
-		String l6 = s + "+" + p + "Online Members: " + s + getMembers().onlineMembers();
-		String l7 = s + "+" + p + "Offline Members: " + s + getMembers().offlineMembers();
-		String l8 = s + "+" + p + "Banned Users: " + s + bannedUsers();
+		String l4 = s + "+" + p + "Territory: " + s + territoryAmount();
+		String l5 = s + "+" + p + "Description: " + s + JavaUtil.arrayToString(getDescription());
+		String l6 = s + "+" + p + "Need Invitation: " + s + needInvite();
+		String l7 = s + "+" + p + "Online Members: " + s + getMembers().onlineMembers();
+		String l8 = s + "+" + p + "Offline Members: " + s + getMembers().offlineMembers();
+		String l9 = s + "+" + p + "Banned Users: " + s + bannedUsers();
 		
 		about[0] = l1;
 		about[1] = l2;
@@ -144,6 +147,7 @@ public class Clan implements Influential {
 		about[5] = l6;
 		about[6] = l7;
 		about[7] = l8;
+		about[8] = l9;
 		
 		return about;
 	}
@@ -320,6 +324,11 @@ public class Clan implements Influential {
 	}
 	
 	@Override
+	public void setTerritoryManager(TerritoryManager value) {
+		this.territoryManager = value;
+	}
+	
+	@Override
 	public Set<String> nameSet() {
 		Set<String> names = new HashSet<>();
 		
@@ -363,6 +372,11 @@ public class Clan implements Influential {
 	@Override
 	public boolean isLessThan(Influential members) {
 		return this.calcTotalInfluence() < members.calcTotalInfluence();
+	}
+	
+	@Override
+	public boolean isVulnerable() {
+		return calcTotalInfluence() < territoryAmount();
 	}
 
 	@Override
@@ -445,8 +459,7 @@ public class Clan implements Influential {
 	public void claim(Territory territory) {
 		if (!(ownsTerritory(territory))) {
 			String i = territory.getId();
-			territoryManager.claimTerritory(i, this);
-			territoryIds.add(territory.getId());
+			territoryIds.add(i);
 		}
 	}
 
@@ -454,7 +467,6 @@ public class Clan implements Influential {
 	public void unClaim(Territory territory) {
 		if (ownsTerritory(territory)) {
 			String i = territory.getId();
-			territoryManager.unClaimTerritory(i, this);
 			territoryIds.remove(i);
 		}
 	}
@@ -463,5 +475,21 @@ public class Clan implements Influential {
 	public boolean ownsTerritory(Territory land) {
 		return territoryIds.contains(land.getId());
 	}
+	
+	@Override
+	public int territoryAmount() {
+		System.out.println(territoryIds);
+		return territoryIds.size();
+	}
 
+	@Override
+	public boolean equals(Object ob) {
+		if (ob instanceof Organization) {
+			if (ob instanceof Clan) {
+				Clan c = (Clan) ob;
+				return name.equals(c.getName());
+			}
+		}
+		return false;
+	}
 }

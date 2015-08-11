@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.organization.clans.Territory;
+import zenixmc.organization.clans.TerritoryManager;
 import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
 
@@ -186,6 +187,13 @@ public interface Organization extends Serializable {
 	void setZenixUserManager(ZenixUserManager value);
 	
 	/**
+	 * Sets the organizations territory manager.
+	 * @param value
+	 * 		The value to set.
+	 */
+	void setTerritoryManager(TerritoryManager value);
+	
+	/**
 	 * @return The names of all members.
 	 */
 	Set<String> nameSet();
@@ -267,4 +275,9 @@ public interface Organization extends Serializable {
 	 * @return <code>true</code> If the organization owns the land.
 	 */
 	boolean ownsTerritory(Territory land);
+	
+	/**
+	 * @return The amount of territory this organization owns.
+	 */
+	int territoryAmount();
 }

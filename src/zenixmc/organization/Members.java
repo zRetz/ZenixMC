@@ -43,7 +43,11 @@ public class Members implements Serializable {
 	 */
 	public Members(OrganizationPlayerInterface leader, ZenixUserManager manager) {
 		this.manager = manager;
-		this.leader = leader.getZenixUser().getUniqueId();
+		if (leader == null) {
+			this.leader = null;
+		}else {
+			this.leader = leader.getZenixUser().getUniqueId();
+		}
 		this.members = new ArrayList<>();
 	}
 	
@@ -134,7 +138,9 @@ public class Members implements Serializable {
 	}
 	
 	/**
-	 * @return The raw list of online members.
+	 * @param lead	
+	 * 		Whether the leader should be included in the list.
+	 * @return A list of all online members.
 	 */
 	public List<OrganizationPlayerInterface> getOnlineMembers() {
 		
@@ -145,13 +151,20 @@ public class Members implements Serializable {
 				result.add(manager.getZenixUser(uuid).getOrganizationPlayer());
 			}
 		}
-		if (manager.isOnline(leader)) {
-			result.add(getLeader());
+		if (leader != null) {
+			if (manager.isOnline(leader)) {
+				result.add(getLeader());
+			}
 		}
 		
 		return result;
 	}
 	
+	/**
+	 * @param lead	
+	 * 		Whether the leader should be included in the list.
+	 * @return A list of all offline members.
+	 */
 	public List<OrganizationPlayerInterface> getOfflineMembers() {
 		
 		List<OrganizationPlayerInterface> result = new ArrayList<>();
@@ -161,14 +174,18 @@ public class Members implements Serializable {
 				result.add(manager.getZenixUser(uuid).getOrganizationPlayer());
 			}
 		}
-		if (!(manager.isOnline(leader))) {
-			result.add(getLeader());
+		if (leader != null) {
+			if (!(manager.isOnline(leader))) {
+				result.add(getLeader());
+			}
 		}
 		
 		return result;
 	}
 	
 	/**
+	 * @param
+	 * 		Whether the leader should be included in the list.
 	 * @return The raw list of all members regardless of online/offline.
 	 */
 	public List<OrganizationPlayerInterface> getMembers() {
@@ -181,6 +198,11 @@ public class Members implements Serializable {
 		return result;
 	}
 	
+	/**
+	 * @param leader	
+	 * 		Whether the leader should be included in the string.
+	 * @return The online members in string form.
+	 */
 	public String onlineMembers() {
 		
 		StringBuilder result = new StringBuilder();
@@ -197,6 +219,11 @@ public class Members implements Serializable {
 		return result.toString();
 	}
 	
+	/**
+	 * @param leader	
+	 * 		Whether the leader should be included in the string.
+	 * @return The offline members in string form.
+	 */
 	public String offlineMembers() {
 		
 		StringBuilder result = new StringBuilder();
@@ -213,6 +240,9 @@ public class Members implements Serializable {
 		return result.toString();
 	}
 	
+	/**
+	 * @return The amount of members.
+	 */
 	public int size() {
 		return members.size() + 1;
 	}

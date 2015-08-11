@@ -32,4 +32,9 @@ public interface Influential extends Organization {
 	 * @return <code>true</code> If sub-class' members have less influence than other members. 
 	 */
 	boolean isLessThan(Influential members);
+	
+	/**
+	 * @return <code>true</code. If the object is vulnerable to being taken over.
+	 */
+	boolean isVulnerable();
 }

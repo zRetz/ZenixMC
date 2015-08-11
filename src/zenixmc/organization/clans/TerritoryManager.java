@@ -1,5 +1,7 @@
 package zenixmc.organization.clans;
 
+import java.util.UUID;
+
 import org.bukkit.Chunk;
 
 import zenixmc.ZenixMCInterface;
@@ -48,8 +50,20 @@ public class TerritoryManager {
 		return getTerritory(id, null, null);
 	}
 	
+	public Territory getTerritory(Chunk c) {
+		return repository.getTerritory(c);
+	}
+	
 	public Territory getTerritory(String id, Chunk c, Organization o) {
-		return repository.getTerritory(id, c, o);
+		String idd = id;
+		if (idd == null) {
+			idd = UUID.randomUUID().toString();
+		}
+		return repository.getTerritory(idd, c, o);
+	}
+	
+	public boolean isTerritory(Chunk c) {
+		return repository.isTerritory(c);
 	}
 	
 	public void save(Territory territory) {
@@ -62,7 +76,7 @@ public class TerritoryManager {
 	
 	public void claimTerritory(String id, Organization org) {
 		
-		if (!(repository.isTerritory(id))) {
+		if (repository.isTerritory(id)) {
 			return;
 		}
 		

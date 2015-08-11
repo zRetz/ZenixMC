@@ -13,11 +13,22 @@ import zenixmc.organization.clans.Territory;
 public interface TerritoryRepositoryInterface extends RepositoryInterface {
 
 	/**
+	 * @param id
+	 * 		The id of the territory.
+	 * @param c
+	 * 		The chunk of territory.
+	 * @param org
+	 * 		The organization owning the territory.
+	 * @return The requested territory.
+	 */
+	Territory getTerritory(String id, Chunk c, Organization org);
+	
+	/**
 	 * @param c
 	 * 		The chunk of territory.
 	 * @return The requested territory.
 	 */
-	Territory getTerritory(String id, Chunk c, Organization org);
+	Territory getTerritory(Chunk c);
 	
 	/**
 	 * @param id
@@ -25,6 +36,13 @@ public interface TerritoryRepositoryInterface extends RepositoryInterface {
 	 * @return <code>true</code> If the id correlates to some territory.
 	 */
 	boolean isTerritory(String id);
+	
+	/**
+	 * @param c		
+	 * 		The chunk to check.
+	 * @return <code>true</code> If the chunk correlates to some territory.
+	 */
+	boolean isTerritory(Chunk c);
 	
 	/**
      * Save territory.
