@@ -24,7 +24,6 @@ import zenixmc.ZenixMCInterface;
 import zenixmc.user.OfflineZenixUser;
 import zenixmc.user.ZenixUser;
 import zenixmc.user.ZenixUserInterface;
-import zenixmc.utils.ExceptionUtil;
 import zenixmc.utils.StringFormatter;
 import zenixmc.utils.StringFormatter.MessageOccasion;
 

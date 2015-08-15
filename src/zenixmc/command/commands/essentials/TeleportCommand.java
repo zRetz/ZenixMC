@@ -25,7 +25,7 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 	
 	@Override
 	public String getName() {
-		return "teleport";
+		return "tp";
 	}
 
 	@Override
@@ -50,6 +50,11 @@ public class TeleportCommand extends AbstractEssentialsCommand {
 
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
+		
+		if (!(sender.zui.isAuthorised("zenix.essential.teleport"))) {
+			sender.zui.sendMessage(StringFormatter.format("You don't have permission to do this.", MessageOccasion.ERROR, zenix));
+			return true;
+		}
 		
 		switch (args.length) {
 		case 1:

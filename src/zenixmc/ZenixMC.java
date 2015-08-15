@@ -25,13 +25,16 @@ import org.bukkit.scheduler.BukkitTask;
 import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.commands.clans.ClanMainCommand;
 import zenixmc.command.commands.essentials.FeedCommand;
+import zenixmc.command.commands.essentials.FreezeCommand;
 import zenixmc.command.commands.essentials.HealCommand;
 import zenixmc.command.commands.essentials.HelloCommand;
 import zenixmc.command.commands.essentials.HelpCommand;
 import zenixmc.command.commands.essentials.TeleportCommand;
+import zenixmc.command.commands.essentials.ViewPermissionsCommand;
 import zenixmc.command.commands.essentials.WarningDecrementCommand;
 import zenixmc.command.commands.essentials.WarningIncrementCommand;
 import zenixmc.event.EventDispatcher;
+import zenixmc.event.update.Updater;
 import zenixmc.organization.OrganizationListener;
 import zenixmc.organization.OrganizationManager;
 import zenixmc.organization.OrganizationPlayerListener;
@@ -155,10 +158,12 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         cachedZenixUserRepository.open("Zenix User Repository has opened.");
         
         //Essentials Commands
+        mainCommandExecuter.addMainCommand(new ViewPermissionsCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new HelloCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new HelpCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new HealCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new FeedCommand(this, zenixUserManager, mainCommandExecuter));
+        mainCommandExecuter.addMainCommand(new FreezeCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new TeleportCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new WarningIncrementCommand(this, zenixUserManager, mainCommandExecuter));
         mainCommandExecuter.addMainCommand(new WarningDecrementCommand(this, zenixUserManager, mainCommandExecuter));
@@ -175,6 +180,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         	cachedZenixUserRepository.onPlayerJoin(new PlayerJoinEvent(player, null));
         }
         
+        new Updater(this);
     }
 
     @Override

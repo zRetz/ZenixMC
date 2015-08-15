@@ -1,9 +1,74 @@
 name: ZenixMC
-version: 1.0.1
+version: 1.0.2
 description: Zenix For Minecraft
-authors: [james, grasshopperMatt, Ron]
+authors: [james, grasshopperMatt]
 main: zenixmc.ZenixMC
-commands:
-  z:
-    aliases: [zenixmc, zenix]
-    description: Command Zenix.
+permissions:
+  zenix.*:
+    description: Gives access to everything inside ZenixMC.
+    children:
+      zenix.essential: true
+      zenix.clan: true
+      zenix.bending: true
+    default: op
+  zenix.essential:
+    description: Gives access to everything inside ZenixMC Essential.
+    children:
+      zenix.essential.hello: true	
+      zenix.essential.tpuser: true
+      zenix.essential.tphere: true
+      zenix.essential.tplocation: true
+      zenix.essential.tpauser: true
+      zenix.essential.tpahere: true
+      zenix.essential.afk: true
+      zenix.essential.mute: true
+      zenix.essential.ignite: true
+      zenix.essential.frozen: true
+      zenix.essential.vanish: true
+      zenix.essential.socialspy: true
+      zenix.essential.about: true
+      zenix.essential.kick: true
+      zenix.essential.ban: true
+      zenix.essential.home: true
+      zenix.essential.warn: true
+  zenix.essential.warn:
+    description: Gives access to everything to do with the warning feature.
+    children:
+      zenix.essential.warn.increment: true
+      zenix.essential.warn.decrement: true
+  zenix.essential.home:
+    description: Gives access to everything to do with the homes feature.
+    children:
+      zenix.essential.home.set: true
+      zenix.essential.home.del: true
+      zenix.essential.home.goto: true
+  zenix.essential.kick:
+    description: Kick Users.
+  zenix.essential.ban:
+    description: Ban Users.
+  zenix.essential.about:
+    description: Check who a user is.
+  zenix.essential.socialspy:
+    description: Spy socially.
+  zenix.essential.vanish:
+    description: Vanish from sight.
+  zenix.essential.frozen:
+    description: Stop a user from moving.
+  zenix.essential.ignite:
+    description: Set a user on fire.
+  zenix.essential.mute:
+    description: Mute a user.
+  zenix.essential.afk:
+    description: Go afk.
+  zenix.essential.tpahere:
+    description: Request to teleport a user to you.
+  zenix.essential.tpauser:
+    description: Request to teleport to a user.
+  zenix.essential.tplocation:
+    description: Teleport to a location.
+  zenix.essential.tphere:
+    description: Teleport a user to you.
+  zenix.essential.tpuser:
+    description: Teleport to a user.
+  zenix.essential.hello:
+    description: Returns 'Hello'..

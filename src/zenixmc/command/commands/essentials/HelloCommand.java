@@ -40,13 +40,18 @@ public class HelloCommand extends AbstractEssentialsCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
+		if (!(sender.zui.isAuthorised("zenix.essential.hello"))) {
+			sender.zui.sendMessage(StringFormatter.format("You don't have permission to do this.", MessageOccasion.ERROR, zenix));
+			return true;
+		}
+		
 		switch (args.length) {
 		case 0:
 			sender.zui.sendMessage(StringFormatter.format("Zenix greets you!", MessageOccasion.ESSENTIAL, zenix));
 			return true;
 		default:
 			sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));
-			return true;
+			return false;
 		}
 	}
 

@@ -1,5 +1,7 @@
 package zenixmc.command.commands.essentials;
 
+import org.bukkit.permissions.Permission;
+
 import zenixmc.ZenixMCInterface;
 import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;
@@ -7,15 +9,15 @@ import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.StringFormatter;
 import zenixmc.utils.StringFormatter.MessageOccasion;
 
-public class AboutCommand extends AbstractEssentialsCommand {
+public class ViewPermissionsCommand extends AbstractEssentialsCommand {
 
-	public AboutCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+	public ViewPermissionsCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
 		super(zenix, manager, executer);
 	}
 	
 	@Override
 	public String getName() {
-		return "about";
+		return "viewperms";
 	}
 
 	@Override
@@ -30,20 +32,22 @@ public class AboutCommand extends AbstractEssentialsCommand {
 
 	@Override
 	public String getDescription() {
-		return "Returns 'Hello.'";
+		return "Returns an all registered permissions.";
 	}
 
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
-		if (!(sender.zui.isAuthorised("zenix.essential.about"))) {
+		if (!(sender.zui.isAuthorised("zenix.essential.viewperms"))) {
 			sender.zui.sendMessage(StringFormatter.format("You don't have permission to do this.", MessageOccasion.ERROR, zenix));
 			return true;
 		}
 		
 		switch (args.length) {
 		case 0:
-			sender.zui.sendMessage(StringFormatter.format("Zenix greets you!", MessageOccasion.ESSENTIAL, zenix));
+			for (Permission p : zenix.getDescription().getPermissions()) {
+				sender.zui.sendMessage(StringFormatter.format(p.getName(), MessageOccasion.ESSENTIAL, zenix));
+			}
 			return true;
 		default:
 			sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));

@@ -41,6 +41,11 @@ public class WarningIncrementCommand extends AbstractEssentialsCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
+		if (!(sender.zui.isAuthorised("zenix.essential.warn.increment"))) {
+			sender.zui.sendMessage(StringFormatter.format("You don't have permission to do this.", MessageOccasion.ERROR, zenix));
+			return true;
+		}
+		
 		if (args.length < 4) {
 			sender.zui.sendMessage(StringFormatter.format("Not enough arguments.", MessageOccasion.ERROR, zenix));
 			return false;

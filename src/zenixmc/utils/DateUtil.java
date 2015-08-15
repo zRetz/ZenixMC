@@ -153,4 +153,8 @@ public class DateUtil {
     public static Date toDate(long millis) {
     	return new Date(millis);
     }
+    
+    public static boolean elapsed(long time, long required) {
+    	return System.currentTimeMillis() - time > required;
+    }
 }

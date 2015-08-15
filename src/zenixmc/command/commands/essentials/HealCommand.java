@@ -48,6 +48,11 @@ public class HealCommand extends AbstractEssentialsCommand {
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
+		if (!(sender.zui.isAuthorised("zenix.essential.heal"))) {
+			sender.zui.sendMessage(StringFormatter.format("You don't have permission to do this.", MessageOccasion.ERROR, zenix));
+			return true;
+		}
+		
 		switch (args.length) {
 		case 0:
 			sender.zui.setHealth(sender.zui.getMaxHealth());

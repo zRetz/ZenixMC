@@ -1,26 +1,22 @@
 package zenixmc.command.commands.essentials;
 
-import java.util.List;
-
 import zenixmc.ZenixMCInterface;
 import zenixmc.command.MainCommandExecuter;
 import zenixmc.command.ZenixCommandSender;
-import zenixmc.user.ZenixUserInterface;
+import zenixmc.user.ZenixUser;
 import zenixmc.user.ZenixUserManager;
-import zenixmc.utils.DateUtil;
-import zenixmc.utils.JavaUtil;
 import zenixmc.utils.StringFormatter;
 import zenixmc.utils.StringFormatter.MessageOccasion;
 
-public class WarningDecrementCommand extends AbstractEssentialsCommand {
+public class TeleportHereCommand extends AbstractEssentialsCommand {
 
-	public WarningDecrementCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
+	public TeleportHereCommand(ZenixMCInterface zenix, ZenixUserManager manager, MainCommandExecuter executer) {
 		super(zenix, manager, executer);
 	}
 	
 	@Override
 	public String getName() {
-		return "unwarn";
+		return "tphere";
 	}
 
 	@Override
@@ -30,36 +26,36 @@ public class WarningDecrementCommand extends AbstractEssentialsCommand {
 
 	@Override
 	public String getFormat() {
-		return "[user] [reason]";
+		return "[user name]";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Decrements a users warnings.";
+		return "Teleports user to you.";
 	}
 
 	@Override
 	public boolean onCommand(ZenixCommandSender sender, String label, String[] args) {
 		
-		if (!(sender.zui.isAuthorised("zenix.essential.warn.decrement"))) {
+		if (!(sender.zui.isAuthorised("zenix.essential.tphere"))) {
 			sender.zui.sendMessage(StringFormatter.format("You don't have permission to do this.", MessageOccasion.ERROR, zenix));
 			return true;
 		}
 		
-		if (args.length < 2) {
-			sender.zui.sendMessage(StringFormatter.format("Not enough arguments.", MessageOccasion.ERROR, zenix));
-			return false;
-		}
-		
-		if (args.length > 2) {
+		if (args.length > 1) {
 			sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));
 			return false;
 		}
 		
-		if (manager.isZenixUser(args[0])) {
-			ZenixUserInterface zui = manager.getZenixUser(args[0]);
-			String[] reason = JavaUtil.removeElementsFromArray(args, String.class, 0, 1, 2);
-			zui.decrementWarning(reason);
+		if (args.length < 1) {
+			sender.zui.sendMessage(StringFormatter.format("Not enough arguments.", MessageOccasion.ERROR, zenix));
+			return false;
+		}
+		
+		if (manager.isOnline(args[0])) {
+			ZenixUser zu = manager.getZenixUser(args[0]);
+			
+			sender.zui.getTeleport().teleportHereUser(zu, zenix.getSettings().getTeleportTime() == 0 ? false : true, zenix.getSettings().canMoveBeforeTeleport(), zenix.getSettings().getTeleportTime());
 			return true;
 		}else {
 			sender.zui.sendMessage(StringFormatter.format("Not valid user.", MessageOccasion.ERROR, zenix));

@@ -122,8 +122,8 @@ public interface BendingPlayerInterface extends Serializable {
      * @param ability
      *            The ability to set data for
      * @param data
-     *            The data to set, null to clear
+     *            The data to set, null to clear.
      */
     void setAbilityData(AbilityInterface ability, Object data);
-    
+
 }

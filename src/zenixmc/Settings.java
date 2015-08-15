@@ -38,6 +38,7 @@ public class Settings implements SettingsInterface {
 		
 		config.addDefault("warningBanFormat", "minute");
 		config.addDefault("teleportTime", 5000);
+		config.addDefault("igniteTicks", 10000);
     	config.addDefault("canMoveBeforeTeleport", false);
     	config.addDefault("errorColor", "RED");
     	config.addDefault("notificationColor", "GREEN");
@@ -95,6 +96,11 @@ public class Settings implements SettingsInterface {
 		String format = config.getString("warningBanFormat");
 		
 		return format;
+	}
+	
+	@Override
+	public int getIgniteTicks() {
+		return config.getInt("igniteTicks");
 	}
 	
 	@Override

@@ -1,6 +1,6 @@
 package zenixmc.bending.ability;
 
-import java.io.Serializable;
+import org.bukkit.event.Listener;
 
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.bending.Element;
@@ -10,7 +10,7 @@ import zenixmc.bending.Element;
  * passive ability.
  */
 
-public interface AbilityInterface extends Serializable {
+public interface AbilityInterface extends Listener {
 
     /**
      * @return The <b>unique</b> name to identify this ability.

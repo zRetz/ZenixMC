@@ -221,7 +221,7 @@ public class ZenixUser implements ZenixUserInterface {
     
     @Override
     public boolean isAuthorised(String node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return player.hasPermission(node);
     }
     
     @Override

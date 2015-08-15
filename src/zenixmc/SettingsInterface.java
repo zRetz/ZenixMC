@@ -28,6 +28,11 @@ public interface SettingsInterface {
 	long getTeleportTime();
 	
 	/**
+	 * @return The duration, the ignite command should last.
+	 */
+	int getIgniteTicks();
+	
+	/**
 	 * @return <code>true</code> If users can move before teleporting.
 	 */
 	boolean canMoveBeforeTeleport();
