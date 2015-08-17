@@ -8,7 +8,7 @@ public class Updater implements Runnable {
 
 	public Updater(ZenixMCInterface plugin) {
 		this.plugin = plugin;
-		this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, this, 0L, 1L);
+		this.plugin.scheduleSyncRepeatingTask(this, 0L, 1L);
 	}
 	
 	@Override

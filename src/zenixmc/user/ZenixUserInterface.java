@@ -6,7 +6,6 @@
 package zenixmc.user;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.bending.AbilityManager;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.event.EventDispatcher;
@@ -602,7 +602,7 @@ public interface ZenixUserInterface extends Serializable, Comparable<ZenixUserIn
     /**
      * Handles Serialization.
      */
-    void handleSerialize();
+    void handleSerialize(AbilityManager abManager);
     
     /**
      * <b>Has to be offline user first.</b>

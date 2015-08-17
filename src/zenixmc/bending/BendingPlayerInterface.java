@@ -67,12 +67,10 @@ public interface BendingPlayerInterface extends Serializable {
      * proper events, please use abilityManager instead.
      *
      * @see AbilityManager
-     * @param name
-     *            The name of the preset
      * @param preset
      *            The preset to set
      */
-    void setPreset(String name, PresetInterface preset);
+    void setPreset(PresetInterface preset);
 
     /**
      * @return The preset currently in use

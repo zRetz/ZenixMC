@@ -1,12 +1,13 @@
 package zenixmc.bending;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Elements in the avatar universe.
  */
-public enum Element {
+public enum Element implements Serializable {
 
     Air, Water, Earth, Fire, None;
 

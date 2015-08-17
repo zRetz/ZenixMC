@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.bending.AbilityManager;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
 import zenixmc.event.EventDispatcher;
@@ -500,7 +501,7 @@ public class OfflineZenixUser implements ZenixUserInterface {
 	}
 
 	@Override
-	public void handleSerialize() {
+	public void handleSerialize(AbilityManager abManager) {
 		throw new UnsupportedOperationException("OfflineUsers can't handle serialization.");
 	}
 

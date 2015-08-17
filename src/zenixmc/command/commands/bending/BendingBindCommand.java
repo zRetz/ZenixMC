@@ -58,15 +58,18 @@ public class BendingBindCommand extends AbstractAbilitiesCommand {
         final BendingPlayerInterface player = sender.zui.getBendingPlayer();
         // TODO: other player
 
-        if (args.length > 1 && player != null) {
+        if (args.length == 1 && player != null) {
+        	System.out.println(player.getZenixUser());
+        	System.out.println(player.getZenixUser().getInventory());
+        	System.out.println(player.getZenixUser().getInventory().getHeldItemSlot());
             final int slot = player.getZenixUser().getInventory()
                     .getHeldItemSlot();
 
-            if ("none".equalsIgnoreCase(args[1])) {
+            if ("none".equalsIgnoreCase(args[0])) {
                 abilityManager.bindAbility(player, slot, null);
             } else {
                 final AbilityInterface ability = abilityManager
-                        .findNamedAbility(args[1],
+                        .findNamedAbility(args[0],
                                 abilityManager.getAbilitiesOf(player));
 
                 if (ability != null) {

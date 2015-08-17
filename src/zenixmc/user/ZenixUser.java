@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.bending.AbilityManager;
 import zenixmc.bending.BendingPlayer;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.command.ZenixCommandSender;
@@ -106,7 +107,7 @@ public class ZenixUser implements ZenixUserInterface {
     /**
      * The users bendingPlayer data.
      */
-    private BendingPlayerInterface bendingPlayer = new BendingPlayer(this);
+    protected BendingPlayerInterface bendingPlayer = new BendingPlayer(this);
     
     /**
      * The users organizationPlayer data.
@@ -859,15 +860,17 @@ public class ZenixUser implements ZenixUserInterface {
     }
 
 	@Override
-	public void handleSerialize() {
+	public void handleSerialize(AbilityManager abManager) {
 		this.warning.setParent(this);
 		this.warning.setEventDispatcher(eventDispatcher);
 		this.organizationPlayer.setZenixUser(this);
+		this.bendingPlayer.setZenixUser(this);
 		for (Home h : homes) {
 			if (h != null) {
 				h.setZenixUser(this);
 			}
 		}
+		abManager.changePreset(bendingPlayer, bendingPlayer.getCurrentPreset());
 	}
 
 	@Override

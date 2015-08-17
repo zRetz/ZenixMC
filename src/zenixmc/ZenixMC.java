@@ -22,7 +22,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
+import zenixmc.bending.AbilityManager;
+import zenixmc.bending.BendingListener;
+import zenixmc.bending.ability.airbending.AirManipulation;
+import zenixmc.block.fake.FakeBlockManager;
 import zenixmc.command.MainCommandExecuter;
+import zenixmc.command.commands.bending.BendingMainCommand;
 import zenixmc.command.commands.clans.ClanMainCommand;
 import zenixmc.command.commands.essentials.FeedCommand;
 import zenixmc.command.commands.essentials.FreezeCommand;
@@ -80,6 +85,11 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     EventDispatcher eventDispatcher = new EventDispatcher(this);
     
     /**
+     * Ability Manager
+     */
+    AbilityManager abilityManager = new AbilityManager(eventDispatcher);
+    
+    /**
      * Persistence of territory to disk.
      */
     TerritoryRepository terRepository = new TerritoryRepository(this.getLogger(), new File(this.getDataFolder(), "territory"), this);
@@ -102,7 +112,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     /**
      * Persistence of user data to disk.
      */
-    ZenixUserRepository zenixUserRepository = new ZenixUserRepository(this.getLogger(), new File(this.getDataFolder(), "users"), this, eventDispatcher);
+    ZenixUserRepository zenixUserRepository = new ZenixUserRepository(this.getLogger(), new File(this.getDataFolder(), "users"), this, abilityManager, eventDispatcher);
     
     /**
      * Loading/Saving on Join/Leave.
@@ -144,11 +154,23 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
      */
     OrganizationListener orgListener = new OrganizationPlayerListener(this, zenixUserManager, orgManager, terManager, eventDispatcher);
     
+    /**
+     * The Bending Listener.
+     */
+    BendingListener bendingListener = new BendingListener(this, zenixUserManager, eventDispatcher);
+    
+    /**
+     * Fake Block Manager.
+     */
+    FakeBlockManager fakeBlockManager = new FakeBlockManager();
+    
     @Override
     public void onEnable() {
     	instance = this;
     	Wild.setUp();
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
+        
+        abilityManager.registerAbility(new AirManipulation(fakeBlockManager));
         
         terManager.setOrganizationManager(orgManager);
         organizationRepository.setOrganizationManager(orgManager);
@@ -171,16 +193,21 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
         //Clans Commands
         mainCommandExecuter.addMainCommand(new ClanMainCommand(this, zenixUserManager, orgManager, terManager, mainCommandExecuter));
         
+        //Bending Commands
+        mainCommandExecuter.addMainCommand(new BendingMainCommand(this, zenixUserManager, abilityManager, mainCommandExecuter));
+        
         eventDispatcher.registerEventListener(cachedZenixUserRepository);
         eventDispatcher.registerEventListener(zenixListener);
         eventDispatcher.registerEventListener(orgListener);
+        eventDispatcher.registerEventListener(bendingListener);
         eventDispatcher.registerEventListener(mainCommandExecuter);
+        
+        new Updater(this);
         
         for (final Player player : getServer().getOnlinePlayers()) {
         	cachedZenixUserRepository.onPlayerJoin(new PlayerJoinEvent(player, null));
         }
         
-        new Updater(this);
     }
 
     @Override

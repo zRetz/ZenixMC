@@ -57,14 +57,14 @@ public class BendingElementCommand extends AbstractAbilitiesCommand {
     public boolean onCommand(ZenixCommandSender sender, String label,
             String[] args) {
 
-        if (args.length < 3) {
+        if (args.length  > 3) {
             return false;
         }
 
-        final Element element = Element.getType(args[2]);
+        final Element element = Element.getType(args[1]);
 
         if (element == null) {
-            sender.zui.sendMessage(StringFormatter.format(StringFormatter.format("Invalid element: <string>", args[2]), MessageOccasion.ERROR, zenix));
+            sender.zui.sendMessage(StringFormatter.format(StringFormatter.format("Invalid element: <string>", args[1]), MessageOccasion.ERROR, zenix));
             return false;
         }
 
@@ -72,33 +72,31 @@ public class BendingElementCommand extends AbstractAbilitiesCommand {
         final BendingPlayerInterface player = sender.zui.getBendingPlayer();
 
         // TODO: fire events
-        switch (args[1]) {
-        case "set": {
+        switch (args[0]) {
+        case "set":
             final ElementSet elements = new ElementSet();
             elements.add(element);
             player.setElements(elements);
             break;
-        }
-        case "add": {
-            final ElementSet elements = player.getElements();
-            elements.add(element);
-            player.setElements(elements);
+        case "add":
+            final ElementSet elements1 = player.getElements();
+            elements1.add(element);
+            player.setElements(elements1);
             break;
-        }
-        case "remove": {
-            final ElementSet elements = player.getElements();
-            elements.remove(element);
-            player.setElements(elements);
+        case "remove":
+            final ElementSet elements2 = player.getElements();
+            elements2.remove(element);
+            player.setElements(elements2);
             break;
-        }
-        case "native": {
+        case "native":
             player.setNativeElement(element);
             break;
-        }
         default:
-        	sender.zui.sendMessage(StringFormatter.format(StringFormatter.format("In-valid operator: <string>", args[1]), MessageOccasion.ERROR, zenix));
+        	sender.zui.sendMessage(StringFormatter.format(StringFormatter.format("In-valid operator: <string>", args[0]), MessageOccasion.ERROR, zenix));
+        	return false;
         }
-
+        
+        sender.zui.sendMessage("You're now a " + element.toString());
         return true;
     }
 

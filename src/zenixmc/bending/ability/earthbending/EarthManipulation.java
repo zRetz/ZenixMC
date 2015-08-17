@@ -5,10 +5,9 @@ import zenixmc.block.fake.FakeBlockManager;
 
 public class EarthManipulation extends AbstractEarthbendingAbility {
 	
-	protected FakeBlockManager blockManager;
 	
 	public EarthManipulation(FakeBlockManager blockManager) {
-        this.blockManager = blockManager;
+        super(blockManager);
     }
 
     protected enum EarthManipulationState {

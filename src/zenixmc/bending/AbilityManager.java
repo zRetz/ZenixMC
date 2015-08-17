@@ -62,6 +62,7 @@ public class AbilityManager {
      */
     public void registerAbility(final AbilityInterface ability) {
         abilities.add(ability);
+        eventDispatcher.registerEventListener(ability);
     }
 
     /**
@@ -240,7 +241,7 @@ public class AbilityManager {
                 event.getPlayer().getZenixUser().sendMessage(
                                 StringFormatter.format(messageFormat, format));
             }
-
+            
             final AbilityInterface oldAbility = player.getCurrentPreset()
                     .getBinding(event.getSlot());
 
@@ -276,7 +277,7 @@ public class AbilityManager {
 
         if (preset == null) {
             preset = createDefaultPreset(player);
-            player.setPreset(preset.getName(), preset);
+            player.setPreset(preset);
         }
 
         final PresetSwitchEvent event = new PresetSwitchEvent(preset, player);

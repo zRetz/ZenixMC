@@ -15,12 +15,18 @@ import zenixmc.utils.particles.ParticleEffect;
 
 public class AirManipulation extends AbstractAirbendingAbility {
 	
-	protected FakeBlockManager blockManager;
-	
+	/**
+	 * The players that are currently using the ability and if they are using the secondary feature or not.
+	 */
 	protected final Map<BendingPlayerInterface, Boolean> using = new HashMap<>();
 	
+	/**
+	 * Instantiate.
+	 * @param blockManager
+	 * 		Block Manager.
+	 */
 	public AirManipulation(FakeBlockManager blockManager) {
-        this.blockManager = blockManager;
+        super(blockManager);
     }
 
     protected enum AirManipulationState {
@@ -28,7 +34,7 @@ public class AirManipulation extends AbstractAirbendingAbility {
     }
 
     /**
-     * Per player information.
+     * Keep all per player data here so things like, the state of the ability, location, damage, etc.
      */
     protected class AirManipulationData {
     	
@@ -62,7 +68,9 @@ public class AirManipulation extends AbstractAirbendingAbility {
 	@Override
 	public void deactivate(BendingPlayerInterface bendingPlayer) {
 		if (using.containsKey(bendingPlayer)) {
+			bendingPlayer.setAbilityData(this, null);
 			using.remove(bendingPlayer);
+			System.out.println("De-Activated!");
 		}
 	}
 
@@ -83,6 +91,8 @@ public class AirManipulation extends AbstractAirbendingAbility {
 			}
 			
 			if (entry.getValue()) {
+				deactivate(player);
+				return;
 			}else {
 				switch(data.state) {
 					case Blasting:
@@ -90,6 +100,7 @@ public class AirManipulation extends AbstractAirbendingAbility {
 						ParticleEffect.CLOUD.display(0.3f, 0.3f, 0.3f, 0.1f, 2, data.location, 256D);
 						
 						if (data.location.getBlock().getType().isSolid()) {
+							System.out.println(data.location);
 							deactivate(player);
 							return;
 						}

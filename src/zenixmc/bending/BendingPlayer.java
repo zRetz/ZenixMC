@@ -1,12 +1,23 @@
 package zenixmc.bending;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import zenixmc.bending.ability.AbilityInterface;
 import zenixmc.bending.ability.PresetInterface;
+import zenixmc.io.SerializableLocation;
+import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.user.ZenixUserInterface;
+import zenixmc.user.objects.Home;
+import zenixmc.user.objects.Warning;
 
 /**
  * The default implementation of a bendingPlayer.
@@ -22,6 +33,11 @@ public class BendingPlayer implements BendingPlayerInterface {
      * The user.
      */
     private transient ZenixUserInterface zui;
+    
+    /**
+     * The ability data.
+     */
+    private transient Map<String, Object> abilityData = new HashMap<>();
 
     /**
      * The native element of this player.
@@ -36,12 +52,7 @@ public class BendingPlayer implements BendingPlayerInterface {
     /**
      * The presets this player has set.
      */
-    private Map<String, PresetInterface> presets = new HashMap<String, PresetInterface>();
-
-    /**
-     * The ability data.
-     */
-    private Map<String, Object> abilityData = new HashMap<String, Object>();
+    private List<PresetInterface> presets = new ArrayList<>();
 
     /**
      * The currently in use preset.
@@ -96,24 +107,32 @@ public class BendingPlayer implements BendingPlayerInterface {
     }
 
     @Override
-    public void setPreset(String name, PresetInterface preset) {
-        if (name == null || name.isEmpty()) {
-            name = "default";
-        }
-        presets.put(name, preset);
+    public void setPreset(PresetInterface preset) {
+    	if (preset == null) {
+    		return;
+    	}
+        presets.add(preset);
     }
 
     @Override
     public PresetInterface getPreset(String name) {
-        if (name == null || name.isEmpty()) {
-            name = "default";
+        for (PresetInterface p : presets) {
+        	if (p.getName().equals(name)) {
+        		return p;
+        	}
         }
-        return presets.get(name);
+        return null;
     }
 
     @Override
     public Set<String> getPresetNames() {
-        return presets.keySet();
+    	Set<String> result = new HashSet<>();
+    	
+    	for (PresetInterface p : presets) {
+    		result.add(p.getName());
+    	}
+    	
+        return result;
     }
 
     @Override
@@ -130,4 +149,38 @@ public class BendingPlayer implements BendingPlayerInterface {
     public String toString() {
     	return this.getZenixUser().getName();
     }
+    
+    /**
+	 * Serialize this instance.
+	 * 
+	 * @param out
+	 *            Target to which this instance is written.
+	 * @throws IOException
+	 *             Thrown if exception occurs during serialization.
+	 */
+	private void writeObject(final ObjectOutputStream out) throws IOException {
+		abilityData.clear();
+		out.writeUTF(nativeElement.toString());
+		out.writeObject(elements);
+		out.writeObject(presets);
+		out.writeObject(currentPreset);
+	}
+
+	/**
+	 * Deserialize this instance from input stream.
+	 * 
+	 * @param in
+	 *            Input Stream from which this instance is to be deserialized.
+	 * @throws IOException
+	 *             Thrown if error occurs in deserialization.
+	 * @throws ClassNotFoundException
+	 *             Thrown if expected class is not found.
+	 */
+	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+		abilityData = new HashMap<>();
+		nativeElement = Element.getType(in.readUTF());
+		elements = (ElementSet) in.readObject();
+		presets = (List<PresetInterface>) in.readObject();
+		currentPreset = (PresetInterface) in.readObject();
+	}
 }

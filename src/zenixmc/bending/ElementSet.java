@@ -7,6 +7,11 @@ import zenixmc.utils.EEnumSet;
  */
 public class ElementSet extends EEnumSet<Element> {
     /**
+	 * SerialVersionUID.
+	 */
+	private static final long serialVersionUID = 5922342816713933035L;
+
+	/**
      * Creates a new set.
      */
     public ElementSet() {

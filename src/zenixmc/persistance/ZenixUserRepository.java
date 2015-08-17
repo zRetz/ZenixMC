@@ -8,7 +8,6 @@ package zenixmc.persistance;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -19,6 +18,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.bending.AbilityManager;
 import zenixmc.event.EventDispatcher;
 import zenixmc.io.SeDe;
 import zenixmc.user.OfflineZenixUser;
@@ -42,6 +42,11 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 	 * The event dispatcher to fire events.
 	 */
 	private final EventDispatcher eventDispatcher;
+	
+	/**
+	 * The ability manager.
+	 */
+	private final AbilityManager abilityManager;
 
 	/**
 	 * Repository to push/fetch text data.
@@ -58,10 +63,11 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 	 * @param zenix
 	 *            The plugin.
 	 */
-	public ZenixUserRepository(Logger logger, File directory, ZenixMCInterface zenix, EventDispatcher eventDispatcher) {
+	public ZenixUserRepository(Logger logger, File directory, ZenixMCInterface zenix, AbilityManager abilityManager, EventDispatcher eventDispatcher) {
 		super(logger, directory);
 		this.zenix = zenix;
 		this.eventDispatcher = eventDispatcher;
+		this.abilityManager = abilityManager;
 	}
 
 	/**
@@ -94,7 +100,7 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 
 		if (!(f.exists())) {
 			zui = new ZenixUser(zenix.getPlayer(uuid).isOnline() ? zenix.getPlayer(uuid) : null, zenix, eventDispatcher);
-			zui.handleSerialize();
+			zui.handleSerialize(abilityManager);
 			save(zui);
 			return zui;
 		}
@@ -105,7 +111,7 @@ public class ZenixUserRepository extends Repository implements ZenixUserReposito
 		zui.setTeleport(new Teleport(eventDispatcher, zui, zenix));
 		zui.setZenixMC(zenix);
 		zui.setEventDispatcher(eventDispatcher);
-		zui.handleSerialize();
+		zui.handleSerialize(abilityManager);
 
 		logger.log(Level.INFO, "Zenix User " + zui.getName() + " has been loaded.");
 
