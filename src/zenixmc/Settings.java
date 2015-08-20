@@ -80,7 +80,8 @@ public class Settings implements SettingsInterface {
     	config.addDefault("clanWishAllyMessage", "<clan> wishes to form an alliance with your clan.");
     	config.addDefault("clanNeedInviteTrueMessage", "Invitations are now required to join <clan>. Courtesy: <zenixUser>");
     	config.addDefault("clanNeedInviteFalseMessage", "Invitations are no longer required to join <clan>. Courtesy: <zenixUser>");
-    	config.addDefault("clanEntryTerritoryMessage", "<string> - <string>");
+    	config.addDefault("airManipulationSpeed", 2);
+    	config.addDefault("airManipulationKnockback", 4);
     	
     	config.options().copyDefaults(true);
 		
@@ -316,6 +317,16 @@ public class Settings implements SettingsInterface {
 	@Override
 	public String clanEntryTerritoryMessage() {
 		return config.getString("clanEntryTerritoryMessage");
+	}
+
+	@Override
+	public float airManipulationSpeed() {
+		return (float) config.getDouble("airManipulationSpeed", 2);
+	}
+
+	@Override
+	public float airManipulationKnockback() {
+		return (float) config.getDouble("airManipulationKnockback", 4);
 	}
 
 }

@@ -1,7 +1,7 @@
 package zenixmc.bending.ability.waterbending;
 
+import zenixmc.ZenixMCInterface;
 import zenixmc.bending.Element;
-import zenixmc.bending.ability.AbilityInterface;
 import zenixmc.bending.ability.AbstractAbility;
 import zenixmc.block.fake.FakeBlockManager;
 
@@ -17,8 +17,8 @@ public abstract class AbstractWaterbendingAbility extends AbstractAbility {
 	 */
 	private static final long serialVersionUID = -3093182425112527315L;
 
-	protected AbstractWaterbendingAbility(FakeBlockManager blockManager) {
-		super(blockManager);
+	protected AbstractWaterbendingAbility(FakeBlockManager blockManager, ZenixMCInterface zenix) {
+		super(blockManager, zenix);
 	}
 	
 	/**

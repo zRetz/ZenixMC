@@ -8,6 +8,7 @@ package zenixmc.bending;
 import java.io.Serializable;
 import java.util.Set;
 
+import zenixmc.bending.ability.AbilityData;
 import zenixmc.bending.ability.AbilityInterface;
 import zenixmc.bending.ability.PresetInterface;
 import zenixmc.user.ZenixUserInterface;
@@ -111,7 +112,7 @@ public interface BendingPlayerInterface extends Serializable {
      *            The ability to obtain data for
      * @return The data this ability has set or null when nothing is found
      */
-    Object getAbilityData(AbilityInterface ability);
+    AbilityData getAbilityData(AbilityInterface ability);
 
     /**
      * Sets ability specific data.
@@ -122,6 +123,6 @@ public interface BendingPlayerInterface extends Serializable {
      * @param data
      *            The data to set, null to clear.
      */
-    void setAbilityData(AbilityInterface ability, Object data);
+    void setAbilityData(AbilityInterface ability, AbilityData data);
 
 }

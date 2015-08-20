@@ -6,6 +6,7 @@ import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.bending.Element;
 import zenixmc.bending.ElementSet;
 import zenixmc.command.ZenixCommandSender;
+import zenixmc.user.ZenixUserInterface;
 import zenixmc.user.ZenixUserManager;
 import zenixmc.utils.StringFormatter;
 import zenixmc.utils.StringFormatter.MessageOccasion;
@@ -58,6 +59,12 @@ public class BendingElementCommand extends AbstractAbilitiesCommand {
             String[] args) {
 
         if (args.length  > 3) {
+        	sender.zui.sendMessage(StringFormatter.format("Too many arguments.", MessageOccasion.ERROR, zenix));
+            return false;
+        }
+        
+        if (args.length  < 1) {
+        	sender.zui.sendMessage(StringFormatter.format("Not enough arguments.", MessageOccasion.ERROR, zenix));
             return false;
         }
 
@@ -67,9 +74,17 @@ public class BendingElementCommand extends AbstractAbilitiesCommand {
             sender.zui.sendMessage(StringFormatter.format(StringFormatter.format("Invalid element: <string>", args[1]), MessageOccasion.ERROR, zenix));
             return false;
         }
-
-        // TODO implement [<player>]
-        final BendingPlayerInterface player = sender.zui.getBendingPlayer();
+        
+        BendingPlayerInterface player = null;
+        
+        if (args.length == 3) {
+        	if (manager.isZenixUser(args[2])) {
+        		ZenixUserInterface zui = manager.getRegardlessZenixUser(args[2]);
+        		player = zui.getBendingPlayer();
+        	}
+        }else {
+        	player = sender.zui.getBendingPlayer();
+        }
 
         // TODO: fire events
         switch (args[0]) {
@@ -96,7 +111,7 @@ public class BendingElementCommand extends AbstractAbilitiesCommand {
         	return false;
         }
         
-        sender.zui.sendMessage("You're now a " + element.toString());
+        sender.zui.sendMessage(StringFormatter.format(StringFormatter.format("You are now a <string>bender", element.toString()), MessageOccasion.BENDING, zenix));
         return true;
     }
 

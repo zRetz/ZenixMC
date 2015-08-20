@@ -1,50 +1,103 @@
 package zenixmc.bending.ability.airbending;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.util.Vector;
 
+import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayerInterface;
+import zenixmc.bending.ability.AbilityData;
 import zenixmc.block.fake.FakeBlockManager;
 import zenixmc.event.update.UpdateEvent;
+import zenixmc.utils.MinecraftUtils;
 import zenixmc.utils.particles.ParticleEffect;
 
 public class AirManipulation extends AbstractAirbendingAbility {
 	
 	/**
-	 * The players that are currently using the ability and if they are using the secondary feature or not.
+	 * Speed factor for ability.
 	 */
-	protected final Map<BendingPlayerInterface, Boolean> using = new HashMap<>();
+	private float speed;
+	
+	/**
+	 * Momentum of the entities when colliding.
+	 */
+	private float knockback;
 	
 	/**
 	 * Instantiate.
 	 * @param blockManager
 	 * 		Block Manager.
 	 */
-	public AirManipulation(FakeBlockManager blockManager) {
-        super(blockManager);
+	public AirManipulation(FakeBlockManager blockManager, ZenixMCInterface zenix) {
+        super(blockManager, zenix);
+        speed = zenix.getSettings().airManipulationSpeed();
+        knockback = zenix.getSettings().airManipulationKnockback();
     }
-
-    protected enum AirManipulationState {
+	
+	/**
+	 * State of Air Manipulation.
+	 * @author james
+	 */
+    private enum AirManipulationState {
         Blasting;
     }
 
     /**
      * Keep all per player data here so things like, the state of the ability, location, damage, etc.
      */
-    protected class AirManipulationData {
+    protected class AirManipulationData implements AbilityData {
     	
-    	AirManipulationState state;
+    	/**
+		 * SerialVersionUID.
+		 */
+		private static final long serialVersionUID = 484017001980666325L;
+		
+		/**
+		 * Whether it is a secondary ability or not.
+		 */
+		boolean secondary;
+		
+		/**
+		 * State of ability.
+		 */
+		AirManipulationState state;
+		
+		/**
+		 * Location of ability.
+		 */
     	Location location;
     	
-    	AirManipulationData(Location origin) {
-	        state = AirManipulationState.Blasting;
-	        location = origin;
+    	/**
+    	 * Direction the ability needs to head to.
+    	 */
+    	Vector direction;
+    	
+    	
+    	
+    	AirManipulationData(boolean secondary) {
+    		this.secondary = secondary;
+    		state = this.secondary ? null : AirManipulationState.Blasting;
     	}
+
+		void setState(AirManipulationState state) {
+			this.state = state;
+		}
+
+		void setLocation(Location location) {
+			this.location = location;
+		}			
+
+		void setDirection(Vector direction) {
+			this.direction = direction;
+		}
+    	
+		public boolean isSecondary() {
+			return secondary;
+		}
     }
 	
 	@Override
@@ -84,29 +137,59 @@ public class AirManipulation extends AbstractAirbendingAbility {
 		for (Entry<BendingPlayerInterface, Boolean> entry : using.entrySet()) {
 			BendingPlayerInterface player = entry.getKey();
 			AirManipulationData data = (AirManipulationData) player.getAbilityData(this);
+			Location floc = player.getZenixUser().getEyeLocation();
 			
 			if (data == null) {
-				data = new AirManipulationData(player.getZenixUser().getEyeLocation());
+				data = new AirManipulationData(entry.getValue());
+				data.setLocation(floc);
+				data.setDirection(floc.getDirection().normalize());
 				player.setAbilityData(this, data);
 			}
 			
-			if (entry.getValue()) {
+			if (data.isSecondary()) {
 				deactivate(player);
 				return;
 			}else {
 				switch(data.state) {
 					case Blasting:
-						data.location = data.location.add(player.getZenixUser().getEyeLocation().getDirection().multiply(1));
-						ParticleEffect.CLOUD.display(0.3f, 0.3f, 0.3f, 0.1f, 2, data.location, 256D);
-						
-						if (data.location.getBlock().getType().isSolid()) {
-							System.out.println(data.location);
+						if (!(performChecks(data))) {
 							deactivate(player);
 							return;
 						}
+						advanceLocation(data);
+						updateData(data, player);
 				}
 			}
 		}
 	}
+
+	@Override
+	protected void updateData(AbilityData d, BendingPlayerInterface player) {
+		AirManipulationData data = (AirManipulationData) d;
+		data.setDirection(player.getZenixUser().getEyeLocation().getDirection().normalize());
+	}
 	
+	@Override
+	protected void advanceLocation(AbilityData d) {
+		AirManipulationData data = (AirManipulationData) d;
+		data.setLocation(data.location.add(data.direction.clone().multiply(speed)));
+		playDefaultSound(data.location);
+	}
+
+	@Override
+	protected boolean performChecks(AbilityData d) {
+		AirManipulationData data = (AirManipulationData) d;
+		
+		if (MinecraftUtils.isSolid(data.location))
+			return false;
+		
+		return true;
+	}
+	
+	@Override
+	protected void animate(AbilityData d) {
+		AirManipulationData data = (AirManipulationData) d;
+		this.playDefaultParticles(0.3f, 0.3f, 0.3f, 0.1f, 6, data.location);
+		this.playDefaultSound(data.location);
+	}
 }

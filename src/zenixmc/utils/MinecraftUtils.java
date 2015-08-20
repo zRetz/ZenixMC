@@ -7,9 +7,12 @@ import java.util.List;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
+import org.bukkit.util.Vector;
 
 import zenixmc.utils.particles.ParticleEffect;
 
@@ -18,6 +21,14 @@ public final class MinecraftUtils {
 	public static final BlockFace[] NEIGHBOURS = new BlockFace[]{BlockFace.NORTH, BlockFace.WEST, BlockFace.EAST, BlockFace.SOUTH, BlockFace.UP, BlockFace.DOWN};
 	
 	public static final Material[] DANGEROUS_BLOCKS = new Material[]{Material.LAVA, Material.STATIONARY_LAVA, Material.FIRE};
+	
+	public static boolean isSolid(Location loc) {
+		return isSolid(loc.getBlock());
+	}
+	
+	public static boolean isSolid(Block b) {
+		return b.getType().isSolid();
+	}
 	
 	public static boolean isSafeLocation(Location loc) {
 		return isSafeBlock(loc.getBlock());
@@ -128,10 +139,6 @@ public final class MinecraftUtils {
 		return result;
 	}
 	
-	public static boolean isSolid(Block b) {
-		return b.getType().isSolid();
-	}
-	
 	public static Block getHighestBlockAt(Chunk chunk, int x, int z) {
 		
 		Block b = chunk.getBlock(x, 256, z);
@@ -143,4 +150,37 @@ public final class MinecraftUtils {
 		return b;
 	}
 	
+	public static List<Entity> getEntities(float range, Location origin) {
+		
+		List<Entity> result = new ArrayList<>();
+		
+		for (Entity e : origin.getWorld().getEntities()) {
+			if (e.getLocation().distance(origin) <= range) {
+				result.add(e);
+			}
+		}
+		
+		return result;
+	}
+	
+	public static List<Entity> getSpecificEntities(float range, Location origin, Class<?>... type) {
+		
+		List<Entity> result = new ArrayList<>();
+		
+		for (Entity e : origin.getWorld().getEntitiesByClasses(type)) {
+			if (e.getLocation().distance(origin) <= range) {
+				result.add(e);
+			}
+		}
+		
+		return result;
+	}
+	
+	public static Vector getDirection(Location point1, Location point2) {
+		return point2.toVector().subtract(point1.toVector());
+	}
+	
+	public static void playSound(Location loc, Sound sound, float volume, float pitch) {
+		loc.getWorld().playSound(loc, sound, volume, pitch);
+	}
 }

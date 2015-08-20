@@ -1,7 +1,7 @@
 package zenixmc.bending.ability.firebending;
 
+import zenixmc.ZenixMCInterface;
 import zenixmc.bending.Element;
-import zenixmc.bending.ability.AbilityInterface;
 import zenixmc.bending.ability.AbstractAbility;
 import zenixmc.block.fake.FakeBlockManager;
 
@@ -12,8 +12,8 @@ import zenixmc.block.fake.FakeBlockManager;
  */
 public abstract class AbstractFirebendingAbility extends AbstractAbility {
 	
-	protected AbstractFirebendingAbility(FakeBlockManager blockManager) {
-		super(blockManager);
+	protected AbstractFirebendingAbility(FakeBlockManager blockManager, ZenixMCInterface zenix) {
+		super(blockManager, zenix);
 	}
 
 	/**
@@ -28,5 +28,7 @@ public abstract class AbstractFirebendingAbility extends AbstractAbility {
 	public Element getRequiredElement() {
 		return Element.Fire;
 	}
+	
+	abstract protected void playParticles();
 
 }

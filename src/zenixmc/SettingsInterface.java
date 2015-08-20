@@ -242,4 +242,13 @@ public interface SettingsInterface {
      */
     String clanEntryTerritoryMessage();
     
+    /**
+     * @return Air Manip Value.
+     */
+    float airManipulationSpeed();
+    
+    /**
+     * @return Air Manip Value.
+     */
+    float airManipulationKnockback();
 }

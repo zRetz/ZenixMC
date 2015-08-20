@@ -9,15 +9,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
+import zenixmc.bending.ability.AbilityData;
 import zenixmc.bending.ability.AbilityInterface;
 import zenixmc.bending.ability.PresetInterface;
-import zenixmc.io.SerializableLocation;
-import zenixmc.organization.OrganizationPlayerInterface;
 import zenixmc.user.ZenixUserInterface;
-import zenixmc.user.objects.Home;
-import zenixmc.user.objects.Warning;
 
 /**
  * The default implementation of a bendingPlayer.
@@ -37,7 +33,7 @@ public class BendingPlayer implements BendingPlayerInterface {
     /**
      * The ability data.
      */
-    private transient Map<String, Object> abilityData = new HashMap<>();
+    private transient Map<String, AbilityData> abilityData = new HashMap<>();
 
     /**
      * The native element of this player.
@@ -136,12 +132,12 @@ public class BendingPlayer implements BendingPlayerInterface {
     }
 
     @Override
-    public Object getAbilityData(AbilityInterface ability) {
+    public AbilityData getAbilityData(AbilityInterface ability) {
         return abilityData.get(ability.getName());
     }
 
     @Override
-    public void setAbilityData(AbilityInterface ability, Object data) {
+    public void setAbilityData(AbilityInterface ability, AbilityData data) {
         abilityData.put(ability.getName(), data);
     }
 

@@ -170,7 +170,7 @@ public class ZenixMC extends JavaPlugin implements ZenixMCInterface {
     	Wild.setUp();
         getLogger().log(Level.INFO, "Enabling Zenix. Powered by Zenix.");
         
-        abilityManager.registerAbility(new AirManipulation(fakeBlockManager));
+        abilityManager.registerAbility(new AirManipulation(fakeBlockManager, this));
         
         terManager.setOrganizationManager(orgManager);
         organizationRepository.setOrganizationManager(orgManager);
