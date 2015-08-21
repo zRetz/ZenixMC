@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.bending.AbilityManager;
@@ -524,5 +525,11 @@ public class OfflineZenixUser implements ZenixUserInterface {
 	@Override
 	public int compareTo(ZenixUserInterface zui) {
 		return zui.getUniqueId().compareTo(this.getUniqueId());
+	}
+
+	@Override
+	public Vector getVelocity() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

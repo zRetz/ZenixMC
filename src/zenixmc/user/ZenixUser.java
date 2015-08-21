@@ -18,6 +18,7 @@ import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.bending.AbilityManager;
@@ -269,6 +270,11 @@ public class ZenixUser implements ZenixUserInterface {
     	
         return player.getEyeLocation();
     }
+    
+    @Override
+	public Vector getVelocity() {
+		return player.getVelocity();
+	}
     
     @Override
     public World getWorld() {
@@ -956,5 +962,6 @@ public class ZenixUser implements ZenixUserInterface {
 		lastOnlineActivity = in.readLong();
 		lastActivity = in.readLong();
 	}
+	
 }
 

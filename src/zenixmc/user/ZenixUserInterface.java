@@ -14,6 +14,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.bending.AbilityManager;
@@ -90,6 +91,11 @@ public interface ZenixUserInterface extends Serializable, Comparable<ZenixUserIn
      * @return The players eye location.
      */
     Location getEyeLocation();
+    
+    /**
+     * @return The players velocity.
+     */
+    Vector getVelocity();
     
     /**
      * @return The players world.

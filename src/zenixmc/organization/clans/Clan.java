@@ -1,19 +1,27 @@
 package zenixmc.organization.clans;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
 
+import zenixmc.ZenixMC;
 import zenixmc.ZenixMCInterface;
+import zenixmc.organization.Influence;
 import zenixmc.organization.Influential;
 import zenixmc.organization.Members;
 import zenixmc.organization.Organization;
 import zenixmc.organization.OrganizationPlayerInterface;
+import zenixmc.persistance.CachedOrganizationRepository;
 import zenixmc.user.OfflineZenixUser;
 import zenixmc.user.ZenixUser;
 import zenixmc.user.ZenixUserInterface;
@@ -491,5 +499,41 @@ public class Clan implements Influential {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Serialize this instance.
+	 * 
+	 * @param out
+	 *            Target to which this instance is written.
+	 * @throws IOException
+	 *             Thrown if exception occurs during serialization.
+	 */
+	private void writeObject(final ObjectOutputStream out) throws IOException {
+		out.writeUTF(name);
+		out.writeObject(desc);
+		out.writeObject(members);
+		out.writeObject(banlist);
+		out.writeObject(territoryIds);
+		out.writeBoolean(invite);
+	}
+
+	/**
+	 * Deserialize this instance from input stream.
+	 * 
+	 * @param in
+	 *            Input Stream from which this instance is to be deserialized.
+	 * @throws IOException
+	 *             Thrown if error occurs in deserialization.
+	 * @throws ClassNotFoundException
+	 *             Thrown if expected class is not found.
+	 */
+	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+		name = in.readUTF();
+		desc = (String[]) in.readObject();
+		members = (Members) in .readObject();
+		banlist = (List<UUID>) in .readObject();
+		territoryIds = (List<String>) in .readObject();
+		invite = in.readBoolean();
 	}
 }

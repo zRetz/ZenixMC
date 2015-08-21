@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import zenixmc.utils.DateUtil;
 import zenixmc.utils.ExceptionUtil;
-import zenixmc.utils.MinecraftUtils;
+import zenixmc.utils.MinecraftUtil;
 
 /**
  * Wrapper around configuration file to fetch settings.
@@ -82,6 +82,7 @@ public class Settings implements SettingsInterface {
     	config.addDefault("clanNeedInviteFalseMessage", "Invitations are no longer required to join <clan>. Courtesy: <zenixUser>");
     	config.addDefault("airManipulationSpeed", 2);
     	config.addDefault("airManipulationKnockback", 4);
+    	config.addDefault("airManipulationRange", 30);
     	
     	config.options().copyDefaults(true);
 		
@@ -166,7 +167,7 @@ public class Settings implements SettingsInterface {
 
 	@Override
 	public List<Material> getBlockBlackList() {
-		return MinecraftUtils.stringToMaterialList(config.getStringList("materialBlackList"));
+		return MinecraftUtil.stringToMaterialList(config.getStringList("materialBlackList"));
 	}
 	
 	@Override
@@ -328,7 +329,12 @@ public class Settings implements SettingsInterface {
 	public float airManipulationKnockback() {
 		return (float) config.getDouble("airManipulationKnockback", 4);
 	}
-
+	
+	@Override
+	public float airManipulationRange() {
+		System.out.println("Range:" + config.getDouble("airManipulationRange"));
+		return (float) config.getDouble("airManipulationRange", 30);
+	}
 }
 
 

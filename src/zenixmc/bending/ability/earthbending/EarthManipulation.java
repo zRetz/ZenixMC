@@ -4,12 +4,13 @@ import zenixmc.ZenixMCInterface;
 import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.bending.ability.AbilityData;
 import zenixmc.block.fake.FakeBlockManager;
+import zenixmc.event.EventDispatcher;
 
 public class EarthManipulation extends AbstractEarthbendingAbility {
 	
 	
-	public EarthManipulation(FakeBlockManager blockManager, ZenixMCInterface zenix) {
-        super(blockManager, zenix);
+	public EarthManipulation(FakeBlockManager blockManager, ZenixMCInterface zenix, EventDispatcher eventDispatcher) {
+        super(blockManager, zenix, eventDispatcher);
     }
 
     protected enum EarthManipulationState {
@@ -61,9 +62,21 @@ public class EarthManipulation extends AbstractEarthbendingAbility {
 	}
 
 	@Override
-	protected boolean performChecks(AbilityData d) {
+	protected void performChecks(AbilityData d) {
 		// TODO Auto-generated method stub
-		return false;
+		
+	}
+
+	@Override
+	protected void animate(AbilityData d) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void operate(AbilityData d, BendingPlayerInterface player) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

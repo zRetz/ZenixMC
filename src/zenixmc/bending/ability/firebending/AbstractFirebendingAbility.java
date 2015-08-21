@@ -4,6 +4,7 @@ import zenixmc.ZenixMCInterface;
 import zenixmc.bending.Element;
 import zenixmc.bending.ability.AbstractAbility;
 import zenixmc.block.fake.FakeBlockManager;
+import zenixmc.event.EventDispatcher;
 
 /**
  * Base class for firebending abilities.
@@ -12,8 +13,8 @@ import zenixmc.block.fake.FakeBlockManager;
  */
 public abstract class AbstractFirebendingAbility extends AbstractAbility {
 	
-	protected AbstractFirebendingAbility(FakeBlockManager blockManager, ZenixMCInterface zenix) {
-		super(blockManager, zenix);
+	protected AbstractFirebendingAbility(FakeBlockManager blockManager, ZenixMCInterface zenix, EventDispatcher eventDispatcher) {
+		super(blockManager, zenix, eventDispatcher);
 	}
 
 	/**

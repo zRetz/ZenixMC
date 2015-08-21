@@ -4,11 +4,13 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 
 import zenixmc.ZenixMCInterface;
+import zenixmc.bending.BendingPlayerInterface;
 import zenixmc.bending.Element;
 import zenixmc.bending.ability.AbilityData;
 import zenixmc.bending.ability.AbstractAbility;
 import zenixmc.block.fake.FakeBlockManager;
-import zenixmc.utils.MinecraftUtils;
+import zenixmc.event.EventDispatcher;
+import zenixmc.utils.MinecraftUtil;
 import zenixmc.utils.particles.ParticleEffect;
 
 /**
@@ -23,8 +25,8 @@ public abstract class AbstractAirbendingAbility extends AbstractAbility {
 	 */
 	private static final long serialVersionUID = -4683742822939963991L;
 	
-	protected AbstractAirbendingAbility(FakeBlockManager blockManager, ZenixMCInterface zenix) {
-		super(blockManager, zenix);
+	protected AbstractAirbendingAbility(FakeBlockManager blockManager, ZenixMCInterface zenix, EventDispatcher eventDispatcher) {
+		super(blockManager, zenix, eventDispatcher);
 	}
 
 	/**
@@ -37,13 +39,20 @@ public abstract class AbstractAirbendingAbility extends AbstractAbility {
     
     @Override
     protected void playDefaultSound(Location loc) {
-    	MinecraftUtils.playSound(loc, Sound.CREEPER_HISS, 10, 0);
+    	MinecraftUtil.playSound(loc, Sound.CREEPER_HISS, 50, 7);
     }
     
-    @Override
-    protected void playDefaultParticles(float ofsx, float ofsy, float ofsz, float speed, int amount, Location loc) {
-    	ParticleEffect.CLOUD.display(ofsx, ofsy, ofsz, speed, amount, loc, 257D);
+    protected void playParticles(Location loc, int amount) {
+    	playParticles(loc, (float) Math.random(), (float) Math.random(), (float) Math.random(), amount);
     }
     
-    abstract protected void animate(AbilityData d);
+    protected void playParticles(Location center, float offsetX, float offsetY, float offsetZ, int amount) {
+    	playParticles(center, offsetX, offsetY, offsetZ, 0, amount);
+    }
+    
+    protected void playParticles(Location center, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+    	for (int i = 0; i < amount; i++) {
+    		ParticleEffect.CLOUD.display(center, offsetX, offsetY, offsetZ, 0, 1);
+    	}
+    }
 }

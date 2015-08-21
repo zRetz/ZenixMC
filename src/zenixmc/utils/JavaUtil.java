@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.TreeMap;
 
 import zenixmc.utils.exceptions.NotEvenException;
@@ -23,6 +24,8 @@ import zenixmc.utils.exceptions.NotEvenException;
  */
 public class JavaUtil {
 
+	public static final Random random = new Random();
+	
     /**
      * Converts two arrays of the same length to a tree map.
      *

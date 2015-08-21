@@ -251,4 +251,9 @@ public interface SettingsInterface {
      * @return Air Manip Value.
      */
     float airManipulationKnockback();
+    
+    /**
+     * @return Air Manip Value.
+     */
+    float airManipulationRange();
 }

@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import zenixmc.ZenixMCInterface;
 import zenixmc.event.EventDispatcher;
 import zenixmc.user.ZenixUserInterface;
-import zenixmc.utils.MinecraftUtils;
+import zenixmc.utils.MinecraftUtil;
 import zenixmc.utils.StringFormatter;
 import zenixmc.utils.StringFormatter.MessageOccasion;
 
@@ -64,8 +64,8 @@ public class Teleport {
     	
     	Location primary = target.clone();
     	
-    	if (!(MinecraftUtils.isSafeLocation(primary))) {
-    		primary = MinecraftUtils.getSafeLocation(primary);
+    	if (!(MinecraftUtil.isSafeLocation(primary))) {
+    		primary = MinecraftUtil.getSafeLocation(primary);
     	}
     	
     	teleportee.setLastLocation(teleportee.getLocation());

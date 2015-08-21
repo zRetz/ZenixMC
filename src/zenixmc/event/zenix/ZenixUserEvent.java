@@ -1,5 +1,6 @@
-package zenixmc.event;
+package zenixmc.event.zenix;
 
+import zenixmc.event.ZenixEvent;
 import zenixmc.user.ZenixUserInterface;
 
 /**

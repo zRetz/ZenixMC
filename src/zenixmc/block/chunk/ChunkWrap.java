@@ -3,7 +3,7 @@ package zenixmc.block.chunk;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 
-import zenixmc.utils.MinecraftUtils;
+import zenixmc.utils.MinecraftUtil;
 
 public class ChunkWrap {
 
@@ -26,19 +26,19 @@ public class ChunkWrap {
 	}
 	
 	public Block getCornerBlockOne() {
-		return MinecraftUtils.getHighestBlockAt(chunk, 0, 0);
+		return MinecraftUtil.getHighestBlockAt(chunk, 0, 0);
 	}
 	
 	public Block getCornerBlockTwo() {
-		return MinecraftUtils.getHighestBlockAt(chunk, 0, 15);
+		return MinecraftUtil.getHighestBlockAt(chunk, 0, 15);
 	}
 	
 	public Block getCornerBlockThree() {
-		return MinecraftUtils.getHighestBlockAt(chunk, 15, 0);
+		return MinecraftUtil.getHighestBlockAt(chunk, 15, 0);
 	}
 	
 	public Block getCornerBlockFour() {
-		return MinecraftUtils.getHighestBlockAt(chunk, 15, 15);
+		return MinecraftUtil.getHighestBlockAt(chunk, 15, 15);
 	}
 	
 	public boolean isEqualTo(ChunkWrap wrap) {

@@ -387,6 +387,7 @@ public enum ParticleEffect {
 
 	private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<String, ParticleEffect>();
 	private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<Integer, ParticleEffect>();
+	private static final int RANGE = 257;
 	private final String name;
 	private final int id;
 	private final int requiredVersion;
@@ -545,6 +546,33 @@ public enum ParticleEffect {
 	private static boolean isColorCorrect(ParticleEffect effect, ParticleColor color) {
 		return ((effect == SPELL_MOB || effect == SPELL_MOB_AMBIENT || effect == REDSTONE) && color instanceof OrdinaryColor) || (effect == NOTE && color instanceof NoteColor);
 	}
+	
+	/**
+	 * Displays a particle effect which is only visible for all players within a
+	 * certain range in the world of @param center
+	 * 
+	 * @param offsetX Maximum distance particles can fly away from the center on
+	 *            the x-axis
+	 * @param offsetY Maximum distance particles can fly away from the center on
+	 *            the y-axis
+	 * @param offsetZ Maximum distance particles can fly away from the center on
+	 *            the z-axis
+	 * @param speed Display speed of the particles
+	 * @param amount Amount of particles
+	 * @param center Center location of the effect
+	 * @throws ParticleVersionException If the particle effect is not supported
+	 *             by the server version
+	 * @throws ParticleDataException If the particle effect requires additional
+	 *             data
+	 * @throws IllegalArgumentException If the particle effect requires water
+	 *             and none is at the center location
+	 * @see ParticlePacket
+	 * @see ParticlePacket#sendTo(Location, double)
+	 */
+	public void display(Location center, float offsetX, float offsetY, float offsetZ, float speed, int amount) {
+		display(offsetX, offsetY, offsetZ, speed, amount, center, RANGE);
+	}
+
 
 	/**
 	 * Displays a particle effect which is only visible for all players within a certain range in the world of @param center

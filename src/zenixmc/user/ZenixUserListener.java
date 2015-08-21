@@ -1,10 +1,13 @@
 package zenixmc.user;
 
-import org.bukkit.Chunk;
-import org.bukkit.Location;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 
 import zenixmc.PunishmentHandler;
 import zenixmc.ZenixListener;
@@ -12,8 +15,9 @@ import zenixmc.ZenixMCInterface;
 import zenixmc.event.EventDispatcher;
 import zenixmc.event.essential.ReachedMaxWarningEvent;
 import zenixmc.event.essential.ReachedZeroWarningEvent;
-import zenixmc.organization.clans.Territory;
+import zenixmc.event.zenix.DoubleTapShiftEvent;
 import zenixmc.user.objects.Warning;
+import zenixmc.utils.DateUtil;
 
 public class ZenixUserListener extends ZenixListener {
 
@@ -21,6 +25,8 @@ public class ZenixUserListener extends ZenixListener {
 	 * The punishmentHandler to handle punishments.
 	 */
 	private final PunishmentHandler punishmentHandler;
+	
+	private final Map<ZenixUser, Long> doubleTap = new HashMap<>();
 	
 	public ZenixUserListener(PunishmentHandler punishmentHandler, ZenixMCInterface zenix, ZenixUserManager manager, EventDispatcher eventDispatcher) {
 		super(zenix, manager, eventDispatcher);
@@ -57,13 +63,32 @@ public class ZenixUserListener extends ZenixListener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onMove(PlayerMoveEvent e) {
 		
-		ZenixUserInterface zui = manager.getZenixUser(e.getPlayer());
+		ZenixUser zui = manager.getZenixUser(e.getPlayer());
 		
 		if (zui.isFrozen()) {
 			e.setCancelled(true);
 			return;
 		}
-		
 	}
 	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onShift(PlayerToggleSneakEvent e) {
+		
+		if (!(e.isSneaking())) {
+			return;
+		}
+		
+		ZenixUser zui = manager.getZenixUser(e.getPlayer());
+		System.out.println("Pressed Shift");
+		if(!(doubleTap.containsKey(zui))) {
+			doubleTap.put(zui, System.currentTimeMillis());
+		}else {
+			long ftime = doubleTap.get(zui);
+			long timeb = (System.currentTimeMillis() - ftime);
+			if (timeb <= ((DateUtil.second/2) - 300)) {
+				eventDispatcher.callEvent(new DoubleTapShiftEvent(zui, timeb));
+			}
+			doubleTap.remove(zui);
+		}
+	}
 }

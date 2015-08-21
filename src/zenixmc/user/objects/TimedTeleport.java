@@ -4,7 +4,7 @@ import org.bukkit.Location;
 
 import zenixmc.ZenixMCInterface;
 import zenixmc.user.ZenixUserInterface;
-import zenixmc.utils.MinecraftUtils;
+import zenixmc.utils.MinecraftUtil;
 import zenixmc.utils.StringFormatter;
 import zenixmc.utils.StringFormatter.MessageOccasion;
 
@@ -114,8 +114,8 @@ public class TimedTeleport implements Runnable {
 			return;
 		}
 		
-		if (!(MinecraftUtils.isSafeLocation(target))) {
-			target = MinecraftUtils.getSafeLocation(target);
+		if (!(MinecraftUtil.isSafeLocation(target))) {
+			target = MinecraftUtil.getSafeLocation(target);
 		}
 		
 		Location curLoc = teleportee.getLocation();
